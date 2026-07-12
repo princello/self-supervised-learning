@@ -1,0 +1,139 @@
+<title>The Machine That Teaches Itself — an AI learning series</title>
+<style>
+/*__FONTS__*/
+
+:root{
+  --paper:#F7F8FA; --card:#FFFFFF; --ink:#14161D; --ink2:#4A5264; --line:#DFE3EA;
+  --hl:#F4C84B; --hl-ink:#5C4708; --hatch:#98A0AF; --panel-tint:#F1F3F7;
+  --p1:#2B50E8; --p1-soft:#E4E9FC;
+  --p2:#0E7A63; --p2-soft:#D9EFE8;
+  --shadow:0 1px 2px rgba(20,22,29,.05),0 8px 28px rgba(20,22,29,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#0F1218; --card:#171B23; --ink:#E9EBF2; --ink2:#A6ADBF; --line:#2A3040;
+    --hl:#E3B23C; --hl-ink:#1A1508; --hatch:#5A6377; --panel-tint:#131720;
+    --p1:#8AA0FF; --p1-soft:#232C4E;
+    --p2:#5FCDB0; --p2-soft:#14352D;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:'Atkinson Hyperlegible',Seravek,'Gill Sans',Verdana,sans-serif;
+  font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.wrap{max-width:900px;margin:0 auto;padding:0 22px}
+
+.display{
+  font-family:'Bricolage Grotesque','Avenir Next',Futura,'Trebuchet MS',sans-serif;
+  font-weight:800;letter-spacing:-.015em;line-height:1.08;text-wrap:balance;
+}
+.eyebrow{
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);
+}
+
+#hero{padding:78px 0 20px}
+.drop-strip{display:flex;gap:7px;margin-bottom:26px;align-items:flex-end}
+.drop-strip svg{display:block}
+#hero h1{font-size:clamp(34px,6.4vw,58px);margin:.15em 0 .3em}
+#hero h1 .self{background:linear-gradient(transparent 74%, var(--hl) 74%);padding:0 .06em}
+.dek{font-size:clamp(16px,2.2vw,19px);color:var(--ink2);max-width:38em;margin:0 0 8px}
+
+.parts{display:grid;gap:18px;margin:44px 0}
+.part{
+  display:block;text-decoration:none;position:relative;
+  border:1.5px solid var(--line);border-radius:16px;background:var(--card);
+  padding:24px 26px;box-shadow:var(--shadow);
+  transition:transform .15s,border-color .15s;
+}
+.part:hover{transform:translateY(-2px)}
+.part:focus-visible{outline:2px solid var(--accent,var(--ink));outline-offset:3px}
+.part.p1{--accent:var(--p1)}
+.part.p2{--accent:var(--p2)}
+.part:hover{border-color:var(--accent)}
+.part .pnum{
+  font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.1em;
+  color:var(--accent);text-transform:uppercase;
+}
+.part h2{margin:.3em 0 .35em;font-size:clamp(22px,3.4vw,30px)}
+.part p{margin:0 0 14px;color:var(--ink2);font-size:15.5px;max-width:56em}
+.part .meta{display:flex;flex-wrap:wrap;gap:8px;font-size:12.5px}
+.part .chip{
+  border:1px solid var(--line);border-radius:999px;padding:4px 11px;color:var(--ink2);
+  background:var(--panel-tint);
+}
+.part .go{
+  position:absolute;right:24px;top:24px;font-size:22px;color:var(--accent);
+  transition:transform .15s;
+}
+.part:hover .go{transform:translateX(4px)}
+
+.soon{
+  border:1.5px dashed var(--line);border-radius:16px;padding:22px 26px;color:var(--ink2);
+}
+.soon .pnum{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase}
+.soon h2{margin:.3em 0 .35em;font-size:20px;color:var(--ink)}
+.soon p{margin:0;font-size:14.5px}
+
+footer{padding:40px 0 70px;color:var(--ink2);font-size:13.5px;border-top:1px solid var(--line);margin-top:20px}
+footer p{max-width:66ch;margin:0 0 .7em}
+footer a{color:var(--p2);text-decoration:underline}
+</style>
+
+<div class="wrap">
+  <section id="hero">
+    <div class="drop-strip" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24"><rect x="1" y="1" width="10" height="10" rx="2" fill="var(--ink)"/><rect x="13" y="1" width="10" height="10" rx="2" fill="none" stroke="var(--hatch)" stroke-dasharray="2 2"/><rect x="1" y="13" width="10" height="10" rx="2" fill="none" stroke="var(--hatch)" stroke-dasharray="2 2"/><rect x="13" y="13" width="10" height="10" rx="2" fill="var(--p1)"/></svg>
+      <svg width="18" height="18" viewBox="0 0 14 18"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--p2)"/></svg>
+    </div>
+    <p class="eyebrow">An interactive series · read free, in your browser</p>
+    <h1 class="display">The machine that teaches <span class="self">itself</span></h1>
+    <p class="dek">One game, played two ways: <strong>hide something, guess it, check yourself.</strong> Part 1 plays it against the world — no teacher, no answer key. Part 2 plays it against a copy of yourself. Every demo on every page is real computation running live in your browser — never a canned animation.</p>
+  </section>
+
+  <div class="parts">
+    <a class="part p1" href="self-supervised-learning.html">
+      <span class="go" aria-hidden="true">→</span>
+      <span class="pnum">Part 1</span>
+      <h2 class="display">Self-supervised learning</h2>
+      <p>No teacher. No answer key. Hide part of the world, guess what's missing, check yourself — the trick behind GPT, CLIP, and every modern foundation model. Four live demos, including a real InfoNCE contrastive-learning playground you can watch collapse and recover.</p>
+      <span class="meta">
+        <span class="chip">4 reading depths</span>
+        <span class="chip">EN · 中文 · ES</span>
+        <span class="chip">4 live demos</span>
+      </span>
+    </a>
+
+    <a class="part p2" href="knowledge-distillation.html">
+      <span class="go" aria-hidden="true">→</span>
+      <span class="pnum">Part 2</span>
+      <h2 class="display">The machine that teaches machines</h2>
+      <p>A trained giant knows more than its final answers show. Distillation pours that hidden knowledge into a model small enough for your pocket — and, strangest of all, a model can pour it into itself. Watch two students learn from the same teacher live, and a machine copy itself until the page goes blank.</p>
+      <span class="meta">
+        <span class="chip">4 reading depths</span>
+        <span class="chip">EN</span>
+        <span class="chip">4 live demos</span>
+      </span>
+    </a>
+
+    <div class="soon">
+      <span class="pnum">Part 3 · in the still</span>
+      <h2>How models learn what you want</h2>
+      <p>SFT, RLHF, DPO — the preference-optimization arc. Coming next.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>Every page is a single, self-contained HTML file — no server, no build step, no dependencies. Open it directly in a browser and it works completely offline, including every font and demo.</p>
+    <p>Content and code are released under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> — reuse it for teaching, with attribution. Source: <a href="https://github.com/princello/self-supervised-learning">github.com/princello/self-supervised-learning</a>.</p>
+  </footer>
+</div>
