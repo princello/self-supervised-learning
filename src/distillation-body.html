@@ -1,0 +1,1918 @@
+<title>The Machine That Teaches Machines</title>
+<style>
+
+/*__FONTS__*/
+
+/* ---------- design tokens ---------- */
+:root{
+  --paper:#F7F8FA;
+  --card:#FFFFFF;
+  --ink:#14161D;
+  --ink2:#4A5264;
+  --line:#DFE3EA;
+  --accent:#0E7A63;
+  --accent-soft:#D9EFE8;
+  --on-accent:#FFFFFF;
+  --hl:#F4C84B;
+  --hl-ink:#5C4708;
+  --hatch:#98A0AF;
+  --panel-tint:#F1F3F7;
+  --shadow:0 1px 2px rgba(20,22,29,.05),0 8px 28px rgba(20,22,29,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#0F1218;
+    --card:#171B23;
+    --ink:#E9EBF2;
+    --ink2:#A6ADBF;
+    --line:#2A3040;
+    --accent:#5FCDB0;
+    --accent-soft:#14352D;
+    --on-accent:#0F1218;
+    --hl:#E3B23C;
+    --hl-ink:#1A1508;
+    --hatch:#5A6377;
+    --panel-tint:#131720;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1218; --card:#171B23; --ink:#E9EBF2; --ink2:#A6ADBF; --line:#2A3040;
+  --accent:#5FCDB0; --accent-soft:#14352D; --on-accent:#0F1218;
+  --hl:#E3B23C; --hl-ink:#1A1508; --hatch:#5A6377; --panel-tint:#131720;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35);
+}
+:root[data-theme="light"]{
+  --paper:#F7F8FA; --card:#FFFFFF; --ink:#14161D; --ink2:#4A5264; --line:#DFE3EA;
+  --accent:#0E7A63; --accent-soft:#D9EFE8; --on-accent:#FFFFFF;
+  --hl:#F4C84B; --hl-ink:#5C4708; --hatch:#98A0AF; --panel-tint:#F1F3F7;
+  --shadow:0 1px 2px rgba(20,22,29,.05),0 8px 28px rgba(20,22,29,.07);
+}
+
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+body{background:var(--paper);margin:0}
+
+#app{
+  font-family:'Atkinson Hyperlegible',Seravek,'Gill Sans','PingFang SC','Hiragino Sans GB','Microsoft YaHei',Verdana,sans-serif;
+  color:var(--ink);
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+#app[data-level="1"]{font-size:18.5px}
+#app *{box-sizing:border-box}
+#app a{color:var(--accent)}
+#app strong{color:var(--ink)}
+
+.wrap{max-width:1060px;margin:0 auto;padding:0 22px}
+.prose{max-width:66ch}
+.prose p{margin:0 0 1em}
+.prose ul,.prose ol{margin:0 0 1.1em;padding-left:1.3em}
+.prose li{margin:.35em 0}
+.muted{color:var(--ink2)}
+
+.display{
+  font-family:'Bricolage Grotesque','Avenir Next','PingFang SC','Hiragino Sans GB','Microsoft YaHei',Futura,'Trebuchet MS',sans-serif;
+  font-weight:800;letter-spacing:-.015em;line-height:1.08;text-wrap:balance;
+}
+.eyebrow{
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);
+  display:flex;align-items:center;gap:10px;
+}
+.mono{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-variant-numeric:tabular-nums}
+
+/* ---------- level visibility ---------- */
+#app[data-level="1"] .lv:not(.L1){display:none!important}
+#app[data-level="2"] .lv:not(.L2){display:none!important}
+#app[data-level="3"] .lv:not(.L3){display:none!important}
+#app[data-level="4"] .lv:not(.L4){display:none!important}
+
+/* ---------- language visibility ---------- */
+#app[data-lang="en"] .lg-zh,#app[data-lang="en"] .lg-es{display:none!important}
+#app[data-lang="zh"] .lg-en,#app[data-lang="zh"] .lg-es{display:none!important}
+#app[data-lang="es"] .lg-en,#app[data-lang="es"] .lg-zh{display:none!important}
+
+/* ---------- sticky header ---------- */
+#topbar{
+  position:sticky;top:0;z-index:50;
+  background:color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid transparent;
+  transition:border-color .25s;
+}
+#topbar.scrolled{border-bottom-color:var(--line)}
+#topbar .bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 22px;max-width:1060px;margin:0 auto}
+.wordmark{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14.5px;letter-spacing:.01em;white-space:nowrap}
+.wordmark svg{display:block}
+.wordmark .wm-sub{color:var(--ink2);font-weight:400}
+@media (max-width:720px){.wordmark .wm-sub{display:none}}
+
+.dials{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center;min-width:0}
+.theme-btn{
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+  width:36px;height:32px;padding:0;cursor:pointer;
+  background:var(--panel-tint);border:1px solid var(--line);border-radius:999px;color:var(--ink2);
+  transition:color .15s;
+}
+.theme-btn:hover{color:var(--ink)}
+.theme-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.theme-btn svg{display:block}
+.dial{display:flex;gap:4px;background:var(--panel-tint);border:1px solid var(--line);border-radius:999px;padding:3px}
+.dial button{
+  font:inherit;font-size:13px;font-weight:700;color:var(--ink2);
+  background:transparent;border:0;border-radius:999px;padding:5px 13px;cursor:pointer;
+  transition:background .15s,color .15s;
+}
+.dial button:hover{color:var(--ink)}
+.dial button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.dial button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:640px){
+  .wordmark .wm-name{display:none}
+  #topbar .bar{padding:8px 12px}
+  .dial{overflow-x:auto;max-width:100%}
+  .dial button{padding:4px 9px;font-size:11.5px}
+}
+
+/* ---------- hero ---------- */
+#hero{padding:58px 0 12px}
+.mask-strip{display:flex;gap:5px;margin-bottom:26px}
+.mask-strip i{width:22px;height:22px;border-radius:4px;border:1px solid var(--line);display:block}
+.mask-strip i.solid{background:var(--ink);border-color:var(--ink)}
+.mask-strip i.hatchc{background:repeating-linear-gradient(45deg,transparent 0 3px,var(--hatch) 3px 5px)}
+.mask-strip i.blue{background:var(--accent);border-color:var(--accent)}
+#hero h1{font-size:clamp(38px,7vw,68px);margin:.1em 0 .25em}
+#hero h1 .self{
+  background:linear-gradient(transparent 74%, var(--hl) 74%);
+  padding:0 .06em;
+}
+.dek{font-size:clamp(17px,2.4vw,21px);color:var(--ink2);max-width:34em;text-wrap:pretty;margin:0 0 26px}
+
+/* depth picker cards */
+.depths{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0 14px}
+@media (max-width:820px){.depths{grid-template-columns:repeat(2,1fr)}}
+.depths button{
+  font:inherit;text-align:left;cursor:pointer;color:var(--ink);
+  border:1.5px solid var(--line);border-radius:12px;background:var(--card);
+  padding:12px 14px;transition:border-color .15s, transform .15s, box-shadow .15s;
+}
+.depths button:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.depths button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.depths button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.depths .dnum{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--accent);letter-spacing:.1em}
+.depths .dname{display:block;font-weight:700;font-size:16px;margin:2px 0 1px}
+.depths .ddesc{display:block;font-size:12.5px;color:var(--ink2);line-height:1.4}
+.pick-note{font-size:13px;color:var(--ink2);margin:0 0 8px}
+
+.toc{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13.5px;padding:14px 0 0;border-top:1px solid var(--line);margin-top:20px}
+.toc a{text-decoration:none;color:var(--ink2)}
+.toc a:hover{color:var(--accent)}
+
+/* ---------- sections ---------- */
+section.chap{padding:64px 0 6px}
+section.chap h2{font-size:clamp(27px,4.4vw,42px);margin:.35em 0 .5em}
+.patchmark{display:inline-block;line-height:0}
+.patchmark svg{display:block}
+
+/* ---------- panels (demos) ---------- */
+.panel{
+  border:1px solid var(--line);border-radius:14px;background:var(--card);
+  box-shadow:var(--shadow);overflow:hidden;margin:26px 0;
+}
+.panel-head{
+  display:flex;align-items:center;gap:12px;justify-content:space-between;
+  padding:10px 16px;border-bottom:1px solid var(--line);
+  background:
+    repeating-linear-gradient(45deg,transparent 0 6px,color-mix(in srgb,var(--hatch) 22%, transparent) 6px 8px),
+    var(--panel-tint);
+}
+.panel-head .ptitle{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink2)}
+.panel-body{padding:18px 16px}
+@media (min-width:700px){.panel-body{padding:22px 22px}}
+.panel .hint{font-size:13px;color:var(--ink2)}
+
+button.act{
+  font:inherit;font-size:14px;font-weight:700;cursor:pointer;
+  background:var(--accent);color:var(--on-accent);
+  border:0;border-radius:9px;padding:8px 16px;
+  transition:filter .15s, transform .05s;
+}
+button.act:hover{filter:brightness(1.08)}
+button.act:active{transform:translateY(1px)}
+button.act:disabled{opacity:.45;cursor:default}
+button.ghost{
+  font:inherit;font-size:14px;font-weight:700;cursor:pointer;
+  background:transparent;color:var(--ink);
+  border:1.5px solid var(--line);border-radius:9px;padding:7px 14px;
+}
+button.ghost:hover{border-color:var(--ink2)}
+button.act:focus-visible,button.ghost:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- cloze game ---------- */
+#cloze .sentence{
+  font-family:'Bricolage Grotesque','Avenir Next','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-weight:800;
+  font-size:clamp(21px,3.6vw,30px);line-height:1.35;letter-spacing:-.01em;margin:4px 0 18px;
+}
+#cloze .blank{
+  display:inline-block;min-width:3.2em;text-align:center;border-radius:6px;
+  background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--hatch) 55%, transparent) 0 5px,color-mix(in srgb,var(--hatch) 25%, transparent) 5px 10px);
+  color:transparent;padding:0 .3em;transition:all .3s;
+  border-bottom:3px solid var(--hatch);
+}
+#cloze .blank.revealed{background:var(--hl);color:var(--hl-ink);border-bottom-color:var(--hl)}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 8px}
+.chips button{
+  font:inherit;font-size:15.5px;font-weight:700;cursor:pointer;
+  border:1.5px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:999px;padding:7px 16px;transition:border-color .15s, background .15s;
+}
+.chips button:hover{border-color:var(--accent)}
+.chips button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chips button.picked{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.chips button:disabled{cursor:default;opacity:.85}
+.bars{display:grid;gap:7px;margin:16px 0 4px}
+.bar-row{display:grid;grid-template-columns:6.5em minmax(72px,1fr) auto;align-items:center;gap:10px;font-size:14px}
+.bar-row .bw{font-weight:700;text-align:right}
+.bar-track{background:var(--panel-tint);border-radius:5px;height:20px;overflow:hidden}
+.bar-fill{height:100%;width:0;border-radius:5px;background:var(--accent);opacity:.55;transition:width .8s cubic-bezier(.2,.7,.2,1);display:block}
+.bar-row.true .bar-fill{opacity:1}
+.bar-row .tag{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--ink2)}
+.bar-row.true .tag{color:var(--accent);font-weight:700}
+.punch{margin-top:14px;padding:12px 14px;border-left:3px solid var(--hl);background:color-mix(in srgb,var(--hl) 12%, transparent);border-radius:0 8px 8px 0;font-size:15px}
+.loss-note{margin-top:10px;font-size:13.5px}
+
+/* ---------- hide-guess-check loop diagram ---------- */
+.loop{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:20px 0}
+.loop .lstep{
+  border:1.5px solid var(--line);border-radius:10px;background:var(--card);
+  padding:8px 14px;font-weight:700;font-size:14.5px;
+}
+.loop .lstep small{display:block;font-weight:400;font-size:12px;color:var(--ink2)}
+.loop .larrow{color:var(--ink2);font-size:16px}
+.loop .lstep:nth-child(1){border-color:var(--hatch)}
+.loop .lstep:nth-child(5){border-color:var(--accent)}
+
+/* ---------- log-scale chart ---------- */
+.logchart{display:grid;gap:16px;margin:20px 0 8px}
+.lc-row{display:grid;gap:4px}
+.lc-label{font-size:14px;display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.lc-label .lc-val{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--ink2);white-space:nowrap}
+.lc-track{background:var(--panel-tint);border-radius:6px;height:26px;overflow:hidden;position:relative}
+.lc-fill{height:100%;width:0;border-radius:6px;background:var(--hatch);transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.lc-row.hero-bar .lc-fill{background:var(--accent)}
+.lc-row.in .lc-fill{width:var(--w)}
+.lc-note{font-size:12.5px;color:var(--ink2)}
+
+/* ---------- MAE demo ---------- */
+.mae-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:6px 0 14px}
+@media (max-width:760px){.mae-grid{grid-template-columns:1fr;max-width:340px}}
+.mae-cell{display:grid;gap:6px}
+.mae-cell canvas{width:100%;height:auto;border-radius:8px;border:1px solid var(--line);display:block;background:var(--panel-tint)}
+.mae-cell .clabel{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.ctrl-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:10px 0 4px}
+.ctrl-row label{font-size:14px;font-weight:700;display:flex;align-items:center;gap:10px}
+.ctrl-row input[type=range]{accent-color:var(--accent);width:150px}
+.readout{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.readout b{color:var(--ink)}
+
+/* ---------- contrastive demo ---------- */
+.probe-grid{display:grid;grid-template-columns:repeat(2,minmax(0,300px));gap:14px;margin:6px 0 14px}
+@media (max-width:640px){.probe-grid{grid-template-columns:1fr;max-width:300px}}
+.probe-grid canvas{width:100%;height:auto;border-radius:8px;border:1px solid var(--line);display:block;background:var(--panel-tint)}
+.ctr-layout{display:grid;grid-template-columns:minmax(0,380px) 1fr;gap:22px;align-items:start}
+@media (max-width:760px){.ctr-layout{grid-template-columns:1fr}}
+#ctr-canvas{width:100%;max-width:380px;height:auto;display:block;border-radius:10px;border:1px solid var(--line);background:var(--panel-tint)}
+.ctr-controls{display:grid;gap:14px}
+.ctr-controls .crow{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.ctr-controls label.chk{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:700;cursor:pointer}
+.ctr-controls input[type=checkbox]{accent-color:var(--accent);width:17px;height:17px}
+.metrics{display:grid;grid-template-columns:repeat(3,auto);gap:8px 22px;justify-content:start;font-variant-numeric:tabular-nums;margin:0}
+.metrics .m dt{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.metrics .m dd{margin:0;font-family:ui-monospace,Menlo,monospace;font-size:17px}
+#ctr-note{min-height:1.4em;font-size:13.5px;color:var(--ink2);margin:0}
+#spark{width:190px;height:38px;display:block}
+
+/* ---------- math ---------- */
+.eqcard{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:16px 18px;margin:16px 0;overflow-x:auto}
+.eqcard h4{margin:0 0 6px;font-size:15px}
+.eqcard .eqwhat{font-size:13.5px;color:var(--ink2);margin:8px 0 0;max-width:66ch}
+.eq{
+  font-family:Georgia,'Times New Roman',serif;font-style:italic;
+  font-size:19px;line-height:1.9;white-space:nowrap;padding:6px 2px;
+}
+.eq .up{font-style:normal}
+.eq sub,.eq sup{font-size:.62em}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .12em;line-height:1.3}
+.frac .num{padding:0 .4em .05em}
+.frac .den{border-top:1.5px solid currentColor;padding:.05em .4em 0}
+.sum{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1;margin:0 .15em}
+.sum .sig{font-size:1.55em;font-style:normal;line-height:1}
+.sum .lim{font-size:.6em;line-height:1.2}
+.term{border-bottom:2px dotted var(--accent);cursor:help;border-radius:2px}
+.term:hover,.term:focus-visible{background:var(--accent-soft);outline:none}
+#tip{
+  position:fixed;z-index:99;max-width:270px;
+  background:var(--ink);color:var(--paper);
+  font-size:13px;line-height:1.45;font-style:normal;
+  font-family:'Atkinson Hyperlegible','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+  padding:8px 11px;border-radius:8px;pointer-events:none;
+  opacity:0;transform:translateY(4px);transition:opacity .15s, transform .15s;
+}
+#tip.show{opacity:1;transform:translateY(0)}
+.mathpeek{
+  border:1.5px dashed var(--hatch);border-radius:12px;padding:18px;margin:16px 0;max-width:66ch;
+  background:repeating-linear-gradient(45deg,transparent 0 8px,color-mix(in srgb,var(--hatch) 10%, transparent) 8px 10px);
+}
+
+/* ---------- timeline ---------- */
+.tl-scroller{overflow-x:auto;padding:6px 2px 16px;scroll-snap-type:x proximity}
+.tl{display:flex;gap:14px;min-width:min-content}
+.tl-card{
+  scroll-snap-align:start;flex:0 0 240px;
+  border:1px solid var(--line);border-radius:12px;background:var(--card);
+  padding:14px 15px;display:grid;gap:6px;align-content:start;
+}
+.tl-card .yr{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink2)}
+.tl-card .nm{font-weight:700;font-size:16.5px;line-height:1.25}
+.tl-card .fam{justify-self:start;font-size:10.5px;font-family:ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);display:flex;align-items:center;gap:5px}
+.tl-card .fam i{width:7px;height:7px;border-radius:2px;display:inline-block}
+.fam-gen i{background:#5B8DEF}.fam-con i{background:#D6608F}.fam-dis i{background:#3AAE9F}.fam-lat i{background:#E3A23C}.fam-sta i{background:#8A67D6}
+.tl-card p{margin:0;font-size:13.5px;color:var(--ink2);line-height:1.5}
+.tl-card p b{color:var(--ink)}
+.tl-card a{font-size:12px}
+
+/* ---------- applications ---------- */
+.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:20px 0}
+.app-card{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:16px;display:grid;gap:7px;align-content:start}
+.app-card h4{margin:0;font-size:16px;display:flex;align-items:center;gap:9px}
+.app-card h4 i{width:10px;height:10px;border-radius:3px;background:var(--accent);flex:0 0 auto}
+.app-card p{margin:0;font-size:14px;color:var(--ink2);line-height:1.55}
+.app-card p b{color:var(--ink)}
+
+/* ---------- takeaway ---------- */
+.take{
+  border:1.5px solid var(--accent);border-radius:14px;padding:20px 22px;margin:20px 0;max-width:72ch;
+  background:color-mix(in srgb,var(--accent) 6%, transparent);
+}
+.take h3{margin:0 0 10px;font-size:19px}
+.reading{font-size:14px;line-height:1.7}
+.reading li{margin:.4em 0}
+
+footer.colophon{padding:44px 0 70px;color:var(--ink2);font-size:13.5px;border-top:1px solid var(--line);margin-top:70px}
+footer.colophon p{max-width:66ch;margin:0 0 .7em}
+
+.defs{display:grid;gap:10px;margin:18px 0;font-size:15px}
+.defs .d{border-left:3px solid var(--accent);padding:2px 0 2px 14px}
+
+
+/* ================= Part 2 additions ================= */
+
+/* drop strip (hero motif: condensing droplets) */
+.drop-strip{display:flex;gap:7px;margin-bottom:26px;align-items:flex-end}
+.drop-strip svg{display:block}
+
+/* eyebrow drop glyph */
+.dropmark{display:inline-block;vertical-align:-2px;margin-right:2px}
+
+/* visible keyboard focus for tooltip terms (overrides base outline:none) */
+.term:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- hero demo: the answer key vs the teacher ---------- */
+.kdh{
+  margin-top:34px;background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:20px 22px 18px;box-shadow:var(--shadow);
+}
+.kdh-input{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:15px;color:var(--ink2)}
+.kdh-input .kdh-img{
+  font-size:34px;line-height:1;background:var(--panel-tint);border:1px solid var(--line);
+  border-radius:10px;padding:8px 10px;
+}
+.kdh-panels{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:640px){.kdh-panels{grid-template-columns:1fr}}
+.kdh-panel{margin:0;padding:0}
+.kdh-panel figcaption{font-size:13.5px;font-weight:700;margin-bottom:10px}
+.kdh-panel figcaption .sub{color:var(--ink2);font-weight:400}
+.kdh-bars{display:flex;flex-direction:column;gap:7px}
+.kdh-row{display:grid;grid-template-columns:64px 1fr 52px;gap:8px;align-items:center;font-size:13.5px}
+.kdh-row .lbl{text-align:right;color:var(--ink2);white-space:nowrap}
+.kdh-row .track{height:16px;background:var(--panel-tint);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.kdh-row .fill{height:100%;background:var(--hatch);border-radius:4px 0 0 4px;transition:width .18s ease;display:block}
+.kdh-row.top .fill{background:var(--accent)}
+.kdh-row .pct{font-variant-numeric:tabular-nums;color:var(--ink2);font-size:12.5px}
+.kdh-row.top .pct{color:var(--ink);font-weight:700}
+.kdh-slider{
+  display:flex;align-items:center;gap:12px;margin-top:18px;flex-wrap:wrap;
+  font-size:14px;font-weight:700;
+}
+.kdh-slider input[type="range"]{flex:1;min-width:140px;accent-color:var(--accent)}
+.kdh-slider output{font-variant-numeric:tabular-nums;min-width:2.6em;display:inline-block}
+.kdh-note{margin:12px 0 0;font-size:14px;color:var(--ink2);min-height:3em}
+.kdh-note strong{color:var(--ink)}
+
+/* guess-first bet rows */
+.bet{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px;
+  padding:12px 14px;border:1.5px dashed var(--accent);border-radius:10px;
+  background:color-mix(in srgb,var(--accent) 5%, transparent);
+  font-size:14px;
+}
+.bet .bet-q{font-weight:700;margin-right:4px}
+.bet[hidden]{display:none}
+
+/* ---------- D2: two students demo ---------- */
+.kd2-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:760px){.kd2-grid{grid-template-columns:1fr}}
+.kd2-grid figure{margin:0}
+.kd2-grid canvas{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px}
+.kd2-grid figcaption{font-size:12.5px;color:var(--ink2);margin-top:7px;line-height:1.45}
+.kd2-grid figcaption strong{color:var(--ink)}
+.demo-controls{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;margin-top:16px;font-size:13.5px}
+.demo-controls .btn{
+  font:inherit;font-weight:700;font-size:13.5px;cursor:pointer;
+  background:var(--accent);color:var(--on-accent);border:0;border-radius:9px;padding:8px 14px;
+}
+.demo-controls .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.demo-controls .btn.ghostb{background:var(--panel-tint);color:var(--ink);border:1px solid var(--line)}
+.demo-controls label{display:flex;align-items:center;gap:8px;font-weight:700}
+.demo-controls input[type="range"]{accent-color:var(--accent);width:130px}
+.demo-controls output{font-variant-numeric:tabular-nums;min-width:2.2em}
+.scorechips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.scorechips .sc{border:1px solid var(--line);border-radius:9px;padding:7px 12px;font-size:13px;background:var(--panel-tint)}
+.scorechips .sc b{font-variant-numeric:tabular-nums}
+.scorechips .sc.win{border-color:var(--accent);background:var(--accent-soft)}
+
+/* ---------- D3: self-distillation demo ---------- */
+.sd-wrap canvas{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px}
+.sd-wrap .sd-err{margin-top:10px}
+.sd-meter{margin-top:12px;font-size:12.5px;color:var(--ink2)}
+.sd-meter .track{position:relative;height:10px;border-radius:6px;background:var(--panel-tint);border:1px solid var(--line);overflow:hidden;margin-top:4px}
+.sd-meter .fillc{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),var(--hl));border-radius:6px;transition:width .25s}
+.sd-note{margin:12px 0 0;font-size:14px;color:var(--ink2);min-height:2.6em}
+.sd-note strong{color:var(--ink)}
+</style>
+
+<div id="app" data-level="2">
+
+<header id="topbar">
+  <div class="bar">
+    <span class="wordmark">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M10 2h4v2l-1 1v4.5l5.4 8.1A2.4 2.4 0 0 1 16.4 21H7.6a2.4 2.4 0 0 1-2-3.4L11 9.5V5l-1-1z" fill="none" stroke="var(--hatch)" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M8.1 15.5h7.8l1.6 2.4a1.4 1.4 0 0 1-1.1 2.1H7.6a1.4 1.4 0 0 1-1.1-2.1z" fill="var(--accent)"/>
+        <circle cx="12" cy="12.6" r="1" fill="var(--ink)"/>
+      </svg>
+      <span class="wm-name">Knowledge Distillation</span> <span class="wm-sub">· an interactive explainer</span>
+    </span>
+    <div class="dials">
+      <button type="button" class="theme-btn" id="theme-btn" aria-label="Theme"></button>
+      <nav class="dial" id="dial-top" aria-label="Reading depth">
+        <button type="button" data-lv="1" aria-pressed="false">Explorer</button>
+        <button type="button" data-lv="2" aria-pressed="true">Student</button>
+        <button type="button" data-lv="3" aria-pressed="false">Engineer</button>
+        <button type="button" data-lv="4" aria-pressed="false">Researcher</button>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<section id="hero" class="wrap">
+  <div class="drop-strip" aria-hidden="true">
+    <svg width="14" height="18" viewBox="0 0 14 18"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--ink)"/></svg>
+    <svg width="11" height="14" viewBox="0 0 14 18"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="none" stroke="var(--hatch)" stroke-width="1.6" stroke-dasharray="2.5 2.5"/></svg>
+    <svg width="9" height="12" viewBox="0 0 14 18"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="none" stroke="var(--hatch)" stroke-width="1.8" stroke-dasharray="2.5 2.5"/></svg>
+    <svg width="7" height="9" viewBox="0 0 14 18"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg>
+  </div>
+  <p class="eyebrow">Part 2 of the series · An interactive explainer · readable at four depths</p>
+  <h1 class="display">The machine that teaches <span class="self">machines</span></h1>
+  <p class="dek">A trained giant knows far more than its final answers show. <strong>Distillation</strong> is the art of pouring that hidden knowledge into a model small enough to fit in your pocket — and, strangest of all, a model can pour it into <em>itself</em>.</p>
+
+  <div class="kdh" id="kd-hero">
+    <div class="kdh-input">
+      <span class="kdh-img" role="img" aria-label="A photo of a fox">🦊</span>
+      <span><span class="lv L1">A robot that has learned to name animals looks at this photo. What does it <em>know</em>?</span><span class="lv L2 L3 L4">A trained image classifier looks at this photo. What does it <em>know</em>?</span></span>
+    </div>
+    <div class="kdh-panels">
+      <figure class="kdh-panel">
+        <figcaption>The answer key <span class="sub"><span class="lv L1">— just the right answer</span><span class="lv L2 L3 L4">— hard label (what datasets store)</span></span></figcaption>
+        <div class="kdh-bars" id="kdh-hard" role="group" aria-label="Hard label distribution"></div>
+      </figure>
+      <figure class="kdh-panel">
+        <figcaption>The teacher <span class="sub"><span class="lv L1">— how sure it is about every answer</span><span class="lv L2 L3 L4">— soft labels (what the model believes)</span></span></figcaption>
+        <div class="kdh-bars" id="kdh-soft" role="group" aria-label="Teacher soft label distribution"></div>
+      </figure>
+    </div>
+    <label class="kdh-slider"><span class="lv L1">Heat:</span><span class="lv L2 L3 L4">Temperature T =</span> <output id="kdh-tval">1.0</output>
+      <input type="range" id="kdh-t" min="0.5" max="8" step="0.1" value="1" aria-label="Softmax temperature">
+    </label>
+    <p class="kdh-note" id="kdh-note" aria-live="polite"></p>
+  </div>
+
+  <p class="pick-note" style="margin-top:30px">Choose how deep you want to go — you can switch at any time, and every section adapts.</p>
+  <nav class="depths" id="dial-hero" aria-label="Choose your reading depth">
+    <button type="button" data-lv="1" aria-pressed="false"><span class="dnum">DEPTH 1</span><span class="dname">Explorer</span><span class="ddesc">New to all of it. Stories, games, zero math.</span></button>
+    <button type="button" data-lv="2" aria-pressed="true"><span class="dnum">DEPTH 2</span><span class="dname">Student</span><span class="ddesc">Curious about how it works. Ideas, lightly formal.</span></button>
+    <button type="button" data-lv="3" aria-pressed="false"><span class="dnum">DEPTH 3</span><span class="dname">Engineer</span><span class="ddesc">Builds things. Losses, recipes, trade-offs.</span></button>
+    <button type="button" data-lv="4" aria-pressed="false"><span class="dnum">DEPTH 4</span><span class="dname">Researcher</span><span class="ddesc">Wants the theorems, caveats and citations.</span></button>
+  </nav>
+  <nav class="toc" aria-label="Contents">
+    <a href="#why">1 · Why shrink a giant?</a>
+    <a href="#dark">2 · Dark knowledge</a>
+    <a href="#evidence">3 · The evidence</a>
+    <a href="#surpass">4 · The twist</a>
+    <a href="#self">5 · The strange loop</a>
+    <a href="#dino">6 · Déjà vu</a>
+    <a href="#llm">7 · Today</a>
+  </nav>
+</section>
+
+<main class="wrap">
+
+<section class="chap" id="why">
+  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 1 · Why shrink a giant?</p>
+  <h2 class="display">Giants are smart. Pockets are small.</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>A caterpillar has one job: <strong>eat</strong>. A butterfly has a different job: <strong>fly</strong>. Same animal — two shapes, one for gathering and one for going places.</p>
+      <p>Big AI models are caterpillars. They live in warehouse computers and munch through nearly the whole internet. But you can’t fit a warehouse in your backpack. So scientists learned to turn the caterpillar into a butterfly: a much smaller model that keeps most of what the big one learned. The trick is called <strong>distillation</strong> — named after the way you boil a big pot down to a few precious drops.</p>
+      <p>You already used a butterfly today. When your phone guesses your next word, or your camera translates a menu with no internet — that’s a tiny model, flying on knowledge a giant gathered.</p>
+    </div>
+    <div class="lv L2">
+      <p>The models behind modern AI are enormous — up to hundreds of billions of adjustable <span class="term" data-tip="The numbers inside a neural network that training adjusts. More weights = more capacity, but also more memory and more compute per answer.">weights</span>, running on racks of data-center GPUs. Fine for a chat website; useless inside earbuds, a car’s lane camera, or a clinic laptop with no internet — places that need answers in milliseconds, on a battery, in private.</p>
+      <p>The odd part: a model’s size matters most while it <em>learns</em>, not while it answers. Hinton, Vinyals and Dean opened the famous 2015 distillation paper with exactly this picture — an insect is a larva when its job is extracting energy from food, and a lighter, completely different form when its job is traveling. Train a giant; deploy a butterfly.</p>
+      <p>Does knowledge survive the squeeze? <strong>DistilBERT</strong> (2019) kept about 97% of BERT’s score on the GLUE language benchmark with 40% fewer weights, answering 60% faster on CPU. And in 2025, DeepSeek used its giant reasoning model R1 as a teacher for students as small as 1.5&nbsp;billion weights — small enough for a gaming PC. (That story gets its own section, Part 7.)</p>
+      <p>The idea is older than its fame: back in 2006, Buciluă, Caruana and Niculescu-Mizil squeezed a whole <em>committee</em> of models into one and called it “model compression.” Hinton’s paper gave it its modern form — and its better name.</p>
+    </div>
+    <div class="lv L3">
+      <p>Deployment lives under a three-way constraint: <strong>latency</strong> (autoregressive decoding is memory-bandwidth-bound; a 70B streams tokens roughly an order of magnitude slower than an 8B), <strong>cost</strong> (per-query FLOPs × fleet size), and <strong>placement</strong> (on-device for privacy and offline). Distillation is one tool in the compression toolbox, and it composes with the others:</p>
+      <div class="defs">
+        <div class="d"><strong>Quantization</strong> — same architecture, lower precision. Nearly free, little or no retraining, 2–4× memory. Do it last, almost always.</div>
+        <div class="d"><strong>Pruning</strong> — delete weights, heads or layers. Cheap, but the survivor keeps the old architecture’s shape.</div>
+        <div class="d"><strong>Distillation</strong> — costs real training compute and a transfer dataset, but it is the only one that lets you <em>change the architecture</em>: depth, width, even model family. The student only has to match the teacher’s behavior.</div>
+      </div>
+      <p>Hinton’s original target wasn’t even a single big model — it was an <em>ensemble</em>. A committee of specialists is accurate but absurd to serve; distill the committee’s averaged predictions into one model and serve that. The same logic runs through today’s pipelines: Gemma 2’s smaller models (2B and 9B) were trained with distillation from a larger teacher’s token distributions, and NVIDIA’s Minitron line prunes a big model, then distills to recover the lost quality.</p>
+    </div>
+    <div class="lv L4">
+      <p>When is distillation compute-optimal versus simply pretraining the small model? Distillation scaling laws (Busbridge et al., 2025, arXiv:2502.08606) map the frontier: when a teacher already exists — or its cost amortizes across many students — distillation dominates direct pretraining up to a student-compute budget, beyond which direct pretraining wins; and an over-strong teacher can actively hurt (the capacity gap, Part 7). The mechanism-level reading: soft targets buy per-example information efficiency, which matters exactly when student data or compute is the binding constraint.</p>
+      <p>One mechanism, three uses — and this page walks all three. Compression (this part) is the famous one. But matching soft targets also acts as a <em>regularizer</em> that can lift a student the same size as its teacher (Parts 3–4), and looped back onto a single model it becomes a self-improvement — and self-collapse — machine (Part 5). Keep the triptych in mind; conflating the three is the most common way to over-claim what distillation does.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chap" id="dark">
+  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 2 · Dark knowledge</p>
+  <h2 class="display">The wrong answers are the lesson.</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>Scroll back up to the fox game for a second. The <strong>answer key</strong> says one thing: FOX. The <strong>teacher</strong> says more: “mostly fox… a little bit dog… definitely not a teapot.”</p>
+      <p>That extra part is like getting your quiz back from a teacher who wrote <em>“B was a smart guess!”</em> next to the ones you missed — instead of just a big red ✗. You learn from the almost-right answers, not only the right one.</p>
+      <p>Scientists call this hidden lesson <strong>dark knowledge</strong> — like dark matter in space: you can’t see it in the final answer, but most of what the model knows is stored there. Distillation is simply letting a small model study the teacher’s “how close was each answer” scores instead of the bare answer key.</p>
+    </div>
+    <div class="lv L2">
+      <p>A classifier doesn’t really output an answer; it outputs a <span class="term" data-tip="A list of probabilities, one per class, summing to 1 — the model’s full opinion, not just its top pick.">probability for every class</span>. The 2015 paper’s own examples: a handwritten 2 that gets a one-in-a-million chance of being a 3 but only one-in-a-billion of being a 7; a photo of a BMW with a tiny chance of “garbage truck” and almost none of “carrot.” Those tiny numbers encode the <em>similarity structure of the world</em> — which mistakes are reasonable and which are absurd. A one-hot label erases all of it.</p>
+      <p>There’s a catch: a well-trained teacher is confident, so the interesting numbers hide close to zero (fox 98.3%, dog 1.1%, …). The fix is the slider you already played with: <strong>temperature</strong>. Divide the model’s raw scores by T before turning them into probabilities, and the faint ranking swells into something a student can actually learn from.</p>
+      <p>So the recipe is: warm up the teacher’s answers, and train the student to match them — usually alongside the true labels. The name <em>dark knowledge</em> comes from a talk Hinton gave in 2014; the method from the 2015 paper; the seed of the idea from Buciluă and colleagues in 2006.</p>
+    </div>
+    <div class="lv L3">
+      <div class="eqcard">
+        <h4>The distillation loss — Hinton, Vinyals &amp; Dean, 2015</h4>
+        <div class="eq">ℒ<sub>KD</sub> = (1−α)·CE(y, σ(z<sub>s</sub>)) + α·T²·KL( σ(z<sub>t</sub>/T) ‖ σ(z<sub>s</sub>/T) )</div>
+        <p class="eqwhat">z<sub>t</sub>, z<sub>s</sub>: teacher and student <span class="term" data-tip="The raw scores a network produces before softmax turns them into probabilities.">logits</span>; σ: softmax. First term: ordinary cross-entropy against the true label. Second: match the teacher’s temperature-softened distribution. α balances the two; T controls how much dark knowledge is exposed.</p>
+      </div>
+      <p>The KL term’s gradient (before its T² multiplier) with respect to a student logit is (1/T)·(p<sub>s,i</sub> − p<sub>t,i</sub>) — and for a fixed logit gap, that probability difference itself shrinks like 1/T. So the raw soft-target gradients scale as ~1/T², and the T² factor exists for exactly one stated reason: it keeps the <em>relative weight</em> of the hard and soft losses roughly constant while you tune T. It decouples the two knobs. Bookkeeping, not magic.</p>
+      <p>In practice T ≈ 2–5 is the usual band for classification, with most of the weight on the soft term. And logits aren’t the only thing worth matching: FitNets match intermediate activations (“hints”), attention transfer matches attention maps, and DistilBERT’s actual objective is a triple — soft targets + masked-LM + cosine alignment of hidden states.</p>
+    </div>
+    <div class="lv L4">
+      <div class="mathpeek">
+        <h4>The high-temperature limit — and why it isn’t a recipe</h4>
+        <p>∂ℒ<sub>soft</sub>/∂z<sub>s,i</sub> = (1/T)·(σ(z<sub>s</sub>/T)<sub>i</sub> − σ(z<sub>t</sub>/T)<sub>i</sub>). For T large relative to the logit scale, and with logits zero-meaned per example, σ(z/T)<sub>i</sub> ≈ (1 + z<sub>i</sub>/T)/K, and the gradient tends to (z<sub>s,i</sub> − z<sub>t,i</sub>)/(KT²) — proportional to the gradient of ½‖z<sub>s</sub> − z<sub>t</sub>‖². In the limit, distillation <em>is</em> logit matching (Hinton et al., §2.1) — a gradient-level equivalence, under those two assumptions.</p>
+        <p>But the paper’s practical advice cuts the other way: for students much smaller than the teacher, <em>intermediate</em> temperatures worked best. Very negative logits carry the teacher’s noise along with its knowledge, and a low-capacity student does better ignoring them. The limit is a lens, not a setting.</p>
+      </div>
+      <p>Convention notes worth pinning: the soft term as written is forward KL, which equals cross-entropy with soft targets up to the (constant) teacher entropy; repositories disagree about where the T² lives; and <em>reversing</em> the KL direction is not a convention choice but a different objective — mode-seeking rather than mode-covering. That distinction becomes load-bearing for language models in Part 7.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chap" id="evidence">
+  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 3 · The evidence</p>
+  <h2 class="display">Two students, one teacher, one difference.</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>Time for a real experiment — it runs right here, in your browser. The <strong>teacher</strong> (left) knows the true map: blue lives on the left, pink on the right, gold up top, with fuzzy zones where they mix. Two robot students want to copy the map, but they only get <strong>12 example dots</strong>.</p>
+      <p>Student A gets the answer key: just “this dot is blue.” Student B gets the teacher’s soft answer: “80% blue, 20% pink.” Who will draw the better map? <strong>Make your guess in the experiment below</strong> — then press <strong>New transfer set</strong> a few times and watch what happens to each student’s map.</p>
+    </div>
+    <div class="lv L2">
+      <p>Same dots, same student brain, same training — the <em>only</em> difference is what’s written on the labels. Could that alone matter? Place your bet below, then press <strong>New transfer set</strong> repeatedly and watch the boundaries re-train live. The faint ghost lines remember where a student’s boundary landed on earlier draws — watch which student needs them.</p>
+    </div>
+    <div class="lv L3">
+      <p>An honest, fully deterministic setup: three Gaussian classes (means (−1.3,0), (1.3,0), (0,3.5), identity covariance, equal priors). The “teacher” is an idealized big model — one that has learned the true class probabilities perfectly, so we can use the exact Bayes posterior and every run is reproducible. Both students are the <em>same</em> multinomial logistic regression on raw features [1,&nbsp;x,&nbsp;y], zero-initialized, full-batch gradient descent (lr 0.3, 3000 steps). Only the targets differ: one-hot argmax vs. the full distribution. Score: density-weighted expected accuracy against the true labels; the Bayes ceiling here is 90.4%.</p>
+    </div>
+    <div class="lv L4">
+      <p>The student can exactly represent the teacher’s boundary (linear logits → logistic student is realizable), and training is convex — so this demo isolates the pure <em>information-in-labels</em> channel, with optimization and capacity confounds deliberately removed. Even a student big enough to nail the answer can’t find it from hard labels alone.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><span class="ptitle">The two-students experiment</span><span class="tag">live · real training on every press</span></div>
+    <div class="panel-body">
+      <div class="kd2-grid">
+        <figure>
+          <canvas id="kd2-t" width="300" height="300" role="img" aria-label="Teacher: true class probabilities over the plane"></canvas>
+          <figcaption><strong>The teacher.</strong> <span class="lv L1">Knows the real chances of every color, everywhere. Fuzzy zones = truly unsure.</span><span class="lv L2 L3 L4">True probability of each color at every point; fuzzy zones are genuine uncertainty.</span></figcaption>
+        </figure>
+        <figure>
+          <canvas id="kd2-h" width="300" height="300" role="img" aria-label="Student A trained on hard labels"></canvas>
+          <figcaption><strong>Student A — answer key.</strong> <span class="lv L1">Only told the right color for each dot. Faint lines: where its earlier maps landed.</span><span class="lv L2 L3 L4">Hard labels only. Faint lines: where earlier rounds’ boundaries landed.</span></figcaption>
+        </figure>
+        <figure>
+          <canvas id="kd2-s" width="300" height="300" role="img" aria-label="Student B trained on soft labels"></canvas>
+          <figcaption><strong>Student B — <span class="lv L1">soft answers</span><span class="lv L2 L3 L4">soft labels</span>.</strong> <span class="lv L1">Gets the teacher’s full “how sure” answer for each dot. Faint lines: where its earlier maps landed.</span><span class="lv L2 L3 L4">Each dot carries the teacher’s full probabilities. Faint lines: where earlier rounds’ boundaries landed.</span></figcaption>
+        </figure>
+      </div>
+      <div class="bet" id="kd2-bet">
+        <span class="bet-q"><span class="lv L1">Two students, 12 dots. Who will copy the teacher’s map better?</span><span class="lv L2 L3 L4">Before anything trains — which student will reproduce the teacher’s map better from these 12 dots?</span></span>
+        <button type="button" class="btn ghostb" data-bet="A">Student A — answer key</button>
+        <button type="button" class="btn ghostb" data-bet="B">Student B — <span class="lv L1">soft answers</span><span class="lv L2 L3 L4">soft labels</span></button>
+      </div>
+      <div class="demo-controls">
+        <button type="button" class="btn" id="kd2-new">New transfer set</button>
+        <label>examples <input type="range" id="kd2-m" min="0" max="5" step="1" value="1" aria-label="Number of transfer examples" aria-valuetext="12 examples"> <output id="kd2-mv">12</output></label>
+        <label><span class="lv L1">warm up T</span><span class="lv L2 L3 L4">soften T</span> <input type="range" id="kd2-tt" min="0" max="4" step="0.1" value="1" aria-label="Temperature applied to the soft targets"> <output id="kd2-tv">1.0</output></label>
+      </div>
+      <div class="scorechips" aria-live="polite">
+        <span class="sc">answer-key student <b id="kd2-ah">—</b></span>
+        <span class="sc">soft-label student <b id="kd2-as">—</b></span>
+        <span class="sc">best possible <b>90.4%</b></span>
+        <span class="sc" id="kd2-gap">Δ —</span>
+      </div>
+      <p class="kdh-note" id="kd2-note" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <div class="lv L2">
+      <p>Why does it work? A soft label pins down the <em>value</em> of the teacher’s probability map at a point; a hard label only says which side of the line the point is on. To reproduce “80% blue / 20% pink” at even a dozen points, only one boundary works — position, angle <em>and</em> steepness. The dark knowledge is the margin information: “this one’s 60/40” versus “this one’s 99/1” tells the student exactly how far the boundary is and how fast the colors change — information the answer key throws away.</p>
+      <p>Now drag the <strong>examples</strong> slider up and watch the gap melt: with hundreds of dots, hard labels eventually pin the boundary too. That’s the honest lesson of the whole demo — distillation’s advantage is <em>information per example</em>. It matters most when the student can’t see much.</p>
+    </div>
+    <div class="lv L3">
+      <p>Details worth noticing. With M = 12, hard labels are usually linearly separable, so the hard student’s cross-entropy keeps improving as its weights grow — it drifts toward the max-margin separator <em>of those particular 12 points</em>, whose angle is an accident of the draw; the wobble you see is sampling variance of the margin. The hard student is also visibly overconfident (saturated colors; mean max-probability ≈ 0.95+ against the teacher’s 0.90) — the soft student inherits the teacher’s calibration almost perfectly. The <strong>T</strong> slider tempers the targets q&nbsp;∝&nbsp;p<sup>1/T</sup>: at T = 0 the soft student <em>is</em> the hard student; from about T = 1 upward, the converged student lands in essentially the same place every time — the benefit here is the softness itself, not a finely tuned temperature. (Below T ≈ 1 the targets are <em>sharpened</em>, and this training budget no longer fully converges — try T = 0.5 and watch the score dip.) The page makes no “optimal middle temperature” claim (the capacity and noise effects that create one in real distillation are deliberately absent). Automated check: <span class="mono">window.__kdBench(10)</span> trains 20 students and asserts soft wins 10/10 seeds.</p>
+    </div>
+    <div class="lv L4">
+      <p>Two honest counterpoints belong next to this demo. Yuan et al. (2020): much of KD’s benefit in the wild is generic regularization — even teacher-free or bad-teacher distillation helps — whereas here the gain is provably informational (the setting is convex and realizable, so there is nothing to regularize away). And Stanton et al. (2021): in deep, non-convex practice, students often <em>fail</em> to match their teacher even when they generalize better. Read this demo as the clean limiting case that isolates one of distillation’s several entangled mechanisms — not as a claim that the clean mechanism is the whole story at scale.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chap" id="surpass">
+  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 4 · The twist</p>
+  <h2 class="display">Sometimes the student beats the teacher.</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>Now for a trick nobody expected. Take a student <strong>the same size</strong> as the teacher. Teach it from the teacher’s soft answers. Sometimes the student comes out <em>better than the teacher</em>.</p>
+      <p>Think of recopying your class notes. The first recopy usually comes out cleaner and better organized — you keep the important parts and drop the scribbles. This year’s student really can become next year’s teacher.</p>
+      <p>But hold on to the word <em>sometimes</em>. And in the next part, you’ll see what happens if you recopy your notes too many times…</p>
+    </div>
+    <div class="lv L2">
+      <p><strong>Born-again networks</strong> (Furlanello et al., 2018): train a network, freeze it, then train an identical twin from scratch to match the frozen one’s soft predictions. (On images, matching the teacher <em>alone</em> worked best — the paper’s language-modeling variant also kept the true labels.) On benchmarks like CIFAR and on language modeling, the twin comes out consistently a little better than the original. You can repeat this for a third and fourth generation — gains shrink fast — and even ensemble the generations.</p>
+      <p>The headline-grabbing cousin is <strong>Noisy Student</strong> (Xie et al., 2020), which pushed ImageNet accuracy to 88.4%. Honest label: that one is <em>self-training</em>, not compression. The student was equal or larger, saw 300&nbsp;million extra unlabeled images pseudo-labeled by the teacher, and trained under heavy noise (dropout, random augmentation, stochastic depth). The surpassing came from extra data + noise + capacity; soft targets were one ingredient, not the whole cake.</p>
+      <p>Sounds too good to be true? Below is the cleanest version of the claim we can build — a twin that never sees the data at all, only its teacher’s curve. Can the copy beat the original?</p>
+    </div>
+    <div class="lv L3">
+      <p>Why would copying a teacher’s outputs ever beat training on the truth? Soft targets look like <span class="term" data-tip="Replacing the 1-versus-0 target with, say, 0.9-versus-uniform — a standard regularizer that fights overconfidence.">label smoothing</span>, a known regularizer — but they are <em>instance-specific</em>: this particular blurry 2 looks like a 3; that crisp one doesn’t. Uniform smoothing carries zero bits about the input; dark knowledge carries the teacher’s whole similarity map.</p>
+      <p>The interplay is subtle enough to have its own research thread. Müller et al. (2019) found that teachers trained <em>with</em> label smoothing are better calibrated yet distill <em>worse</em> — smoothing pulls each class into a tight ball and erases the inter-class structure living in the logits. Shen et al. (2021) then contested how general that finding is at scale. Treat it as a live debate, not settled law.</p>
+      <p>What <em>is</em> settled is a recipe: <strong>“a good teacher is patient and consistent”</strong> (Beyer et al., 2022). Show teacher and student the <em>same augmented view</em> of each image — function matching, not dataset relabeling — and train far longer than feels reasonable. Still the strongest plain-KD recipe in vision.</p>
+    </div>
+    <div class="lv L4">
+      <p>Two families of theory compete to explain same-size gains. The <em>regularization view</em>: Yuan et al. (2020) showed “teacher-free KD” — distilling from a hand-designed smooth distribution, or even from a much <em>worse</em> teacher — still helps, so a large share of KD’s benefit is generic output-space regularization rather than transferred knowledge. The <em>ensemble view</em>: Allen-Zhu &amp; Li (2023) model data as carrying multiple predictive “views”; independently trained networks latch onto different subsets, ensembles union them, and distillation — including self-distillation, read as implicit ensemble-then-distill — transfers the union into one student.</p>
+      <p>And the honest boundary: in pure compression settings, students essentially never surpass their teachers — R1-Distill-32B is remarkable <em>for its size</em>; it does not beat R1. Surpassing needs same-or-larger capacity, extra data, or both.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><span class="ptitle">The twin experiment</span><span class="tag"><span class="lv L1">live · a copy vs its teacher</span><span class="lv L2 L3 L4">live · same size, zero labels</span></span></div>
+    <div class="panel-body sd-wrap">
+      <canvas id="ba-main" width="640" height="260" role="img" aria-label="Teacher curve versus twin curve against the hidden truth"></canvas>
+      <div class="demo-controls">
+        <button type="button" class="btn" id="ba-teach">Teach the twin</button>
+        <button type="button" class="btn ghostb" id="ba-new">New dataset</button>
+      </div>
+      <div class="scorechips" aria-live="polite">
+        <span class="sc">teacher’s error <b id="ba-t">—</b></span>
+        <span class="sc">twin’s error <b id="ba-s">—</b></span>
+        <span class="sc" id="ba-w">twin wins: 0 of 0</span>
+      </div>
+      <p class="sd-note" id="ba-note" aria-live="polite"></p>
+      <p class="kdh-note lv L1 L2" style="min-height:0">Fair warning: this little lab is set up in the twin’s favor on purpose — the teacher memorized the scribbles, and copying filters them out. That’s the cleanest way to see the trick. With real AIs, the student beats the teacher only <em>sometimes</em>, as the stories above say.</p>
+      <p class="kdh-note lv L3 L4" style="min-height:0">Same machinery as Part 5’s photocopier — this is generation 1 vs generation 0 of the ε-budget kernel setup, so the effect is exact, repeatable, and honestly explained: the deliberately overfit teacher’s noise doesn’t survive being copied. Part 5 runs the chain to its end.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chap" id="self">
+  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 5 · The strange loop</p>
+  <h2 class="display">Teaching yourself, generation by generation.</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>Remember recopying your notes? Watch a machine do it. The gray dots below are messy notes — a hidden wave plus scribbles. The machine draws its best curve through them. Then the next generation learns <em>only from the previous machine’s curve</em>. It never sees the dots again.</p>
+      <p>Everyone knows what happens to a photocopy of a photocopy… or do they? Press <strong>Distill the next generation</strong> and watch what each new machine keeps — and what it throws away. The first few copies may surprise you. And how long can the chain go? The machine will ask for your guess.</p>
+    </div>
+    <div class="lv L2">
+      <p>Each generation is told: <em>match your teacher’s curve, as simply as you can, staying inside the same small error budget.</em> Because the budget never changes, every generation can afford to simplify a little more than the last. What does that do to the drawing — and how does the story end? Place your bet when the machine asks, keep an eye on the error chart under the plot, and run the chain. (Or press <strong>Run the whole chain</strong> and watch it unfold on its own.)</p>
+    </div>
+    <div class="lv L3">
+      <p>This is exact, live linear algebra — no gradient descent. The model is <span class="term" data-tip="Kernel ridge regression with an RBF kernel: predictions are weighted sums of Gaussian bumps centered on the training points.">kernel ridge regression</span> (RBF, ℓ = 0.10, n = 25). Each round solves: minimize ‖f‖² subject to mean-squared error ≤ ε = 0.02 against <em>the previous round’s predictions</em>. The Lagrange multiplier of that constraint is an effective ridge penalty c<sub>t</sub>, re-chosen each round so the constraint is tight — and because the targets shrink every round while ε stays fixed, c<sub>t</sub> <em>grows</em>, across orders of magnitude (watch the meter). In the Gram eigenbasis each round multiplies component i by d<sub>i</sub>/(d<sub>i</sub>+c<sub>t</sub>): a stacking low-pass filter. Small-eigenvalue (wiggly) directions die first; that’s the whole story in one sentence.</p>
+    </div>
+    <div class="lv L4">
+      <p>This demo implements Mobahi, Farajtabar &amp; Bartlett (NeurIPS 2020) exactly, in its finite-sample form. Train predictions after round t are ŷ<sub>t</sub> = V·diag(∏<sub>s≤t</sub> d<sub>i</sub>/(d<sub>i</sub>+c<sub>s</sub>))·Vᵀy — a product of spectral filters — and the paper’s two theorems are both on screen: <em>amplified regularization</em> (c<sub>t</sub> increases, so a few rounds reduce overfitting, more rounds underfit) and <em>finite-round collapse</em> (once mean(ŷ²) ≤ ε, the zero function is feasible with minimal norm, so the solution snaps to f ≡ 0 — an exact theorem, not a numerical artifact).</p>
+      <p>Two honesty notes. First, the improvement phase is guaranteed <em>by construction</em>: the ε-form trains generation 0 to near-interpolation (fit-to-data RMSE √ε ≈ 0.14 against noise σ = 0.5), which is the paper’s own setup — a deliberately overfit teacher. Second, the “natural” alternative — refitting with a <em>fixed</em> ridge λ each round — does not behave this way: its survival threshold sweeps only linearly in the generation count while the RBF spectrum decays geometrically, so it never collapses in finite rounds and its improvement isn’t robust across seeds (we verified this before choosing the ε-form). The formulation, not just the phenomenon, carries the theorem.</p>
+      <div class="defs">
+        <div class="d"><strong>“Self-distillation” has (at least) three meanings.</strong> (a) Born-again generations — a finished model teaches a fresh copy (this demo, Part 4). (b) An EMA teacher inside one training run — BYOL/DINO (Part 6). (c) Deep-to-shallow within one network — deeper layers teach earlier exits (“Be Your Own Teacher,” Zhang et al., 2019). They share a name and a flavor, not a mechanism.</div>
+      </div>
+      <p>And the theory is genuinely plural: Mobahi et al. explains (a) in the RKHS regime as regularization amplification; Allen-Zhu &amp; Li explain (a) in deep networks as implicit ensemble-then-distill. The demo shows the first mechanism because it is the one with an exact, watchable form.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><span class="ptitle">The photocopier</span><span class="tag"><span class="lv L1">live · watch the copies</span><span class="lv L2 L3 L4">live · exact linear algebra, no training loops</span></span></div>
+    <div class="panel-body sd-wrap">
+      <canvas id="sd-main" width="640" height="300" role="img" aria-label="Curve fit across self-distillation generations"></canvas>
+      <div class="sd-err"><canvas id="sd-err" width="640" height="110" role="img" aria-label="Test error per generation"></canvas></div>
+      <div class="demo-controls">
+        <button type="button" class="btn" id="sd-next">Distill the next generation</button>
+        <button type="button" class="btn ghostb" id="sd-auto">Run the whole chain ▶</button>
+        <button type="button" class="btn ghostb" id="sd-new">New dataset</button>
+      </div>
+      <div class="bet" id="sd-bet" hidden>
+        <span class="bet-q"><span class="lv L1">Your guess: how many photocopies until the page goes blank?</span><span class="lv L2 L3 L4">Your bet: how many generations until the chain collapses?</span></span>
+        <button type="button" class="btn ghostb" data-sdbet="3">3</button>
+        <button type="button" class="btn ghostb" data-sdbet="5">5</button>
+        <button type="button" class="btn ghostb" data-sdbet="7">7</button>
+        <button type="button" class="btn ghostb" data-sdbet="9">9</button>
+        <button type="button" class="btn ghostb" data-sdbet="12">12+</button>
+      </div>
+      <div class="scorechips" aria-live="polite">
+        <span class="sc">generation <b id="sd-gen">—</b></span>
+        <span class="sc">distance to hidden truth <b id="sd-rmse">—</b></span>
+        <span class="sc lv L2 L3 L4">fit to its own teacher <b id="sd-fit">—</b></span>
+      </div>
+      <div class="sd-meter"><span class="lv L1 L2">the simplifying pressure — watch it climb</span><span class="lv L3 L4">effective regularization c<sub>t</sub> (log scale — this is the “amplifier”)</span>
+        <div class="track"><div class="fillc" id="sd-cfill" style="width:0%"></div></div>
+      </div>
+      <p class="sd-note" id="sd-note" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <div class="lv L2">
+      <p><strong>What you saw:</strong> simplification ate the wiggles first — that was the improving phase, and it is the born-again story from Part 4 in its cleanest form (the twin experiment was literally generation 1 of this chain). Then it started eating the wave itself — over-smoothing. And finally one generation’s curve was so quiet that <em>a flat zero</em> fit it within budget. Zero is the simplest curve of all. Snap: blank page. The error chart traced a U — improvement, then decay — while every generation’s fit <em>to its own teacher</em> held steady at 0.14. Every student thought it did great.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chap" id="dino">
+  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 6 · Déjà vu</p>
+  <h2 class="display">You've seen this before.</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>Here’s a secret about Part 1 of this series — the page about machines that teach themselves. The guessing games there had a teacher all along. It was <strong>the same robot</strong>: a calmer, steadier copy of itself.</p>
+      <p>Imagine the you from last week grading today’s homework. Last-week-you isn’t smarter — but they’re <em>steadier</em>, an average of many days of you. It turns out that matching a steady copy of yourself is a great way to learn, with nobody else in the room.</p>
+    </div>
+    <div class="lv L2">
+      <p>In BYOL and DINO — Part 1’s “escape artists” — the student network updates by gradient descent, while the “teacher” is an <span class="term" data-tip="Exponential moving average: teacher weights = 0.996 × old teacher + 0.004 × current student, updated every step.">exponential moving average</span> of the student’s own past weights. The student sees one augmented view of an image and must match what the teacher says about <em>another</em> view. No labels anywhere in the loop.</p>
+      <p>Read that with this page’s eyes and it names itself: a student matching a teacher’s outputs is distillation, and a teacher that <em>is</em> your own smoothed history makes it self-distillation. Meta’s DINO wears the fact as its name: <strong>self-DI</strong>stillation with <strong>NO</strong> labels. If you read Part 1, you had already met this chapter — it just wasn’t wearing the costume. <a href="https://claude.ai/code/artifact/3226dc76-020e-41c4-b31f-7d0d1f3d74ae#d2-en">Revisit Part 1</a> with the dial set to Student and see for yourself.</p>
+    </div>
+    <div class="lv L3">
+      <p>Mechanics worth keeping straight. The EMA momentum is high (≈0.99–0.999), so the teacher trails the student by a long, smooth window. In DINO, teacher outputs pass through a softmax at temperature ≈0.04–0.07 while the student uses ≈0.1 — the teacher is <em>sharpened</em> relative to the student — plus a running-mean <em>centering</em> of teacher logits; sharpening alone would collapse the outputs onto one dimension, centering alone toward uniform, and the pair holds the balance. BYOL, by contrast, has no softmax and no temperature at all: it is a cosine regression between the student’s predictor and the teacher’s projection, with a stop-gradient. So this page’s temperature intuition maps onto DINO — not BYOL.</p>
+    </div>
+    <div class="lv L4">
+      <p>Self-teaching loops fail in characteristic ways, and it pays to hold two collapse stories side by side. <em>DINO-style collapse</em>: teacher outputs drift toward a constant or uniform distribution and the student happily matches it — a degenerate fixed point of the matching game, killed by centering + sharpening keeping the output distribution both spread and committed. <em>Mobahi-style collapse</em> (the Part 5 demo you just played): each self-distillation round provably amplifies regularization until the fit snaps to the zero function. Different mechanisms; same moral — <strong>a self-referential teacher must be paired with a force that keeps the signal alive</strong>.</p>
+      <p>There is also a satisfying ensemble reading of the EMA teacher: a moving average over the student’s trajectory behaves like a cheap ensemble of past selves — which quietly connects the momentum-teacher trick to the Allen-Zhu–Li account of why distillation transfers anything at all.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chap" id="llm">
+  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 7 · Today</p>
+  <h2 class="display">Distillation in the age of giants.</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>Today’s biggest AIs use distillation in two fun ways.</p>
+      <p><strong>The intern and the boss.</strong> A small, quick model drafts the next few words. The giant model checks the whole draft in one glance and keeps the parts it agrees with. The final answer is <em>exactly</em> what the boss would have written — just two or three times faster. (The grown-up name is “speculative decoding.”)</p>
+      <p><strong>Homework from a giant.</strong> A giant “reasoning” model writes out its thinking, step by step, hundreds of thousands of times. A small model studies those worked examples like a student with a solutions book — and learns to think out loud too. That’s how the small reasoning models that run on a laptop were made.</p>
+    </div>
+    <div class="lv L2">
+      <p>There are two ways to learn from a giant, depending on what you can see. <strong>Black-box</strong>: you only see its final text. Collect its answers and fine-tune on them — that’s how DeepSeek turned R1 into a family of small “distill” models: roughly 800,000 R1-written worked examples, then plain supervised copying. No reinforcement learning at all — just a very good solutions book. <strong>White-box</strong>: you can see the teacher’s full probability list for every next token — far richer signal per example; Google trained Gemma&nbsp;2’s 2B and 9B models this way from a larger teacher.</p>
+      <p><strong>Speculative decoding</strong> deserves its own box, because it is distillation’s mirror image: instead of making a lossy copy, you keep both models. The small one drafts, the big one verifies in parallel, and a clever accept/reject rule guarantees the output distribution is <em>identical</em> to the big model’s. Lossless, typically 2–3× faster — and the best draft models are, of course, often distilled from the very boss they draft for.</p>
+    </div>
+    <div class="lv L3">
+      <p>Token-level KD matches per-token distributions; <strong>sequence-level KD</strong> (Kim &amp; Rush, 2016) fine-tunes on the teacher’s generated outputs — R1-style trace training is sequence-level KD at scale. Both inherit a classic flaw: the student trains on the <em>teacher’s</em> prefixes, but at inference it must continue its <em>own</em> — the distribution mismatch known as exposure bias.</p>
+      <p>The fix is to go <strong>on-policy</strong>: let the student generate, and have the teacher grade the student’s own tokens. GKD (Agarwal et al., 2024) does exactly this. MiniLLM (Gu et al., 2024) additionally swaps the objective to <strong>reverse KL</strong> — mode-seeking: a small student concentrates on what it can actually do well, instead of smearing probability across every mode of the teacher the way forward KL’s mode-covering does (which, under a capacity limit, produces mush).</p>
+      <svg viewBox="0 0 560 170" role="img" aria-label="Forward KL covers both humps of the teacher distribution; reverse KL commits to one" style="max-width:560px;width:100%;height:auto;display:block;margin:14px 0">
+        <path d="M20 150 C 80 150 90 40 140 40 C 190 40 200 150 260 150 C 320 150 330 60 380 60 C 430 60 440 150 540 150" fill="none" stroke="var(--hatch)" stroke-width="2.5"/>
+        <path d="M20 150 C 120 148 100 90 280 90 C 460 90 440 148 540 150" fill="none" stroke="var(--ink2)" stroke-width="2" stroke-dasharray="6 5"/>
+        <path d="M20 150 C 90 150 95 30 140 30 C 185 30 195 150 250 150 L 540 150" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+        <text x="128" y="22" font-size="11" fill="var(--accent)" font-family="ui-monospace,Menlo,monospace">reverse KL: pick a hump</text>
+        <text x="235" y="80" font-size="11" fill="var(--ink2)" font-family="ui-monospace,Menlo,monospace">forward KL: cover all</text>
+        <text x="440" y="45" font-size="11" fill="var(--hatch)" font-family="ui-monospace,Menlo,monospace">teacher</text>
+      </svg>
+      <p>Failure modes to engineer around: the <strong>capacity gap</strong> — a bigger, more accurate teacher often yields a <em>worse</em> student (Cho &amp; Hariharan, 2019; early-stopped teachers distill better). Teacher-assistant chains (TAKD, Mirzadeh et al., 2020) bridge the gap in some setups, though Cho &amp; Hariharan found sequential chains ineffective — the evidence is mixed. And the <strong>fidelity gap</strong> (Stanton et al., 2021): students routinely fail to match teacher predictions even when their generalization improves — optimization, not capacity, is often the real bottleneck. One more composition: DistillSpec distills the draft model toward its boss to raise speculative acceptance rates — the two ideas stack.</p>
+      <div class="defs">
+        <div class="d"><strong>Knowledge distillation</strong> — compress a <em>model</em> into another model. This page.</div>
+        <div class="d"><strong>Dataset distillation</strong> — compress a <em>dataset</em> into a tiny synthetic one (Wang et al., 2018). Different problem, confusingly similar name.</div>
+        <div class="d"><strong>Data-free distillation</strong> — no transfer data at all: synthesize inputs from the teacher itself (e.g. DeepInversion), then distill on those.</div>
+      </div>
+    </div>
+    <div class="lv L4">
+      <p>The scaling-law lens (Busbridge et al., 2025) turns folklore into curves: at fixed student compute there is a weak-teacher regime where distillation beats direct pretraining and a strong-teacher regime where the capacity gap bites — and whether the teacher’s own training cost counts (or is amortized across a model family) flips the verdict. This is why production families (Gemma, Llama-3.2’s 1B/3B via pruning+distillation, Minitron) treat one big run as a tree of distilled offspring.</p>
+      <p>Position on-policy distillation on the post-training map and its appeal is obvious: SFT is off-policy with dense supervision; RL (RLHF/RLVR) is on-policy with sparse rewards; on-policy distillation is on-policy <em>with dense per-token supervision</em> — often the most compute-efficient way to move capability into a small model, and increasingly the default recipe. One legal footnote belongs in any honest survey: distilling from a commercial API’s outputs may violate its terms of service — a live policy debate, separate from the science.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chap" id="coda">
+  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Coda</p>
+  <h2 class="display">The series so far.</h2>
+  <div class="prose">
+    <div class="take lv L1">
+      <h3>For explorers</h3>
+      <p style="margin:0"><strong>A good teacher doesn’t just say right or wrong — they tell you which wrong answers were close.</strong> Computers can copy that kind of teaching from each other. That’s how giant AIs shrink down to fit in a phone… and how a machine can even become its own teacher. For a while.</p>
+    </div>
+    <div class="take lv L2">
+      <h3>For students</h3>
+      <p style="margin:0"><strong>Soft answers carry more information than right answers.</strong> A probability over every option tells a student how the teacher <em>sees</em> the world, not just what it concluded — which is why a student can inherit a teacher’s whole map from surprisingly few examples, and why a model looped onto itself can climb for a few generations before it collapses.</p>
+    </div>
+    <div class="take lv L3">
+      <h3>For engineers</h3>
+      <p style="margin:0"><strong>Distillation is how capability moves across architectures.</strong> Match warmed-up probabilities (or generated outputs), not weights; keep a hard-label term; be patient and consistent; watch the capacity gap; go on-policy for LLM students; quantize afterwards.</p>
+    </div>
+    <div class="take lv L4">
+      <h3>For researchers</h3>
+      <p style="margin:0"><strong>One mechanism, three uses; two live theories.</strong> Compression, regularization, and self-improvement — variously explained by regularization amplification (exact in an RKHS) and implicit-ensemble transfer. What a student actually needs from its teacher, beyond the teacher’s data, remains genuinely open.</p>
+    </div>
+    <p style="margin-top:26px">This is Part 2 of a series. Part 1 — <a href="https://claude.ai/code/artifact/3226dc76-020e-41c4-b31f-7d0d1f3d74ae"><em>The Machine That Teaches Itself</em></a> — is about self-supervised learning: how the giants learn from nobody at all. It has the same dials. Part 3 is still in the still.</p>
+    <p class="muted" style="font-size:13.5px">A single self-contained HTML file; every demo runs live in your browser. The self-distillation demo implements Mobahi–Farajtabar–Bartlett exactly; the two-students demo trains real (convex) models on every press.</p>
+  </div>
+</section>
+
+</main>
+
+</div>
+
+<div id="tip" role="tooltip"></div>
+
+<script>
+(function(){
+'use strict';
+var app = document.getElementById('app');
+var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- language (EN-only launch; structure ready for zh/es passes) ---------- */
+var LSTR = {
+  en: {}
+};
+function curLang(){ return 'en'; }
+function LS(){ return LSTR[curLang()]; }
+function kidMode(){ return app.dataset.level === '1'; }
+
+/* ---------- theme plumbing ---------- */
+var themeListeners = [];
+function onThemeChange(f){ themeListeners.push(f); }
+function fireTheme(){ themeListeners.forEach(function(f){ f(); }); }
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fireTheme);
+new MutationObserver(fireTheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+/* ---------- theme switch (auto / light / dark) ---------- */
+var themeBtn = document.getElementById('theme-btn');
+var THEME_ORDER = ['auto','light','dark'];
+var THEME_ICONS = {
+  auto: '<svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>',
+  light: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>',
+  dark: '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>'
+};
+var THEME_LABELS = {
+  en: { auto:'Theme: follow system', light:'Theme: light', dark:'Theme: dark' }
+};
+var curTheme = 'auto';
+try { var savedTheme = localStorage.getItem('kd-theme'); if(THEME_ORDER.indexOf(savedTheme) > 0) curTheme = savedTheme; } catch(e){}
+var hostStamped = document.documentElement.hasAttribute('data-theme');
+function applyTheme(initial){
+  if(curTheme === 'auto'){
+    if(!(initial && hostStamped)) document.documentElement.removeAttribute('data-theme');
+  }
+  else { document.documentElement.setAttribute('data-theme', curTheme); }
+  themeBtn.innerHTML = THEME_ICONS[curTheme];
+  var lbl = (THEME_LABELS[curLang()] || THEME_LABELS.en)[curTheme];
+  themeBtn.setAttribute('aria-label', lbl);
+  themeBtn.title = lbl;
+}
+window.__applyTheme = applyTheme;
+themeBtn.addEventListener('click', function(){
+  curTheme = THEME_ORDER[(THEME_ORDER.indexOf(curTheme) + 1) % 3];
+  try { localStorage.setItem('kd-theme', curTheme); } catch(e){}
+  applyTheme(false);
+});
+applyTheme(true);
+
+/* ---------- depth dial + deep-link hash ---------- */
+function updateHash(){
+  try { history.replaceState(null, '', '#d' + app.dataset.level); } catch(e){}
+}
+function setLevel(lv){
+  app.dataset.level = lv;
+  document.querySelectorAll('#dial-top button, #dial-hero button').forEach(function(b){
+    b.setAttribute('aria-pressed', b.dataset.lv === lv ? 'true' : 'false');
+  });
+  if(window.__sdRefresh) window.__sdRefresh();
+  if(window.__kdHeroLang) window.__kdHeroLang();
+  if(window.__baRefresh) window.__baRefresh();
+  if(window.__kd2Refresh) window.__kd2Refresh();
+  updateHash();
+}
+document.querySelectorAll('#dial-top button, #dial-hero button').forEach(function(b){
+  b.addEventListener('click', function(){ setLevel(b.dataset.lv); });
+});
+
+/* ---------- topbar shadow ---------- */
+var topbar = document.getElementById('topbar');
+window.addEventListener('scroll', function(){
+  topbar.classList.toggle('scrolled', window.scrollY > 8);
+}, {passive:true});
+
+/* ---------- tooltip ---------- */
+var tip = document.getElementById('tip');
+var tipTarget = null, tipShownAt = 0, tipHideTimer = null;
+function showTip(t){
+  if(tipHideTimer){ clearTimeout(tipHideTimer); tipHideTimer = null; }
+  if(tipTarget && tipTarget !== t) tipTarget.removeAttribute('aria-describedby');
+  tipTarget = t;
+  tipShownAt = Date.now();
+  t.setAttribute('aria-describedby', 'tip');
+  tip.textContent = t.dataset.tip;
+  tip.classList.add('show');
+  tip.style.left = '0px'; tip.style.top = '0px';
+  var r = t.getBoundingClientRect();
+  var tw = tip.offsetWidth, th = tip.offsetHeight;
+  var x = Math.min(Math.max(8, r.left + r.width/2 - tw/2), window.innerWidth - tw - 8);
+  var y = r.top - th - 8;
+  if(y < 8) y = r.bottom + 8;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+function hideTip(){
+  if(tipHideTimer){ clearTimeout(tipHideTimer); tipHideTimer = null; }
+  if(tipTarget) tipTarget.removeAttribute('aria-describedby');
+  tipTarget = null; tip.classList.remove('show');
+}
+function hideTipSoon(){
+  if(tipHideTimer) clearTimeout(tipHideTimer);
+  tipHideTimer = setTimeout(hideTip, 250);
+}
+document.querySelectorAll('.term').forEach(function(t){
+  t.setAttribute('tabindex','0');
+  t.addEventListener('mouseenter', function(){ showTip(t); });
+  t.addEventListener('mouseleave', hideTipSoon);
+  t.addEventListener('focus', function(){ showTip(t); });
+  t.addEventListener('blur', hideTip);
+  t.addEventListener('click', function(e){
+    e.preventDefault();
+    if(tipTarget === t && tip.classList.contains('show')){
+      if(Date.now() - tipShownAt < 500) return;
+      hideTip();
+    } else showTip(t);
+  });
+});
+tip.addEventListener('mouseenter', function(){ if(tipHideTimer){ clearTimeout(tipHideTimer); tipHideTimer = null; } });
+tip.addEventListener('mouseleave', hideTipSoon);
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') hideTip(); });
+window.addEventListener('scroll', function(){ if(tipTarget) hideTip(); }, {passive:true, capture:true});
+
+/* ---------- D1: hero demo — the answer key vs the teacher ---------- */
+(function(){
+  var CLASSES = [
+    { name:'fox',    emoji:'🦊' },
+    { name:'dog',    emoji:'🐕' },
+    { name:'wolf',   emoji:'🐺' },
+    { name:'cat',    emoji:'🐈' },
+    { name:'rabbit', emoji:'🐇' },
+    { name:'teapot', emoji:'🫖' }
+  ];
+  var LOGITS = [9.0, 4.5, 3.8, 1.5, 0.3, -5.0];
+  var hardEl = document.getElementById('kdh-hard');
+  var softEl = document.getElementById('kdh-soft');
+  var tSlider = document.getElementById('kdh-t');
+  var tVal = document.getElementById('kdh-tval');
+  var noteEl = document.getElementById('kdh-note');
+
+  function softmax(z, T){
+    var m = -Infinity, i;
+    for(i = 0; i < z.length; i++) m = Math.max(m, z[i] / T);
+    var s = 0, e = [];
+    for(i = 0; i < z.length; i++){ e[i] = Math.exp(z[i] / T - m); s += e[i]; }
+    return e.map(function(v){ return v / s; });
+  }
+  function rows(el, probs){
+    var html = '';
+    var top = probs.indexOf(Math.max.apply(null, probs));
+    for(var i = 0; i < probs.length; i++){
+      var p = probs[i], w = Math.max(0.6, p * 100);
+      html += '<div class="kdh-row' + (i === top ? ' top' : '') + '">'
+            + '<span class="lbl">' + CLASSES[i].emoji + ' ' + CLASSES[i].name + '</span>'
+            + '<span class="track"><span class="fill" style="width:' + w.toFixed(2) + '%"></span></span>'
+            + '<span class="pct">' + (p === 0 ? '0' : p * 100 < 0.05 ? '&lt;0.1' : (p * 100).toFixed(1)) + '%</span>'
+            + '</div>';
+    }
+    el.innerHTML = html;
+  }
+  function note(T){
+    if(kidMode()){
+      if(T < 0.8) return '<strong>Brrr — frozen.</strong> Squeezed down to a single answer. The teacher looks just like the answer key now.';
+      if(T <= 1.6) return '<strong>This is how the teacher normally talks.</strong> The secret rankings are in there — but tiny. Warm it up!';
+      if(T <= 3.5) return '<strong>Now you can read the teacher’s mind:</strong> “more dog than cat, and definitely not a teapot.” That secret ranking is the <strong>dark knowledge</strong> — it never shows up in the answer key.';
+      return '<strong>Too hot!</strong> Everything melts toward equal and the secret washes out. The good stuff lives in the middle.';
+    }
+    if(T < 0.8) return '<strong>Cold.</strong> Sharpened almost to a point — the teacher looks nearly identical to the answer key. The extra knowledge is squeezed out.';
+    if(T <= 1.6) return '<strong>Around T = 1 — the standard view.</strong> The ranking of the wrong answers is there — but faint. Distillation turns up the heat to read it.';
+    if(T <= 3.5) return '<strong>Warming up.</strong> Now you can read the teacher’s mind: “more dog than cat, and definitely not a teapot.” That ranking is the <strong>dark knowledge</strong> — and it never appears in the answer key.';
+    return '<strong>Very hot.</strong> Everything flattens toward equal — the signal starts to wash out again. Useful temperatures live in the middle.';
+  }
+  var lastHeroNote = '';
+  function render(){
+    var T = parseFloat(tSlider.value);
+    tVal.textContent = T.toFixed(1);
+    rows(softEl, softmax(LOGITS, T));
+    var h = note(T);
+    if(h !== lastHeroNote){ noteEl.innerHTML = h; lastHeroNote = h; }
+  }
+  var oneHot = CLASSES.map(function(_, i){ return i === 0 ? 1 : 0; });
+  rows(hardEl, oneHot);
+  tSlider.addEventListener('input', render);
+  render();
+  window.__kdHeroLang = function(){ lastHeroNote = ''; render(); };
+  window.__kdHeroBench = function(T){
+    return softmax(LOGITS, T || 1).map(function(p){ return p.toFixed(4); }).join(',');
+  };
+})();
+
+/* ---------- shared demo helpers ---------- */
+function mulberry32(a){
+  return function(){
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    var t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function isDark(){
+  var t = document.documentElement.getAttribute('data-theme');
+  if(t === 'dark') return true;
+  if(t === 'light') return false;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+/* shared kernel-regression core (the twin experiment and the photocopier) */
+function jacobiEig(A, n){
+  var Vm = [], i, j;
+  for(i = 0; i < n; i++){ Vm[i] = []; for(j = 0; j < n; j++) Vm[i][j] = (i === j) ? 1 : 0; }
+  for(var sweep = 0; sweep < 100; sweep++){
+    var off = 0;
+    for(i = 0; i < n-1; i++) for(j = i+1; j < n; j++) off += A[i][j]*A[i][j];
+    if(off < 1e-22) break;
+    for(var p = 0; p < n-1; p++){
+      for(var q = p+1; q < n; q++){
+        var apq = A[p][q];
+        if(Math.abs(apq) < 1e-15) continue;
+        var tau = (A[q][q] - A[p][p]) / (2*apq);
+        var t = (tau >= 0 ? 1 : -1) / (Math.abs(tau) + Math.sqrt(1 + tau*tau));
+        var c = 1/Math.sqrt(1 + t*t), s = t*c;
+        A[p][p] -= t*apq;
+        A[q][q] += t*apq;
+        A[p][q] = 0; A[q][p] = 0;
+        for(var k = 0; k < n; k++){
+          if(k !== p && k !== q){
+            var akp = A[k][p], akq = A[k][q];
+            A[k][p] = c*akp - s*akq; A[p][k] = A[k][p];
+            A[k][q] = s*akp + c*akq; A[q][k] = A[k][q];
+          }
+          var vkp = Vm[k][p], vkq = Vm[k][q];
+          Vm[k][p] = c*vkp - s*vkq;
+          Vm[k][q] = s*vkp + c*vkq;
+        }
+      }
+    }
+  }
+  var dd = [];
+  for(i = 0; i < n; i++) dd[i] = Math.max(A[i][i], 0);
+  return { d: dd, V: Vm };
+}
+function matVt(V, v, n){
+  var out = [];
+  for(var i = 0; i < n; i++){
+    var s = 0;
+    for(var k = 0; k < n; k++) s += V[k][i]*v[k];
+    out[i] = s;
+  }
+  return out;
+}
+function matV(V, v, n){
+  var out = [];
+  for(var k = 0; k < n; k++){
+    var s = 0;
+    for(var i = 0; i < n; i++) s += V[k][i]*v[i];
+    out[k] = s;
+  }
+  return out;
+}
+function epsRound(d, V, z, n, eps){
+  var mz = 0, i;
+  for(i = 0; i < n; i++) mz += z[i]*z[i];
+  if(mz/n <= eps) return null;
+  var zh = matVt(V, z, n);
+  var lo = 1e-9, hi = 1e9, c, it;
+  for(it = 0; it < 80; it++){
+    c = Math.sqrt(lo*hi);
+    var g = 0;
+    for(i = 0; i < n; i++){ var f = c/(d[i]+c); g += f*f*zh[i]*zh[i]; }
+    if(g/n > eps) hi = c; else lo = c;
+  }
+  c = Math.sqrt(lo*hi);
+  var av = [], zn = [];
+  for(i = 0; i < n; i++){ av[i] = zh[i]/(d[i]+c); zn[i] = d[i]/(d[i]+c)*zh[i]; }
+  return { c: c, alpha: matV(V, av, n), znext: matV(V, zn, n) };
+}
+function kernelData(seedVal, n, ell, sig, gn){
+  var rng = mulberry32(seedVal), i, j;
+  var xs = [], ys = [];
+  for(i = 0; i < n; i++){
+    var x = i/(n-1) + (rng() - 0.5)/(n-1);
+    x = Math.min(1, Math.max(0, x));
+    var u1 = 1 - rng(), u2 = rng();
+    var gz = Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+    xs.push(x); ys.push(Math.sin(2*Math.PI*x) + sig*gz);
+  }
+  var K = [];
+  for(i = 0; i < n; i++){
+    K[i] = [];
+    for(j = 0; j < n; j++) K[i][j] = Math.exp(-(xs[i]-xs[j])*(xs[i]-xs[j])/(2*ell*ell));
+  }
+  var e = jacobiEig(K, n);
+  var Kg = [];
+  for(var a = 0; a < gn; a++){
+    Kg[a] = [];
+    var gx = a/(gn-1);
+    for(j = 0; j < n; j++) Kg[a][j] = Math.exp(-(gx-xs[j])*(gx-xs[j])/(2*ell*ell));
+  }
+  return { xs: xs, ys: ys, d: e.d, V: e.V, Kg: Kg };
+}
+function kgCurve(Kg, alpha, gn, n){
+  var out = [];
+  for(var a = 0; a < gn; a++){
+    var s = 0;
+    for(var i = 0; i < n; i++) s += Kg[a][i]*alpha[i];
+    out[a] = s;
+  }
+  return out;
+}
+function rmseToTruth(curve, gn){
+  var s = 0;
+  for(var a = 0; a < gn; a++){ var tv = Math.sin(2*Math.PI*a/(gn-1)); s += (curve[a]-tv)*(curve[a]-tv); }
+  return Math.sqrt(s/gn);
+}
+
+/* ---------- D2: two students, one teacher ---------- */
+(function(){
+  var cvT = document.getElementById('kd2-t');
+  if(!cvT) return;
+  var cvH = document.getElementById('kd2-h'), cvS = document.getElementById('kd2-s');
+  var newBtn = document.getElementById('kd2-new');
+  var mSlider = document.getElementById('kd2-m'), mVal = document.getElementById('kd2-mv');
+  var tSlider = document.getElementById('kd2-tt'), tVal = document.getElementById('kd2-tv');
+  var ahEl = document.getElementById('kd2-ah'), asEl = document.getElementById('kd2-as');
+  var gapEl = document.getElementById('kd2-gap'), noteEl = document.getElementById('kd2-note');
+
+  var MU = [[-1.3, 0], [1.3, 0], [0, 3.5]];
+  var M_OPTS = [8, 12, 20, 40, 80, 200];
+  var LR = 0.3, STEPS = 3000;
+  var X0 = -4.75, X1 = 4.75, Y0 = -2.75, Y1 = 6.75;
+  var seed = 1, M = 12, TT = 1.0;
+  var pts = [], hardW = null, softW = null, ghosts = [], ghostsS = [];
+
+  function posterior(x, y){
+    var l = [], m = -1e18, i;
+    for(i = 0; i < 3; i++){
+      l[i] = MU[i][0]*x + MU[i][1]*y - (MU[i][0]*MU[i][0] + MU[i][1]*MU[i][1])/2;
+      if(l[i] > m) m = l[i];
+    }
+    var s = 0, e = [];
+    for(i = 0; i < 3; i++){ e[i] = Math.exp(l[i] - m); s += e[i]; }
+    return [e[0]/s, e[1]/s, e[2]/s];
+  }
+
+  /* evaluation grid: density-weighted expected accuracy on [-6,7]x[-5,8], 241x241 */
+  var GN = 241, GP = new Float64Array(GN*GN*3), GW = new Float64Array(GN*GN);
+  var GX = new Float64Array(GN*GN), GY = new Float64Array(GN*GN), GWsum = 0;
+  (function(){
+    var k = 0;
+    for(var i = 0; i < GN; i++){
+      var gy = -5 + 13*i/(GN-1);
+      for(var j = 0; j < GN; j++){
+        var gx = -6 + 13*j/(GN-1);
+        var p = posterior(gx, gy);
+        GP[k*3] = p[0]; GP[k*3+1] = p[1]; GP[k*3+2] = p[2];
+        var w = 0;
+        for(var c = 0; c < 3; c++){
+          var dx = gx - MU[c][0], dy = gy - MU[c][1];
+          w += Math.exp(-(dx*dx + dy*dy)/2);
+        }
+        GW[k] = w; GX[k] = gx; GY[k] = gy; GWsum += w;
+        k++;
+      }
+    }
+  })();
+
+  function sample(sd, m){
+    var rng = mulberry32(sd), out = [];
+    for(var i = 0; i < m; i++){
+      var c = Math.floor(rng()*3);
+      var u1 = 1 - rng(), u2 = rng();
+      var r = Math.sqrt(-2*Math.log(u1));
+      var x = MU[c][0] + r*Math.cos(2*Math.PI*u2);
+      var y = MU[c][1] + r*Math.sin(2*Math.PI*u2);
+      out.push({ x: x, y: y, q: posterior(x, y) });
+    }
+    return out;
+  }
+  function temper(q, T){
+    if(T < 0.05){
+      var a = q.indexOf(Math.max(q[0], q[1], q[2]));
+      return [a === 0 ? 1 : 0, a === 1 ? 1 : 0, a === 2 ? 1 : 0];
+    }
+    var e = [Math.pow(q[0], 1/T), Math.pow(q[1], 1/T), Math.pow(q[2], 1/T)];
+    var s = e[0] + e[1] + e[2];
+    return [e[0]/s, e[1]/s, e[2]/s];
+  }
+  function makeTrainer(data, targets){
+    var W = [[0,0,0],[0,0,0],[0,0,0]];
+    var m = data.length;
+    function stepN(nSteps){
+      for(var st = 0; st < nSteps; st++){
+        var g = [[0,0,0],[0,0,0],[0,0,0]], i, c;
+        for(i = 0; i < m; i++){
+          var x = data[i].x, y = data[i].y;
+          var u = [], mx = -1e18;
+          for(c = 0; c < 3; c++){ u[c] = W[c][0] + W[c][1]*x + W[c][2]*y; if(u[c] > mx) mx = u[c]; }
+          var s = 0, e = [];
+          for(c = 0; c < 3; c++){ e[c] = Math.exp(u[c] - mx); s += e[c]; }
+          for(c = 0; c < 3; c++){
+            var dd = (e[c]/s - targets[i][c]) / m;
+            g[c][0] += dd; g[c][1] += dd*x; g[c][2] += dd*y;
+          }
+        }
+        for(c = 0; c < 3; c++){ W[c][0] -= LR*g[c][0]; W[c][1] -= LR*g[c][1]; W[c][2] -= LR*g[c][2]; }
+      }
+    }
+    return { W: W, stepN: stepN };
+  }
+  function train(data, targets){
+    var t = makeTrainer(data, targets);
+    t.stepN(STEPS);
+    return t.W;
+  }
+  function accuracy(W){
+    var acc = 0;
+    for(var k = 0; k < GN*GN; k++){
+      var x = GX[k], y = GY[k];
+      var best = 0, bu = W[0][0] + W[0][1]*x + W[0][2]*y;
+      var u1 = W[1][0] + W[1][1]*x + W[1][2]*y;
+      var u2 = W[2][0] + W[2][1]*x + W[2][2]*y;
+      if(u1 > bu){ bu = u1; best = 1; }
+      if(u2 > bu){ best = 2; }
+      acc += GW[k]*GP[k*3 + best];
+    }
+    return acc/GWsum;
+  }
+  function probsOfW(W, x, y){
+    var u = [], mx = -1e18, c;
+    for(c = 0; c < 3; c++){ u[c] = W[c][0] + W[c][1]*x + W[c][2]*y; if(u[c] > mx) mx = u[c]; }
+    var s = 0, e = [];
+    for(c = 0; c < 3; c++){ e[c] = Math.exp(u[c] - mx); s += e[c]; }
+    return [e[0]/s, e[1]/s, e[2]/s];
+  }
+  function argmaxW(W, x, y){
+    var best = 0, bu = W[0][0] + W[0][1]*x + W[0][2]*y;
+    var u1 = W[1][0] + W[1][1]*x + W[1][2]*y;
+    var u2 = W[2][0] + W[2][1]*x + W[2][2]*y;
+    if(u1 > bu){ bu = u1; best = 1; }
+    if(u2 > bu){ best = 2; }
+    return best;
+  }
+  function palette(){
+    return isDark()
+      ? { cols: [[110,151,245],[240,109,156],[235,186,88]], bg: [23,27,35], dot: '#E9EBF2', ghost: '233,235,242' }
+      : { cols: [[59,111,224],[216,67,122],[223,163,60]], bg: [255,255,255], dot: '#14161D', ghost: '20,22,29' };
+  }
+  function paintMap(cv, probFn){
+    var ctx = cv.getContext('2d');
+    var img = ctx.createImageData(300, 300);
+    var pal = palette(), B = 2;
+    for(var py = 0; py < 300; py += B){
+      var y = Y1 - (py + B/2)*(Y1 - Y0)/300;
+      for(var px = 0; px < 300; px += B){
+        var x = X0 + (px + B/2)*(X1 - X0)/300;
+        var p = probFn(x, y);
+        var r = 0, g = 0, b = 0;
+        for(var c = 0; c < 3; c++){ r += p[c]*pal.cols[c][0]; g += p[c]*pal.cols[c][1]; b += p[c]*pal.cols[c][2]; }
+        r = 0.82*r + 0.18*pal.bg[0]; g = 0.82*g + 0.18*pal.bg[1]; b = 0.82*b + 0.18*pal.bg[2];
+        for(var by = 0; by < B; by++){
+          var base = ((py + by)*300 + px)*4;
+          for(var bx = 0; bx < B; bx++){
+            img.data[base] = r; img.data[base+1] = g; img.data[base+2] = b; img.data[base+3] = 255;
+            base += 4;
+          }
+        }
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  function drawGhosts(ctx, arr){
+    var pal = palette();
+    for(var gi = 0; gi < arr.length; gi++){
+      var W = arr[gi];
+      var alpha = 0.10 + 0.16*(gi + 1)/arr.length;
+      ctx.fillStyle = 'rgba(' + pal.ghost + ',' + alpha.toFixed(3) + ')';
+      var B = 2, prevRow = [];
+      for(var py = 0, ry = 0; py < 300; py += B, ry++){
+        var y = Y1 - (py + 1)*(Y1 - Y0)/300;
+        var row = [];
+        for(var px = 0, rx = 0; px < 300; px += B, rx++){
+          var x = X0 + (px + 1)*(X1 - X0)/300;
+          var a = argmaxW(W, x, y);
+          row[rx] = a;
+          if((rx > 0 && row[rx-1] !== a) || (ry > 0 && prevRow[rx] !== a)) ctx.fillRect(px, py, B, B);
+        }
+        prevRow = row;
+      }
+    }
+  }
+  function drawDots(cv, mode){
+    var ctx = cv.getContext('2d'), pal = palette();
+    for(var i = 0; i < pts.length; i++){
+      var p = pts[i];
+      var q = mode === 'hard' ? temper(p.q, 0) : (mode === 'soft' ? temper(p.q, TT) : p.q);
+      var r = 0, g = 0, b = 0;
+      for(var c = 0; c < 3; c++){ r += q[c]*pal.cols[c][0]; g += q[c]*pal.cols[c][1]; b += q[c]*pal.cols[c][2]; }
+      var px = (p.x - X0)/(X1 - X0)*300, py = (Y1 - p.y)/(Y1 - Y0)*300;
+      ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 2*Math.PI);
+      ctx.fillStyle = 'rgb(' + (r|0) + ',' + (g|0) + ',' + (b|0) + ')'; ctx.fill();
+      ctx.lineWidth = 1.5; ctx.strokeStyle = pal.dot; ctx.stroke();
+    }
+  }
+  var trained = false;
+  function drawUntrainedMark(cv){
+    var ctx = cv.getContext('2d');
+    ctx.font = '700 46px Georgia,serif';
+    ctx.fillStyle = isDark() ? 'rgba(233,235,242,.5)' : 'rgba(20,22,29,.35)';
+    ctx.textAlign = 'center';
+    ctx.fillText('?', 150, 128);
+    ctx.textAlign = 'start';
+  }
+  function paintTeacher(){
+    paintMap(cvT, posterior);
+    drawDots(cvT, 'true');
+  }
+  function paintStudents(){
+    paintMap(cvH, function(x, y){ return probsOfW(hardW, x, y); });
+    drawGhosts(cvH.getContext('2d'), ghosts);
+    paintMap(cvS, function(x, y){ return probsOfW(softW, x, y); });
+    drawGhosts(cvS.getContext('2d'), ghostsS);
+    drawDots(cvH, 'hard'); drawDots(cvS, 'soft');
+    if(!trained){ drawUntrainedMark(cvH); drawUntrainedMark(cvS); }
+  }
+  function paintAll(){
+    paintTeacher();
+    paintStudents();
+  }
+  function note(ah, as){
+    if(TT < 0.05) return '<strong>T = 0 means Student B gets hard labels too</strong> — the two students are now identical. Slide T back up to hand the dark knowledge back.';
+    if(M >= 80) return '<strong>With ' + M + ' examples, hard labels catch up.</strong> Enough dots pin the boundary on their own — distillation’s edge is information <em>per example</em>, so it shines when data is scarce.';
+    var dd = (as - ah)*100;
+    if(dd > 1) return '<strong>Same brain, same dots, same training.</strong> The only difference is what’s written on the labels — worth ' + dd.toFixed(1) + ' points here. Press “New transfer set” again and watch which student wobbles.';
+    return '<strong>A close one</strong> — some draws are kind to the answer-key student. Press “New transfer set” a few more times and watch the ghost lines pile up on the middle panel.';
+  }
+  var lastKd2Note = '';
+  var betChoice = null;
+  function betReveal(ah, as){
+    if(!betChoice) return '';
+    var winner = as >= ah ? 'B' : 'A';
+    var right = betChoice === winner;
+    var hi = (Math.max(ah, as)*100).toFixed(1), lo = (Math.min(ah, as)*100).toFixed(1);
+    betChoice = null;
+    if(kidMode()){
+      return right
+        ? '<strong>You called it!</strong> Student ' + winner + ' wins this round (' + hi + '% vs ' + lo + '%). '
+        : '<strong>Surprise!</strong> Student ' + winner + ' wins this round (' + hi + '% vs ' + lo + '%). The plain answer key looks like it should be enough — it isn’t. ';
+    }
+    return right
+      ? '<strong>Your bet pays off:</strong> Student ' + winner + ' wins (' + hi + '% vs ' + lo + '%). '
+      : '<strong>Your bet loses:</strong> Student ' + winner + ' wins (' + hi + '% vs ' + lo + '%) — the answer key looks sufficient, and isn’t. ';
+  }
+  function tickScore(){
+    var ah = accuracy(hardW), as = accuracy(softW);
+    ahEl.textContent = (ah*100).toFixed(1) + '%';
+    asEl.textContent = (as*100).toFixed(1) + '%';
+    ahEl.parentNode.classList.toggle('win', trained && ah > as);
+    asEl.parentNode.classList.toggle('win', trained && as >= ah);
+    var dd = (as - ah)*100;
+    gapEl.textContent = 'Δ ' + (dd >= 0 ? '+' : '') + dd.toFixed(1) + ' points';
+    return { ah: ah, as: as };
+  }
+  function updateScore(withBet){
+    var acc = tickScore();
+    var h = (withBet ? betReveal(acc.ah, acc.as) : '') + note(acc.ah, acc.as);
+    if(h !== lastKd2Note){ noteEl.innerHTML = h; lastKd2Note = h; }
+  }
+  var animToken = 0, animating = false;
+  function run(pushGhost, animate){
+    if(pushGhost && trained && hardW && !animating){
+      ghosts.push(hardW); ghostsS.push(softW);
+      if(ghosts.length > 5){ ghosts.shift(); ghostsS.shift(); }
+    }
+    pts = sample(seed, M);
+    var hardT = pts.map(function(p){ return temper(p.q, 0); });
+    var softT = pts.map(function(p){ return temper(p.q, TT); });
+    var token = ++animToken;
+    paintTeacher();
+    if(!animate || reduceMotion){
+      animating = false;
+      hardW = train(pts, hardT);
+      softW = train(pts, softT);
+      trained = true;
+      paintStudents();
+      updateScore(true);
+      return;
+    }
+    var th = makeTrainer(pts, hardT), ts = makeTrainer(pts, softT);
+    hardW = th.W; softW = ts.W;
+    trained = true;
+    animating = true;
+    var done = 0, CHUNK = 45, frameN = 0;
+    gapEl.textContent = 'training…';
+    function fr(){
+      if(token !== animToken) return;
+      var n = Math.min(CHUNK, STEPS - done);
+      th.stepN(n); ts.stepN(n); done += n; frameN++;
+      paintStudents();
+      if(frameN % 9 === 0) tickScore();
+      if(done < STEPS) requestAnimationFrame(fr);
+      else { animating = false; updateScore(true); }
+    }
+    requestAnimationFrame(fr);
+  }
+  function runSoft(){
+    if(animating){ run(false, false); return; }
+    animToken++;
+    softW = train(pts, pts.map(function(p){ return temper(p.q, TT); }));
+    paintStudents();
+    updateScore(false);
+  }
+  var debTimer = null;
+  function schedule(job){
+    if(debTimer) clearTimeout(debTimer);
+    debTimer = setTimeout(function(){ debTimer = null; job(); }, 150);
+  }
+  var betEl2 = document.getElementById('kd2-bet');
+  function resolveBet(choice){
+    if(!betEl2.hidden){
+      betChoice = choice || null;
+      betEl2.hidden = true;
+    } else {
+      betChoice = null;
+    }
+  }
+  betEl2.querySelectorAll('button[data-bet]').forEach(function(b){
+    b.addEventListener('click', function(){
+      resolveBet(b.dataset.bet);
+      run(false, true);
+    });
+  });
+  newBtn.addEventListener('click', function(){
+    resolveBet(null);
+    seed++;
+    run(true, true);
+  });
+  mSlider.addEventListener('input', function(){
+    M = M_OPTS[+mSlider.value]; mVal.textContent = M;
+    mSlider.setAttribute('aria-valuetext', M + ' examples');
+    resolveBet(null);
+    schedule(function(){ run(false, false); });
+  });
+  tSlider.addEventListener('input', function(){
+    TT = parseFloat(tSlider.value); tVal.textContent = TT.toFixed(1);
+    resolveBet(null);
+    if(!trained){ schedule(function(){ run(false, false); }); return; }
+    schedule(runSoft);
+  });
+  onThemeChange(function(){ if(hardW) paintAll(); });
+  window.__kdBench = function(n){
+    n = n || 10;
+    var wins = 0, sum = 0, min = 1e9, per = [];
+    for(var sd = 1; sd <= n; sd++){
+      var data = sample(sd, 12);
+      var hW = train(data, data.map(function(p){ return temper(p.q, 0); }));
+      var sW = train(data, data.map(function(p){ return p.q; }));
+      var ah = accuracy(hW), as = accuracy(sW), gap = as - ah;
+      if(gap > 0) wins++;
+      sum += gap; if(gap < min) min = gap;
+      per.push(sd + ':' + (ah*100).toFixed(2) + '|' + (as*100).toFixed(2));
+    }
+    return 'wins=' + wins + '/' + n + ' meanGap=' + (sum/n*100).toFixed(2) + ' minGap=' + (min*100).toFixed(2) + ' ' + per.join(' ');
+  };
+  window.__kd2Refresh = function(){
+    if(trained) return;
+    var msg = kidMode()
+      ? 'Make your guess above — or just press <strong>New transfer set</strong> to let both students try.'
+      : 'Place your bet — or press <strong>New transfer set</strong> to skip straight to the experiment.';
+    if(msg !== lastKd2Note){ noteEl.innerHTML = msg; lastKd2Note = msg; }
+  };
+  pts = sample(seed, M);
+  hardW = [[0,0,0],[0,0,0],[0,0,0]];
+  softW = [[0,0,0],[0,0,0],[0,0,0]];
+  paintAll();
+  noteEl.innerHTML = kidMode()
+    ? 'Make your guess above — or just press <strong>New transfer set</strong> to let both students try.'
+    : 'Place your bet — or press <strong>New transfer set</strong> to skip straight to the experiment.';
+  lastKd2Note = noteEl.innerHTML;
+})();
+
+/* ---------- D3: the photocopier — self-distillation, exact (Mobahi et al. 2020) ---------- */
+(function(){
+  var cvM = document.getElementById('sd-main');
+  if(!cvM) return;
+  var cvE = document.getElementById('sd-err');
+  var nextBtn = document.getElementById('sd-next'), newBtn = document.getElementById('sd-new');
+  var autoBtn = document.getElementById('sd-auto'), betSdEl = document.getElementById('sd-bet');
+  var genEl = document.getElementById('sd-gen'), rmseEl = document.getElementById('sd-rmse'), fitEl = document.getElementById('sd-fit');
+  var cFill = document.getElementById('sd-cfill'), noteEl = document.getElementById('sd-note');
+
+  var N = 25, ELL = 0.10, SIG = 0.5, EPS = 0.02, GN = 201, MAXGEN = 16;
+  var seed = 1;
+  var xs, ys, d, V, Kg, z, gen, collapsed, curve, prevCurve, errs, cs, lastFe;
+  var sdBet = null, autoTimer = null;
+  var morphFrom = null, morphT = 1, morphToken = 0;
+
+  function makeData(){
+    var kd = kernelData(seed, N, ELL, SIG, GN);
+    xs = kd.xs; ys = kd.ys; d = kd.d; V = kd.V; Kg = kd.Kg;
+    z = ys.slice();
+    gen = -1; collapsed = false; curve = null; prevCurve = null;
+    errs = []; cs = []; lastFe = null;
+    sdBet = null;
+    morphFrom = null; morphT = 1; morphToken++;
+    stopAuto();
+  }
+  function step(){
+    if(collapsed) return;
+    gen++;
+    var mz = 0, i;
+    for(i = 0; i < N; i++) mz += z[i]*z[i];
+    var r = epsRound(d, V, z, N, EPS);
+    if(r === null){
+      collapsed = true;
+      prevCurve = curve;
+      curve = new Array(GN).fill(0);
+      errs.push(rmseToTruth(curve, GN)); cs.push(Infinity);
+      lastFe = Math.sqrt(mz/N);
+      z = new Array(N).fill(0);
+      return;
+    }
+    prevCurve = curve;
+    curve = kgCurve(Kg, r.alpha, GN, N);
+    var fe = 0;
+    for(i = 0; i < N; i++) fe += (r.znext[i]-z[i])*(r.znext[i]-z[i]);
+    lastFe = Math.sqrt(fe/N);
+    z = r.znext;
+    errs.push(rmseToTruth(curve, GN)); cs.push(r.c);
+  }
+  function colAccent(){ return isDark() ? '#5FCDB0' : '#0E7A63'; }
+  function colCard(){ return isDark() ? '#171B23' : '#FFFFFF'; }
+  function colDim(){ return isDark() ? 'rgba(166,173,191,.6)' : 'rgba(74,82,100,.55)'; }
+  function colText(){ return isDark() ? '#A6ADBF' : '#4A5264'; }
+  function colDots(){ return isDark() ? '#7A8398' : '#8A93A6'; }
+  function draw(){
+    var ctx = cvM.getContext('2d'), W = 640, H = 300, YR = 2.5;
+    function px(x){ return x*W; }
+    function py(v){ return H/2 - v*H/(2*YR); }
+    ctx.fillStyle = colCard(); ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = colDim(); ctx.lineWidth = 1;
+    ctx.setLineDash([2,4]); ctx.beginPath(); ctx.moveTo(0, py(0)); ctx.lineTo(W, py(0)); ctx.stroke();
+    ctx.setLineDash([6,5]); ctx.lineWidth = 1.5; ctx.beginPath();
+    for(var a = 0; a < GN; a++){
+      var vx = px(a/(GN-1)), vy = py(Math.sin(2*Math.PI*a/(GN-1)));
+      if(a === 0) ctx.moveTo(vx, vy); else ctx.lineTo(vx, vy);
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+    if(prevCurve){
+      ctx.strokeStyle = colAccent(); ctx.globalAlpha = 0.28; ctx.lineWidth = 2; ctx.beginPath();
+      for(a = 0; a < GN; a++){
+        var v = Math.max(-YR, Math.min(YR, prevCurve[a]));
+        if(a === 0) ctx.moveTo(px(a/(GN-1)), py(v)); else ctx.lineTo(px(a/(GN-1)), py(v));
+      }
+      ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    if(curve){
+      var drawC = curve;
+      if(morphFrom && morphT < 1){
+        drawC = [];
+        var eT = morphT*(2 - morphT);
+        for(a = 0; a < GN; a++) drawC[a] = morphFrom[a] + (curve[a] - morphFrom[a])*eT;
+      }
+      ctx.strokeStyle = colAccent(); ctx.lineWidth = 2.6; ctx.beginPath();
+      for(a = 0; a < GN; a++){
+        var v2 = Math.max(-YR, Math.min(YR, drawC[a]));
+        if(a === 0) ctx.moveTo(px(a/(GN-1)), py(v2)); else ctx.lineTo(px(a/(GN-1)), py(v2));
+      }
+      ctx.stroke();
+    }
+    ctx.fillStyle = colDots();
+    for(var i = 0; i < N; i++){
+      ctx.beginPath(); ctx.arc(px(xs[i]), py(Math.max(-YR, Math.min(YR, ys[i]))), 3.2, 0, 2*Math.PI); ctx.fill();
+    }
+  }
+  function drawErr(){
+    var ctx = cvE.getContext('2d'), W = 640, H = 110;
+    ctx.fillStyle = colCard(); ctx.fillRect(0, 0, W, H);
+    var base = 0.7071, top = 0.95, pad = 26;
+    function ey(v){ return H - 14 - Math.min(v, top)/top*(H - 32); }
+    ctx.strokeStyle = colDim(); ctx.setLineDash([4,4]); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad, ey(base)); ctx.lineTo(W - 6, ey(base)); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = colText(); ctx.font = '10px ui-monospace,Menlo,monospace';
+    ctx.fillText('blank page (flat zero) = 0.71', W - 196, ey(base) - 5);
+    ctx.fillText('distance to hidden truth, per generation', pad + 4, 12);
+    if(!errs.length) return;
+    var min = Math.min.apply(null, errs);
+    var bw = Math.min(30, (W - pad - 12)/Math.max(errs.length, 8) - 8);
+    for(var i = 0; i < errs.length; i++){
+      var bx = pad + 8 + i*(bw + 8);
+      var by = ey(errs[i]);
+      ctx.fillStyle = errs[i] === min ? (isDark() ? '#E3B23C' : '#D9A62E') : colAccent();
+      ctx.globalAlpha = (i === errs.length - 1) ? 1 : 0.55;
+      ctx.fillRect(bx, by, bw, H - 14 - by);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = colText();
+      ctx.fillText(String(i), bx + bw/2 - 3, H - 3);
+    }
+  }
+  function noteText(){
+    var kid = kidMode();
+    if(gen < 0) return kid
+      ? 'Fresh messy notes: a hidden wave plus scribbles. Press <strong>Distill the next generation</strong> and the first machine will draw its curve.'
+      : 'Fresh data: a hidden wave plus noise. Press <strong>Distill the next generation</strong> to train generation 0 — the deliberately overfit “teacher.”';
+    if(collapsed){
+      var base = kid
+        ? '<strong>Blank page!</strong> The last curve was so quiet that drawing <em>nothing at all</em> counted as a perfect copy — and “nothing” is the simplest drawing there is. That’s how the photocopy game always ends (generation ' + gen + ').'
+        : '<strong>Blank page.</strong> The previous curve was quiet enough that a flat zero fits it within the error budget — and zero is the simplest function of all. That’s the paper’s theorem doing exactly what it says (generation ' + gen + ').';
+      if(sdBet !== null){
+        var hit = (sdBet === 12 && gen >= 12) || gen === sdBet;
+        var diff = Math.abs(gen - sdBet);
+        var betLbl = sdBet === 12 ? '12+' : String(sdBet);
+        base += hit ? ' <strong>And your guess was dead on!</strong>'
+              : diff <= 2 ? ' Your guess (' + betLbl + ') was close — it went blank at generation ' + gen + '.'
+              : ' You guessed ' + betLbl + '; it actually went blank at generation ' + gen + '.';
+      }
+      return base;
+    }
+    if(gen === 0) return kid
+      ? '<strong>Generation 0 copies everything — even the scribbles.</strong> Now press again: the next machine learns only from this curve, never from the dots.'
+      : '<strong>Generation 0 fits the scribbles.</strong> Wiggly and overfit — its error budget forces it to chase the noise. Now distill: the next model learns only from this curve.';
+    var last = errs[errs.length - 1], min = Math.min.apply(null, errs);
+    if(last === min) return '<strong>Generation ' + gen + ' is the closest to the hidden truth so far.</strong> Smoother <em>and</em> more accurate — the noise dies before the wave does.';
+    if(last > 1.3*min) return kid
+      ? '<strong>Fading…</strong> The scribbles are long gone; now the wave itself is disappearing. Keep pressing…'
+      : '<strong>Over-smoothing.</strong> The noise is long gone; now the wave itself is eroding. The simplifying pressure keeps climbing — collapse is coming.';
+    return '<strong>Generation ' + gen + '.</strong> Distance to the hidden truth: ' + last.toFixed(3) + '. Keep pressing.';
+  }
+  function updateUI(){
+    genEl.textContent = gen < 0 ? '—' : String(gen);
+    rmseEl.textContent = errs.length ? errs[errs.length - 1].toFixed(3) : '—';
+    fitEl.textContent = lastFe === null ? '—' : lastFe.toFixed(3) + (gen > 0 && !collapsed ? ' (every generation — by design)' : '');
+    var w = 0;
+    if(cs.length){
+      var c = cs[cs.length - 1];
+      w = c === Infinity ? 100 : Math.max(0, Math.min(100, (Math.log(c)/Math.LN10 + 9)/12*100));
+    }
+    cFill.style.width = w + '%';
+    noteEl.innerHTML = noteText();
+    nextBtn.disabled = collapsed;
+    nextBtn.style.opacity = collapsed ? 0.5 : 1;
+    autoBtn.disabled = collapsed;
+    autoBtn.style.opacity = collapsed ? 0.5 : 1;
+    betSdEl.hidden = !(!collapsed && sdBet === null && gen < 1);
+  }
+  function refresh(){ draw(); drawErr(); updateUI(); }
+  function startMorph(){
+    if(reduceMotion || !prevCurve || !curve){ draw(); return; }
+    morphFrom = prevCurve; morphT = 0;
+    var token = ++morphToken, t0 = null;
+    function fr(ts){
+      if(token !== morphToken) return;
+      if(t0 === null) t0 = ts;
+      morphT = Math.min(1, (ts - t0)/420);
+      draw();
+      if(morphT < 1) requestAnimationFrame(fr);
+    }
+    requestAnimationFrame(fr);
+  }
+  function stepAndShow(){
+    if(collapsed || gen >= MAXGEN) return;
+    step();
+    drawErr(); updateUI();
+    startMorph();
+  }
+  function stopAuto(){
+    if(autoTimer){ clearTimeout(autoTimer); autoTimer = null; }
+    autoBtn.textContent = 'Run the whole chain ▶';
+  }
+  window.__sdRefresh = function(){ if(errs) updateUI(); };
+  nextBtn.addEventListener('click', function(){ stopAuto(); stepAndShow(); });
+  autoBtn.addEventListener('click', function(){
+    if(autoTimer){ stopAuto(); return; }
+    if(collapsed || gen >= MAXGEN) return;
+    autoBtn.textContent = 'Pause ⏸';
+    (function tick(){
+      stepAndShow();
+      if(collapsed || gen >= MAXGEN){ stopAuto(); return; }
+      autoTimer = setTimeout(tick, 820);
+    })();
+  });
+  betSdEl.querySelectorAll('button[data-sdbet]').forEach(function(b){
+    b.addEventListener('click', function(){
+      sdBet = parseInt(b.dataset.sdbet, 10);
+      betSdEl.hidden = true;
+    });
+  });
+  newBtn.addEventListener('click', function(){ seed++; makeData(); refresh(); });
+  onThemeChange(refresh);
+  window.__sdBench = function(n){
+    n = n || 10;
+    var keep = { seed: seed, xs: xs, ys: ys, d: d, V: V, Kg: Kg, z: z, gen: gen, collapsed: collapsed, curve: curve, prevCurve: prevCurve, errs: errs, cs: cs, lastFe: lastFe, sdBet: sdBet };
+    var pass = 0, out = [];
+    for(var sd = 1; sd <= n; sd++){
+      seed = sd; makeData();
+      while(!collapsed && gen < MAXGEN) step();
+      var r0 = errs[0], min = Math.min.apply(null, errs);
+      var early = false;
+      for(var i = 1; i <= 3 && i < errs.length; i++) if(errs[i] <= 0.72*r0) early = true;
+      var pre = errs.length >= 2 ? errs[errs.length - 2] : 0;
+      var ok = early && min <= 0.65*r0 && collapsed && gen >= 3 && pre >= 1.4*min;
+      if(ok) pass++;
+      out.push(sd + (ok ? ':ok' : ':FAIL') + '[' + errs.map(function(e){ return e.toFixed(2); }).join(',') + ']');
+    }
+    seed = keep.seed; xs = keep.xs; ys = keep.ys; d = keep.d; V = keep.V; Kg = keep.Kg; z = keep.z;
+    gen = keep.gen; collapsed = keep.collapsed; curve = keep.curve; prevCurve = keep.prevCurve;
+    errs = keep.errs; cs = keep.cs; lastFe = keep.lastFe; sdBet = keep.sdBet;
+    refresh();
+    return 'pass=' + pass + '/' + n + ' ' + out.join(' ');
+  };
+  makeData();
+  refresh();
+})();
+
+/* ---------- Part 4: the twin experiment — generation 1 vs generation 0 ---------- */
+(function(){
+  var cv = document.getElementById('ba-main');
+  if(!cv) return;
+  var teachBtn = document.getElementById('ba-teach'), newBtn = document.getElementById('ba-new');
+  var tEl = document.getElementById('ba-t'), sEl = document.getElementById('ba-s'), wEl = document.getElementById('ba-w');
+  var noteEl = document.getElementById('ba-note');
+  var N = 25, ELL = 0.10, SIG = 0.5, EPS = 0.02, GN = 201;
+  var seed = 1, kd = null, teacherCurve = null, twinCurve = null, tErr = 0, sErr = 0, z1 = null;
+  var taught = false, wins = 0, total = 0, reveal = 1, revToken = 0;
+
+  function cAccent(){ return isDark() ? '#5FCDB0' : '#0E7A63'; }
+  function cCard(){ return isDark() ? '#171B23' : '#FFFFFF'; }
+  function cDim(){ return isDark() ? 'rgba(166,173,191,.6)' : 'rgba(74,82,100,.55)'; }
+  function cInk2(){ return isDark() ? '#A6ADBF' : '#4A5264'; }
+  function cDots(){ return isDark() ? '#7A8398' : '#8A93A6'; }
+
+  function build(){
+    kd = kernelData(seed, N, ELL, SIG, GN);
+    var r0 = epsRound(kd.d, kd.V, kd.ys, N, EPS);
+    teacherCurve = kgCurve(kd.Kg, r0.alpha, GN, N);
+    z1 = r0.znext;
+    twinCurve = null; sErr = 0;
+    tErr = rmseToTruth(teacherCurve, GN);
+    taught = false; reveal = 1; revToken++;
+    draw(); ui();
+  }
+  function draw(){
+    var ctx = cv.getContext('2d'), W = 640, H = 260, YR = 2.5;
+    function px(x){ return x*W; }
+    function py(v){ return H/2 - v*H/(2*YR); }
+    var a, v;
+    ctx.fillStyle = cCard(); ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = cDim(); ctx.lineWidth = 1; ctx.setLineDash([2,4]);
+    ctx.beginPath(); ctx.moveTo(0, py(0)); ctx.lineTo(W, py(0)); ctx.stroke();
+    ctx.setLineDash([6,5]); ctx.lineWidth = 1.5; ctx.beginPath();
+    for(a = 0; a < GN; a++){
+      var vx = px(a/(GN-1)), vy = py(Math.sin(2*Math.PI*a/(GN-1)));
+      if(a === 0) ctx.moveTo(vx, vy); else ctx.lineTo(vx, vy);
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = cDots();
+    for(var i = 0; i < N; i++){
+      ctx.beginPath(); ctx.arc(px(kd.xs[i]), py(Math.max(-YR, Math.min(YR, kd.ys[i]))), 3, 0, 2*Math.PI); ctx.fill();
+    }
+    ctx.strokeStyle = cInk2(); ctx.lineWidth = 1.8; ctx.beginPath();
+    for(a = 0; a < GN; a++){
+      v = Math.max(-YR, Math.min(YR, teacherCurve[a]));
+      if(a === 0) ctx.moveTo(px(a/(GN-1)), py(v)); else ctx.lineTo(px(a/(GN-1)), py(v));
+    }
+    ctx.stroke();
+    if(taught && twinCurve){
+      var upto = Math.max(2, Math.floor(GN*reveal));
+      ctx.strokeStyle = cAccent(); ctx.lineWidth = 2.6; ctx.beginPath();
+      for(a = 0; a < upto; a++){
+        v = Math.max(-YR, Math.min(YR, twinCurve[a]));
+        if(a === 0) ctx.moveTo(px(a/(GN-1)), py(v)); else ctx.lineTo(px(a/(GN-1)), py(v));
+      }
+      ctx.stroke();
+    }
+  }
+  function ui(){
+    tEl.textContent = tErr.toFixed(3);
+    sEl.textContent = (taught && reveal >= 1) ? sErr.toFixed(3) : '—';
+    wEl.textContent = 'twin wins: ' + wins + ' of ' + total;
+    sEl.parentNode.classList.toggle('win', taught && reveal >= 1 && sErr < tErr);
+    tEl.parentNode.classList.toggle('win', taught && reveal >= 1 && tErr <= sErr);
+    teachBtn.disabled = taught;
+    teachBtn.style.opacity = taught ? 0.5 : 1;
+    var kid = kidMode();
+    if(!taught){
+      noteEl.innerHTML = kid
+        ? 'The gray curve is the <strong>teacher</strong> — it studied the messy dots. The twin will never see a single dot, only the teacher’s curve. Can a copy beat the original? Press <strong>Teach the twin</strong>.'
+        : 'The gray curve is the teacher, fit tightly to the noisy dots. The twin trains on <em>the teacher’s curve alone</em> — no data, no labels, same size. Press <strong>Teach the twin</strong>.';
+    } else if(reveal >= 1){
+      var won = sErr < tErr;
+      noteEl.innerHTML = (won
+        ? '<strong>The twin beat its teacher:</strong> ' + sErr.toFixed(3) + ' vs ' + tErr.toFixed(3) + ' from the hidden truth. '
+        : '<strong>This time the teacher held on:</strong> ' + tErr.toFixed(3) + ' vs ' + sErr.toFixed(3) + '. ')
+        + (kid ? 'Copying smooths away the scribbles — and the scribbles were the teacher’s mistakes. Try a new dataset!'
+               : 'Copying keeps what the error budget will pay for, and the teacher’s noise isn’t on the list. Try more datasets — the twin should win essentially every time here.');
+    } else {
+      noteEl.innerHTML = kid ? 'Taught! Watch it draw…' : 'Twin trained — drawing its curve…';
+    }
+  }
+  function completeReveal(){
+    total++;
+    if(sErr < tErr) wins++;
+    ui();
+  }
+  teachBtn.addEventListener('click', function(){
+    if(taught) return;
+    var r1 = epsRound(kd.d, kd.V, z1, N, EPS);
+    twinCurve = kgCurve(kd.Kg, r1.alpha, GN, N);
+    sErr = rmseToTruth(twinCurve, GN);
+    taught = true;
+    if(reduceMotion){ reveal = 1; draw(); completeReveal(); return; }
+    reveal = 0;
+    var token = ++revToken, t0 = null;
+    function fr(ts){
+      if(token !== revToken) return;
+      if(t0 === null) t0 = ts;
+      reveal = Math.min(1, (ts - t0)/700);
+      draw();
+      if(reveal < 1) requestAnimationFrame(fr); else completeReveal();
+    }
+    ui();
+    requestAnimationFrame(fr);
+  });
+  newBtn.addEventListener('click', function(){ seed++; build(); });
+  onThemeChange(function(){ if(kd) draw(); });
+  window.__baRefresh = function(){ if(kd) ui(); };
+  window.__baBench = function(n){
+    n = n || 10;
+    var w = 0, out = [];
+    for(var sd = 1; sd <= n; sd++){
+      var k2 = kernelData(sd, N, ELL, SIG, GN);
+      var r0 = epsRound(k2.d, k2.V, k2.ys, N, EPS);
+      var c0 = kgCurve(k2.Kg, r0.alpha, GN, N);
+      var r1 = epsRound(k2.d, k2.V, r0.znext, N, EPS);
+      var c1 = kgCurve(k2.Kg, r1.alpha, GN, N);
+      var e0 = rmseToTruth(c0, GN), e1 = rmseToTruth(c1, GN);
+      if(e1 < e0) w++;
+      out.push(sd + ':' + e0.toFixed(2) + '>' + e1.toFixed(2));
+    }
+    return 'twinWins=' + w + '/' + n + ' ' + out.join(' ');
+  };
+  build();
+})();
+
+/* ---------- deep links: parse #d<depth> (forward-compatible with -<lang>) ---------- */
+(function(){
+  var m = /^#?d([1-4])(?:-(en|zh|es))?$/.exec(location.hash || '');
+  if(m){ setLevel(m[1]); }
+})();
+
+})();
+</script>
