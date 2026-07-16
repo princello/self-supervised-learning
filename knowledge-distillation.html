@@ -491,6 +491,12 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
   font-size:14px;
 }
 .bet .bet-q{font-weight:700;margin-right:4px}
+.bet .btn{
+  font:inherit;font-weight:700;font-size:13.5px;cursor:pointer;
+  background:var(--panel-tint);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 14px;
+}
+.bet .btn:hover{border-color:var(--accent)}
+.bet .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .bet[hidden]{display:none}
 
 /* ---------- shared demo chart canvases ---------- */
@@ -539,12 +545,35 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 .scorechips .sc b{font-variant-numeric:tabular-nums}
 .scorechips .sc.win{border-color:var(--accent);background:var(--accent-soft)}
 
-/* ---------- D3: self-distillation demo ---------- */
-.sd-wrap canvas{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px}
-.sd-wrap .sd-err{margin-top:10px}
-.sd-meter{margin-top:12px;font-size:12.5px;color:var(--ink2)}
-.sd-meter .track{position:relative;height:10px;border-radius:6px;background:var(--panel-tint);border:1px solid var(--line);overflow:hidden;margin-top:4px}
-.sd-meter .fillc{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),var(--hl));border-radius:6px;transition:width .25s}
+/* ---------- dark-knowledge gallery ---------- */
+.dk-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.dk-card{
+  font:inherit;text-align:left;cursor:pointer;color:var(--ink);
+  border:1.5px solid var(--line);border-radius:12px;background:var(--card);
+  padding:12px;display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;
+  transition:border-color .15s, transform .15s;
+}
+.dk-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.dk-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dk-card canvas{width:44px;height:44px;image-rendering:pixelated;border:1px solid var(--line);border-radius:6px;display:block}
+.dk-bars{display:grid;gap:5px;align-content:center;min-width:0}
+.dk-brow{display:grid;grid-template-columns:12px 1fr 46px;gap:7px;align-items:center;font-size:11.5px;color:var(--ink2);font-family:ui-monospace,Menlo,monospace}
+.dk-brow .trk{height:11px;background:var(--panel-tint);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.dk-brow .fil{height:100%;display:block;background:var(--hatch)}
+.dk-brow.top .fil{background:var(--accent)}
+.dk-brow b{font-variant-numeric:tabular-nums;font-weight:400}
+.dk-brow.top b{font-weight:700;color:var(--ink)}
+.dk-cap{grid-column:1 / -1;font-size:12.5px;color:var(--ink2);line-height:1.45;margin:0}
+
+/* ---------- D4: the photocopier chain ---------- */
+.ch-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.ch-card{display:grid;gap:3px;justify-items:center;padding:6px 6px 4px;border:1.5px solid var(--line);border-radius:8px}
+.ch-card canvas{width:32px;height:32px;image-rendering:pixelated;display:block}
+.ch-card .p{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--ink2)}
+.ch-card.ok{border-color:var(--accent)}
+.ch-card.ok .p{color:var(--accent);font-weight:700}
+.ch-card.bad{border-style:dashed;border-color:var(--hatch)}
+.ch-card.bad .p{color:var(--ink);font-weight:700}
 .sd-note{margin:12px 0 0;font-size:14px;color:var(--ink2);min-height:2.6em}
 .sd-note strong{color:var(--ink)}
 </style>
@@ -667,13 +696,13 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
   <h2 class="display">The wrong answers are the lesson.</h2>
   <div class="prose">
     <div class="lv L1">
-      <p>Scroll back up to the fox game for a second. The <strong>answer key</strong> says one thing: FOX. The <strong>teacher</strong> says more: “mostly fox… a little bit dog… definitely not a teapot.”</p>
+      <p>Scroll back up to the drawing pad for a second. About your squiggle, the <strong>answer key</strong> says one thing: SEVEN. The <strong>teacher</strong> says more: “mostly seven… a little bit one… definitely not a zero.”</p>
       <p>That extra part is like getting your quiz back from a teacher who wrote <em>“B was a smart guess!”</em> next to the ones you missed — instead of just a big red ✗. You learn from the almost-right answers, not only the right one.</p>
       <p>Scientists call this hidden lesson <strong>dark knowledge</strong> — like dark matter in space: you can’t see it in the final answer, but most of what the model knows is stored there. Distillation is simply letting a small model study the teacher’s “how close was each answer” scores instead of the bare answer key.</p>
     </div>
     <div class="lv L2">
       <p>A classifier doesn’t really output an answer; it outputs a <span class="term" data-tip="A list of probabilities, one per class, summing to 1 — the model’s full opinion, not just its top pick.">probability for every class</span>. The 2015 paper’s own examples: a handwritten 2 that gets a one-in-a-million chance of being a 3 but only one-in-a-billion of being a 7; a photo of a BMW with a tiny chance of “garbage truck” and almost none of “carrot.” Those tiny numbers encode the <em>similarity structure of the world</em> — which mistakes are reasonable and which are absurd. A one-hot label erases all of it.</p>
-      <p>There’s a catch: a well-trained teacher is confident, so the interesting numbers hide close to zero (fox 98.3%, dog 1.1%, …). The fix is the slider you already played with: <strong>temperature</strong>. Divide the model’s raw scores by T before turning them into probabilities, and the faint ranking swells into something a student can actually learn from.</p>
+      <p>There’s a catch: a well-trained teacher is confident, so on most inputs the interesting numbers hide close to zero — a clean 7 from this page’s test set reads over 99.9% “seven,” with the whole ranking buried in the crumbs. The fix is the slider you already played with: <strong>temperature</strong>. Divide the model’s raw scores by T before turning them into probabilities, and the faint ranking swells into something a student can actually learn from. And a few digits carry their dark knowledge loudly even cold — like a 7 the teacher reads as only 53% seven, 25% one. Three of the loudest live in the gallery below.</p>
       <p>So the recipe is: warm up the teacher’s answers, and train the student to match them — usually alongside the true labels. The name <em>dark knowledge</em> comes from a talk Hinton gave in 2014; the method from the 2015 paper; the seed of the idea from Buciluă and colleagues in 2006.</p>
     </div>
     <div class="lv L3">
@@ -692,6 +721,14 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
         <p>But the paper’s practical advice cuts the other way: for students much smaller than the teacher, <em>intermediate</em> temperatures worked best. Very negative logits carry the teacher’s noise along with its knowledge, and a low-capacity student does better ignoring them. The limit is a lens, not a setting.</p>
       </div>
       <p>Convention notes worth pinning: the soft term as written is forward KL, which equals cross-entropy with soft targets up to the (constant) teacher entropy; repositories disagree about where the T² lives; and <em>reversing</em> the KL direction is not a convention choice but a different objective — mode-seeking rather than mode-covering. That distinction becomes load-bearing for language models in Part 7.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><span class="ptitle">Three digits with loud doubt</span><span class="tag"><span class="lv L1">real test digits · tap to try one</span><span class="lv L2 L3 L4">real test digits · the teacher’s top-2 beliefs at T = 2</span></span></div>
+    <div class="panel-body">
+      <div class="dk-gallery" id="dk-gallery"></div>
+      <p class="hint" style="margin-top:12px"><span class="lv L1">Tap a card to send that digit up to the drawing pad and see all ten of the teacher’s bars.</span><span class="lv L2 L3 L4">Click a card to load the digit into the hero pad and inspect the full distribution at any temperature.</span></p>
     </div>
   </div>
 </section>
@@ -824,62 +861,67 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 </section>
 
 <section class="chap" id="self">
-  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 5 · The strange loop</p>
-  <h2 class="display">Teaching yourself, generation by generation.</h2>
+  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 5 · The photocopier</p>
+  <h2 class="display">A photocopy of a photocopy of a photocopy.</h2>
   <div class="prose">
     <div class="lv L1">
-      <p>Remember recopying your notes? Watch a machine do it. The gray dots below are messy notes — a hidden wave plus scribbles. The machine draws its best curve through them. Then the next generation learns <em>only from the previous machine’s curve</em>. It never sees the dots again.</p>
-      <p>Everyone knows what happens to a photocopy of a photocopy… or do they? Press <strong>Distill the next generation</strong> and watch what each new machine keeps — and what it throws away. The first few copies may surprise you. And how long can the chain go? The machine will ask for your guess.</p>
+      <p>Everyone knows what happens when you photocopy a photocopy: the page gets uglier every time. Let’s test that on robots. The teacher trains a student. That student — <em>without ever seeing the teacher again</em> — trains the next student. And so on, eight copies deep.</p>
+      <p>The fun part: this photocopier has <strong>three settings</strong>. Copy the doubt. Copy only the answers. Or make every new copier smaller than the last. Bet first: after 8 doubt-copies, how much reading skill is lost?</p>
     </div>
     <div class="lv L2">
-      <p>Each generation is told: <em>match your teacher’s curve, as simply as you can, staying inside the same small error budget.</em> Because the budget never changes, every generation can afford to simplify a little more than the last. What does that do to the drawing — and how does the story end? Place your bet when the machine asks, keep an eye on the error chart under the plot, and run the chain. (Or press <strong>Run the whole chain</strong> and watch it unfold on its own.)</p>
+      <p>The chain: teacher → S1 → S2 → … → S8. Each generation trains <em>only</em> on the previous generation’s outputs over the same transfer digits — after the first hand-off, the original teacher and the true labels are gone from the loop forever. Three modes: <strong>soft copies</strong> (each hand-off passes beliefs at T = 4), <strong>one-hot copies</strong> (each hand-off keeps only the winning digit), and <strong>shrinking copies</strong> (soft, but every student smaller than its teacher). Everyone “knows” copies of copies degrade. Place your bet, then run the chain and watch the accuracy line — and the six borderline digits below it.</p>
     </div>
     <div class="lv L3">
-      <p>This is exact, live linear algebra — no gradient descent. The model is <span class="term" data-tip="Kernel ridge regression with an RBF kernel: predictions are weighted sums of Gaussian bumps centered on the training points.">kernel ridge regression</span> (RBF, ℓ = 0.10, n = 25). Each round solves: minimize ‖f‖² subject to mean-squared error ≤ ε = 0.02 against <em>the previous round’s predictions</em>. The Lagrange multiplier of that constraint is an effective ridge penalty c<sub>t</sub>, re-chosen each round so the constraint is tight — and because the targets shrink every round while ε stays fixed, c<sub>t</sub> <em>grows</em>, across orders of magnitude (watch the meter). In the Gram eigenbasis each round multiplies component i by d<sub>i</sub>/(d<sub>i</sub>+c<sub>t</sub>): a stacking low-pass filter. Small-eigenvalue (wiggly) directions die first; that’s the whole story in one sentence.</p>
+      <p>Config: soft and one-hot generations are 64→32→10 (fresh seeded init per generation), M = 400 pool digits, B = 100, 1,000 steps; lr 0.1 with T = 4 targets for soft, lr 0.3 with argmax targets for one-hot. Shrinking mode walks hidden sizes 48→32→24→16→12→10→8→6 over the full 600-digit pool, 2,000 steps, lr 0.1, T = 4. Accuracy is scored on all 300 held-out test digits. The Engineer chip tracks <strong>mean confidence vs accuracy</strong> — watch it in the lossy modes: confidence holds near 98% while accuracy falls. Overconfident copies are the signature of information bleed.</p>
     </div>
     <div class="lv L4">
-      <p>This demo implements Mobahi, Farajtabar &amp; Bartlett (NeurIPS 2020) exactly, in its finite-sample form. Train predictions after round t are ŷ<sub>t</sub> = V·diag(∏<sub>s≤t</sub> d<sub>i</sub>/(d<sub>i</sub>+c<sub>s</sub>))·Vᵀy — a product of spectral filters — and the paper’s two theorems are both on screen: <em>amplified regularization</em> (c<sub>t</sub> increases, so a few rounds reduce overfitting, more rounds underfit) and <em>finite-round collapse</em> (once mean(ŷ²) ≤ ε, the zero function is feasible with minimal norm, so the solution snaps to f ≡ 0 — an exact theorem, not a numerical artifact).</p>
-      <p>Two honesty notes. First, the improvement phase is guaranteed <em>by construction</em>: the ε-form trains generation 0 to near-interpolation (fit-to-data RMSE √ε ≈ 0.14 against noise σ = 0.5), which is the paper’s own setup — a deliberately overfit teacher. Second, the “natural” alternative — refitting with a <em>fixed</em> ridge λ each round — does not behave this way: its survival threshold sweeps only linearly in the generation count while the RBF spectrum decays geometrically, so it never collapses in finite rounds and its improvement isn’t robust across seeds (we verified this before choosing the ε-form). The formulation, not just the phenomenon, carries the theorem.</p>
-      <div class="defs">
-        <div class="d"><strong>“Self-distillation” has (at least) three meanings.</strong> (a) Born-again generations — a finished model teaches a fresh copy (this demo, Part 4). (b) An EMA teacher inside one training run — BYOL/DINO (Part 6). (c) Deep-to-shallow within one network — deeper layers teach earlier exits (“Be Your Own Teacher,” Zhang et al., 2019). They share a name and a flavor, not a mechanism.</div>
-      </div>
-      <p>And the theory is genuinely plural: Mobahi et al. explains (a) in the RKHS regime as regularization amplification; Allen-Zhu &amp; Li explain (a) in deep networks as implicit ensemble-then-distill. The demo shows the first mechanism because it is the one with an exact, watchable form.</p>
+      <p>The one-hot chain is the clean information-theoretic case: the first argmax hand-off sets target entropy to zero, so whatever dark knowledge the teacher carried is unrecoverable from generation 1 onward — later generations copy an already-blunt world, and the chain goes flat rather than continuing to decay. The shrinking chain is the capacity story: each generation preserves the similarity map as well as its width allows, and the bleed compounds. Note what does <em>not</em> happen at this scale: the soft same-size chain does not collapse. That absence is a finding, and the demo is built around it.</p>
     </div>
   </div>
 
   <div class="panel">
-    <div class="panel-head"><span class="ptitle">The photocopier</span><span class="tag"><span class="lv L1">live · watch the copies</span><span class="lv L2 L3 L4">live · exact linear algebra, no training loops</span></span></div>
-    <div class="panel-body sd-wrap">
-      <canvas id="sd-main" width="640" height="300" role="img" aria-label="Curve fit across self-distillation generations"></canvas>
-      <div class="sd-err"><canvas id="sd-err" width="640" height="110" role="img" aria-label="Test error per generation"></canvas></div>
-      <div class="demo-controls">
-        <button type="button" class="btn" id="sd-next">Distill the next generation</button>
-        <button type="button" class="btn ghostb" id="sd-auto">Run the whole chain ▶</button>
-        <button type="button" class="btn ghostb" id="sd-new">New dataset</button>
+    <div class="panel-head"><span class="ptitle">The photocopier</span><span class="tag"><span class="lv L1">live · watch the copies</span><span class="lv L2 L3 L4">live · every generation really trains</span></span></div>
+    <div class="panel-body">
+      <div class="demo-controls" role="group" aria-label="Photocopier setting">
+        <button type="button" class="btn ghostb" data-chmode="soft" aria-pressed="true"><span class="lv L1">copy the doubt</span><span class="lv L2 L3 L4">soft copies</span></button>
+        <button type="button" class="btn ghostb" data-chmode="onehot" aria-pressed="false"><span class="lv L1">copy only answers</span><span class="lv L2 L3 L4">one-hot copies</span></button>
+        <button type="button" class="btn ghostb" data-chmode="shrink" aria-pressed="false"><span class="lv L1">shrinking copiers</span><span class="lv L2 L3 L4">shrinking copies</span></button>
       </div>
-      <div class="bet" id="sd-bet" hidden>
-        <span class="bet-q"><span class="lv L1">Your guess: how many photocopies until the page goes blank?</span><span class="lv L2 L3 L4">Your bet: how many generations until the chain collapses?</span></span>
-        <button type="button" class="btn ghostb" data-sdbet="3">3</button>
-        <button type="button" class="btn ghostb" data-sdbet="5">5</button>
-        <button type="button" class="btn ghostb" data-sdbet="7">7</button>
-        <button type="button" class="btn ghostb" data-sdbet="9">9</button>
-        <button type="button" class="btn ghostb" data-sdbet="12">12+</button>
+      <div class="bet" id="ch-bet">
+        <span class="bet-q"><span class="lv L1">After 8 photocopies of the teacher’s doubt, how much skill is lost?</span><span class="lv L2 L3 L4">After 8 soft photocopies, how much is lost?</span></span>
+        <button type="button" class="btn ghostb" data-chbet="none">Almost nothing</button>
+        <button type="button" class="btn ghostb" data-chbet="little">A little</button>
+        <button type="button" class="btn ghostb" data-chbet="half">About half</button>
+        <button type="button" class="btn ghostb" data-chbet="all">Everything</button>
+      </div>
+      <canvas id="ch-cv" class="chart-cv" width="640" height="240" style="margin-top:16px" role="img" aria-label="Test accuracy per photocopier generation; dashed teacher reference at 97 percent"></canvas>
+      <div class="demo-controls">
+        <button type="button" class="btn" id="ch-run">Run the chain ▶</button>
+        <button type="button" class="btn ghostb" id="ch-new">New seed</button>
       </div>
       <div class="scorechips" aria-live="polite">
-        <span class="sc">generation <b id="sd-gen">—</b></span>
-        <span class="sc">distance to hidden truth <b id="sd-rmse">—</b></span>
-        <span class="sc lv L2 L3 L4">fit to its own teacher <b id="sd-fit">—</b></span>
+        <span class="sc">generation <b id="ch-gen">teacher</b></span>
+        <span class="sc">test accuracy <b id="ch-acc">97.0%</b></span>
+        <span class="sc lv L3 L4">confidence vs accuracy <b id="ch-conf">—</b></span>
       </div>
-      <div class="sd-meter"><span class="lv L1 L2">the simplifying pressure — watch it climb</span><span class="lv L3 L4">effective regularization c<sub>t</sub> (log scale — this is the “amplifier”)</span>
-        <div class="track"><div class="fillc" id="sd-cfill" style="width:0%"></div></div>
-      </div>
-      <p class="sd-note" id="sd-note" aria-live="polite"></p>
+      <p class="dg-lbl">Six borderline digits, as the current generation reads them:</p>
+      <div class="ch-strip" id="ch-strip" role="group" aria-label="Six borderline test digits and the current generation&#39;s readings"></div>
+      <p class="sd-note" id="ch-note" aria-live="polite"></p>
     </div>
   </div>
 
   <div class="prose">
+    <div class="lv L1">
+      <p>The doubt-photocopier barely loses anything — eight copies later, still reading fine. The answers-only photocopier ruins the page <strong>in one copy</strong>, then faithfully re-copies the ruin. And the shrinking copiers leak a little every time, without ever noticing. The lesson of the whole page, one more time: <strong>the doubt is the knowledge.</strong> Copy it and the knowledge survives. Drop it, and one copy is all it takes.</p>
+    </div>
     <div class="lv L2">
-      <p><strong>What you saw:</strong> simplification ate the wiggles first — that was the improving phase, and it is the born-again story from Part 4 in its cleanest form (the twin experiment was literally generation 1 of this chain). Then it started eating the wave itself — over-smoothing. And finally one generation’s curve was so quiet that <em>a flat zero</em> fit it within budget. Zero is the simplest curve of all. Snap: blank page. The error chart traced a U — improvement, then decay — while every generation’s fit <em>to its own teacher</em> held steady at 0.14. Every student thought it did great.</p>
+      <p><strong>The debrief.</strong> Soft copies: the chain ends within about a point of where it started, generation after generation — at this scale, soft self-distillation is a nearly lossless photocopier, and that <em>is</em> the punchline; no secret collapse was hiding in the fine print. One-hot copies: the damage all happens in generation 1 — the moment the doubt is flattened to a single answer, the similarity map dies, permanently; everything after is a faithful copy of a blunter machine. Shrinking copies: a slow, near-monotone bleed as the map is squeezed into fewer and fewer neurons — while every generation stays as confident as the first. Confidence above accuracy, drifting apart: that mismatch is how you detect a decaying chain from the inside, without labels.</p>
+    </div>
+    <div class="lv L4">
+      <p>The exact-math version of this chain lives in kernel regression: Mobahi, Farajtabar &amp; Bartlett (NeurIPS 2020) prove that ε-budget self-distillation in an RKHS multiplies a spectral filter onto the solution each round — regularization amplifies, a few rounds help a deliberately overfit model, and the chain provably collapses to the zero function in finitely many rounds. An earlier version of this page ran that construction live; this one demonstrates the phenomenon on real data instead, where the honest headline changes: with soft targets and constant capacity the chain is nearly lossless, and knowledge only dies through a lossy hand-off — argmax or shrinking width. The theorem and the demo agree on the mechanism (every hand-off filters); they disagree, instructively, on how fast the filter bites. Both readings of self-distillation theory remain live: regularization amplification, exact in the RKHS, and Allen-Zhu &amp; Li’s implicit ensemble-then-distill for deep networks.</p>
+      <div class="defs">
+        <div class="d"><strong>“Self-distillation” has (at least) three meanings.</strong> (a) Born-again generations — a finished model teaches a fresh copy (this demo, Part 4). (b) An EMA teacher inside one training run — BYOL/DINO (Part 6). (c) Deep-to-shallow within one network — deeper layers teach earlier exits (“Be Your Own Teacher,” Zhang et al., 2019). They share a name and a flavor, not a mechanism.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -900,7 +942,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <p>Mechanics worth keeping straight. The EMA momentum is high (≈0.99–0.999), so the teacher trails the student by a long, smooth window. In DINO, teacher outputs pass through a softmax at temperature ≈0.04–0.07 while the student uses ≈0.1 — the teacher is <em>sharpened</em> relative to the student — plus a running-mean <em>centering</em> of teacher logits; sharpening alone would collapse the outputs onto one dimension, centering alone toward uniform, and the pair holds the balance. BYOL, by contrast, has no softmax and no temperature at all: it is a cosine regression between the student’s predictor and the teacher’s projection, with a stop-gradient. So this page’s temperature intuition maps onto DINO — not BYOL.</p>
     </div>
     <div class="lv L4">
-      <p>Self-teaching loops fail in characteristic ways, and it pays to hold two collapse stories side by side. <em>DINO-style collapse</em>: teacher outputs drift toward a constant or uniform distribution and the student happily matches it — a degenerate fixed point of the matching game, killed by centering + sharpening keeping the output distribution both spread and committed. <em>Mobahi-style collapse</em> (the Part 5 demo you just played): each self-distillation round provably amplifies regularization until the fit snaps to the zero function. Different mechanisms; same moral — <strong>a self-referential teacher must be paired with a force that keeps the signal alive</strong>.</p>
+      <p>Self-teaching loops fail in characteristic ways, and it pays to hold two collapse stories side by side. <em>DINO-style collapse</em>: teacher outputs drift toward a constant or uniform distribution and the student happily matches it — a degenerate fixed point of the matching game, killed by centering + sharpening keeping the output distribution both spread and committed. <em>Mobahi-style collapse</em> (the exact-math aside in Part 5 — you watched its practical cousins in the one-hot and shrinking chains): each ε-budget self-distillation round provably amplifies regularization until the fit snaps to the zero function. Different mechanisms; same moral — <strong>a self-referential teacher must be paired with a force that keeps the signal alive</strong>.</p>
       <p>There is also a satisfying ensemble reading of the EMA teacher: a moving average over the student’s trajectory behaves like a cheap ensemble of past selves — which quietly connects the momentum-teacher trick to the Allen-Zhu–Li account of why distillation transfers anything at all.</p>
     </div>
   </div>
@@ -950,11 +992,11 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
   <div class="prose">
     <div class="take lv L1">
       <h3>For explorers</h3>
-      <p style="margin:0"><strong>A good teacher doesn’t just say right or wrong — they tell you which wrong answers were close.</strong> Computers can copy that kind of teaching from each other. That’s how giant AIs shrink down to fit in a phone… and how a machine can even become its own teacher. For a while.</p>
+      <p style="margin:0"><strong>A good teacher doesn’t just say right or wrong — they tell you which wrong answers were close.</strong> Computers can copy that kind of teaching from each other. That’s how giant AIs shrink down to fit in a phone… and how a machine can even become its own teacher — as long as the copies keep the doubt.</p>
     </div>
     <div class="take lv L2">
       <h3>For students</h3>
-      <p style="margin:0"><strong>Soft answers carry more information than right answers.</strong> A probability over every option tells a student how the teacher <em>sees</em> the world, not just what it concluded — which is why a student can inherit a teacher’s whole map from surprisingly few examples, and why a model looped onto itself can climb for a few generations before it collapses.</p>
+      <p style="margin:0"><strong>Soft answers carry more information than right answers.</strong> A probability over every option tells a student how the teacher <em>sees</em> the world, not just what it concluded — which is why a student can inherit a teacher’s whole map from surprisingly few examples, and why a chain of models teaching their own copies lives or dies by what each hand-off preserves.</p>
     </div>
     <div class="take lv L3">
       <h3>For engineers</h3>
@@ -965,7 +1007,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <p style="margin:0"><strong>One mechanism, three uses; two live theories.</strong> Compression, regularization, and self-improvement — variously explained by regularization amplification (exact in an RKHS) and implicit-ensemble transfer. What a student actually needs from its teacher, beyond the teacher’s data, remains genuinely open.</p>
     </div>
     <p style="margin-top:26px">This is Part 2 of a series. Part 1 — <a href="https://claude.ai/code/artifact/3226dc76-020e-41c4-b31f-7d0d1f3d74ae"><em>The Machine That Teaches Itself</em></a> — is about self-supervised learning: how the giants learn from nobody at all. It has the same dials. Part 3 is still in the still.</p>
-    <p class="muted" style="font-size:13.5px">A single self-contained HTML file; every demo runs live in your browser. The self-distillation demo implements Mobahi–Farajtabar–Bartlett exactly; the two-students demo trains real (convex) models on every press.</p>
+    <p class="muted" style="font-size:13.5px">A single self-contained HTML file; every demo runs live in your browser. Every student on this page — the race, the missing digit, the photocopier chains — is a real network trained in your tab by the same seeded SGD engine, on real 8×8 handwritten digits, every time you press the button.</p>
   </div>
 </section>
 
@@ -1132,7 +1174,6 @@ function setLevel(lv){
   document.querySelectorAll('#dial-top button, #dial-hero button').forEach(function(b){
     b.setAttribute('aria-pressed', b.dataset.lv === lv ? 'true' : 'false');
   });
-  if(window.__sdRefresh) window.__sdRefresh();
   if(window.__kdHeroLang) window.__kdHeroLang();
   if(window.__raceRefresh) window.__raceRefresh();
   if(window.__missRefresh) window.__missRefresh();
@@ -1658,115 +1699,6 @@ function cssVar(name){
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
-/* shared kernel-regression core (the twin experiment and the photocopier) */
-function jacobiEig(A, n){
-  var Vm = [], i, j;
-  for(i = 0; i < n; i++){ Vm[i] = []; for(j = 0; j < n; j++) Vm[i][j] = (i === j) ? 1 : 0; }
-  for(var sweep = 0; sweep < 100; sweep++){
-    var off = 0;
-    for(i = 0; i < n-1; i++) for(j = i+1; j < n; j++) off += A[i][j]*A[i][j];
-    if(off < 1e-22) break;
-    for(var p = 0; p < n-1; p++){
-      for(var q = p+1; q < n; q++){
-        var apq = A[p][q];
-        if(Math.abs(apq) < 1e-15) continue;
-        var tau = (A[q][q] - A[p][p]) / (2*apq);
-        var t = (tau >= 0 ? 1 : -1) / (Math.abs(tau) + Math.sqrt(1 + tau*tau));
-        var c = 1/Math.sqrt(1 + t*t), s = t*c;
-        A[p][p] -= t*apq;
-        A[q][q] += t*apq;
-        A[p][q] = 0; A[q][p] = 0;
-        for(var k = 0; k < n; k++){
-          if(k !== p && k !== q){
-            var akp = A[k][p], akq = A[k][q];
-            A[k][p] = c*akp - s*akq; A[p][k] = A[k][p];
-            A[k][q] = s*akp + c*akq; A[q][k] = A[k][q];
-          }
-          var vkp = Vm[k][p], vkq = Vm[k][q];
-          Vm[k][p] = c*vkp - s*vkq;
-          Vm[k][q] = s*vkp + c*vkq;
-        }
-      }
-    }
-  }
-  var dd = [];
-  for(i = 0; i < n; i++) dd[i] = Math.max(A[i][i], 0);
-  return { d: dd, V: Vm };
-}
-function matVt(V, v, n){
-  var out = [];
-  for(var i = 0; i < n; i++){
-    var s = 0;
-    for(var k = 0; k < n; k++) s += V[k][i]*v[k];
-    out[i] = s;
-  }
-  return out;
-}
-function matV(V, v, n){
-  var out = [];
-  for(var k = 0; k < n; k++){
-    var s = 0;
-    for(var i = 0; i < n; i++) s += V[k][i]*v[i];
-    out[k] = s;
-  }
-  return out;
-}
-function epsRound(d, V, z, n, eps){
-  var mz = 0, i;
-  for(i = 0; i < n; i++) mz += z[i]*z[i];
-  if(mz/n <= eps) return null;
-  var zh = matVt(V, z, n);
-  var lo = 1e-9, hi = 1e9, c, it;
-  for(it = 0; it < 80; it++){
-    c = Math.sqrt(lo*hi);
-    var g = 0;
-    for(i = 0; i < n; i++){ var f = c/(d[i]+c); g += f*f*zh[i]*zh[i]; }
-    if(g/n > eps) hi = c; else lo = c;
-  }
-  c = Math.sqrt(lo*hi);
-  var av = [], zn = [];
-  for(i = 0; i < n; i++){ av[i] = zh[i]/(d[i]+c); zn[i] = d[i]/(d[i]+c)*zh[i]; }
-  return { c: c, alpha: matV(V, av, n), znext: matV(V, zn, n) };
-}
-function kernelData(seedVal, n, ell, sig, gn){
-  var rng = mulberry32(seedVal), i, j;
-  var xs = [], ys = [];
-  for(i = 0; i < n; i++){
-    var x = i/(n-1) + (rng() - 0.5)/(n-1);
-    x = Math.min(1, Math.max(0, x));
-    var u1 = 1 - rng(), u2 = rng();
-    var gz = Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
-    xs.push(x); ys.push(Math.sin(2*Math.PI*x) + sig*gz);
-  }
-  var K = [];
-  for(i = 0; i < n; i++){
-    K[i] = [];
-    for(j = 0; j < n; j++) K[i][j] = Math.exp(-(xs[i]-xs[j])*(xs[i]-xs[j])/(2*ell*ell));
-  }
-  var e = jacobiEig(K, n);
-  var Kg = [];
-  for(var a = 0; a < gn; a++){
-    Kg[a] = [];
-    var gx = a/(gn-1);
-    for(j = 0; j < n; j++) Kg[a][j] = Math.exp(-(gx-xs[j])*(gx-xs[j])/(2*ell*ell));
-  }
-  return { xs: xs, ys: ys, d: e.d, V: e.V, Kg: Kg };
-}
-function kgCurve(Kg, alpha, gn, n){
-  var out = [];
-  for(var a = 0; a < gn; a++){
-    var s = 0;
-    for(var i = 0; i < n; i++) s += Kg[a][i]*alpha[i];
-    out[a] = s;
-  }
-  return out;
-}
-function rmseToTruth(curve, gn){
-  var s = 0;
-  for(var a = 0; a < gn; a++){ var tv = Math.sin(2*Math.PI*a/(gn-1)); s += (curve[a]-tv)*(curve[a]-tv); }
-  return Math.sqrt(s/gn);
-}
-
 /* ---------- D2: the race — two students, one teacher (validated config A) ---------- */
 (function(){
   var cv = document.getElementById('race-cv');
@@ -1838,8 +1770,10 @@ function rmseToTruth(curve, gn){
       curve(accH, C.hard, 2.2);
       curve(accS, C.soft, 2.6);
       var xe = X(xs[xs.length - 1]) + 6;
+      var ty = Y(0.97) + 3.5;
       var yh = Y(accH[accH.length - 1]) + 3.5, ys = Y(accS[accS.length - 1]) + 3.5;
-      if(yh - ys < 12){ yh = ys + 12; }
+      if(Math.abs(ys - ty) < 12) ys = ty + 12;   /* keep clear of the teacher label */
+      if(yh - ys < 12) yh = ys + 12;             /* and keep the two curve labels apart */
       ctx.fillStyle = C.hard; ctx.fillText('answer key', Math.min(xe, W - 66), yh);
       ctx.fillStyle = C.soft; ctx.fillText('soft labels', Math.min(xe, W - 66), ys);
     } else {
@@ -1993,237 +1927,329 @@ function rmseToTruth(curve, gn){
   note();
 })();
 
-/* ---------- D3: the photocopier — self-distillation, exact (Mobahi et al. 2020) ---------- */
+/* ---------- D4: the photocopier chain (validated config C; default seed 4) ---------- */
 (function(){
-  var cvM = document.getElementById('sd-main');
-  if(!cvM) return;
-  var cvE = document.getElementById('sd-err');
-  var nextBtn = document.getElementById('sd-next'), newBtn = document.getElementById('sd-new');
-  var autoBtn = document.getElementById('sd-auto'), betSdEl = document.getElementById('sd-bet');
-  var genEl = document.getElementById('sd-gen'), rmseEl = document.getElementById('sd-rmse'), fitEl = document.getElementById('sd-fit');
-  var cFill = document.getElementById('sd-cfill'), noteEl = document.getElementById('sd-note');
+  var cv = document.getElementById('ch-cv');
+  if(!cv) return;
+  var runBtn = document.getElementById('ch-run'), newBtn = document.getElementById('ch-new');
+  var betEl = document.getElementById('ch-bet'), noteEl = document.getElementById('ch-note');
+  var stripEl = document.getElementById('ch-strip');
+  var genEl = document.getElementById('ch-gen'), accEl = document.getElementById('ch-acc'), confEl = document.getElementById('ch-conf');
+  var modeBtns = document.querySelectorAll('button[data-chmode]');
+  var MODES = {
+    soft:   { hiddens: [32,32,32,32,32,32,32,32], M: 400, lr: 0.1, steps: 1000, T: 4, onehot: false },
+    onehot: { hiddens: [32,32,32,32,32,32,32,32], M: 400, lr: 0.3, steps: 1000, T: 1, onehot: true },
+    shrink: { hiddens: [48,32,24,16,12,10,8,6],   M: 600, lr: 0.1, steps: 2000, T: 4, onehot: false }
+  };
+  var TEACHER_ACC = 0.97; /* 291/300 — checked by window.__heroBench() */
+  var seed = 4, mode = 'soft';
+  var accs = [TEACHER_ACC], confs = [], gen = 0, curNet = null;
+  var inputs = null, prevLogits = null;
+  var running = false, animToken = 0;
+  var betChoice = null, betOutcome = null, lastNote = '';
 
-  var N = 25, ELL = 0.10, SIG = 0.5, EPS = 0.02, GN = 201, MAXGEN = 16;
-  var seed = 1;
-  var xs, ys, d, V, Kg, z, gen, collapsed, curve, prevCurve, errs, cs, lastFe;
-  var sdBet = null, autoTimer = null;
-  var morphFrom = null, morphT = 1, morphToken = 0;
-
-  function makeData(){
-    var kd = kernelData(seed, N, ELL, SIG, GN);
-    xs = kd.xs; ys = kd.ys; d = kd.d; V = kd.V; Kg = kd.Kg;
-    z = ys.slice();
-    gen = -1; collapsed = false; curve = null; prevCurve = null;
-    errs = []; cs = []; lastFe = null;
-    sdBet = null;
-    morphFrom = null; morphT = 1; morphToken++;
-    stopAuto();
-  }
-  function step(){
-    if(collapsed) return;
-    gen++;
-    var mz = 0, i;
-    for(i = 0; i < N; i++) mz += z[i]*z[i];
-    var r = epsRound(d, V, z, N, EPS);
-    if(r === null){
-      collapsed = true;
-      prevCurve = curve;
-      curve = new Array(GN).fill(0);
-      errs.push(rmseToTruth(curve, GN)); cs.push(Infinity);
-      lastFe = Math.sqrt(mz/N);
-      z = new Array(N).fill(0);
-      return;
+  function meanConfOf(net){
+    var s = 0, i, k;
+    for(i = 0; i < TEST_XS.length; i++){
+      var pr = teacherSoftmax(net ? netLogits(net, TEST_XS[i]) : teacherLogits(getSample(TEST_PX, i)), 1);
+      var mx = 0;
+      for(k = 0; k < 10; k++) if(pr[k] > mx) mx = pr[k];
+      s += mx;
     }
-    prevCurve = curve;
-    curve = kgCurve(Kg, r.alpha, GN, N);
-    var fe = 0;
-    for(i = 0; i < N; i++) fe += (r.znext[i]-z[i])*(r.znext[i]-z[i]);
-    lastFe = Math.sqrt(fe/N);
-    z = r.znext;
-    errs.push(rmseToTruth(curve, GN)); cs.push(r.c);
+    return s/TEST_XS.length;
   }
-  function colAccent(){ return isDark() ? '#5FCDB0' : '#0E7A63'; }
-  function colCard(){ return isDark() ? '#171B23' : '#FFFFFF'; }
-  function colDim(){ return isDark() ? 'rgba(166,173,191,.6)' : 'rgba(74,82,100,.55)'; }
-  function colText(){ return isDark() ? '#A6ADBF' : '#4A5264'; }
-  function colDots(){ return isDark() ? '#7A8398' : '#8A93A6'; }
+  var TEACHER_CONF = meanConfOf(null);
+  confs = [TEACHER_CONF];
+  /* six borderline digits: teacher-correct test samples with the smallest top-2 margin */
+  var INTEREST = (function(){
+    var margins = [], i, k;
+    for(i = 0; i < TEST_XS.length; i++){
+      var pr = teacherSoftmax(teacherLogits(getSample(TEST_PX, i)), 1);
+      var am = argmax10(pr);
+      if(am !== TEST_Y[i]) continue;
+      var second = 0;
+      for(k = 0; k < 10; k++) if(k !== am && pr[k] > second) second = pr[k];
+      margins.push({ i: i, m: pr[am] - second });
+    }
+    margins.sort(function(a, b){ return a.m - b.m; });
+    return margins.slice(0, 6).map(function(o){ return o.i; });
+  })();
+  var stripCards = [];
+  INTEREST.forEach(function(ti){
+    var card = document.createElement('div');
+    card.className = 'ch-card';
+    card.setAttribute('role', 'img');
+    var cnv = document.createElement('canvas');
+    cnv.width = 32; cnv.height = 32;
+    card.appendChild(cnv);
+    var pEl = document.createElement('span');
+    pEl.className = 'p';
+    card.appendChild(pEl);
+    stripEl.appendChild(card);
+    stripCards.push({ el: card, cnv: cnv, p: pEl, ti: ti });
+  });
+  function paintStrip(){
+    stripCards.forEach(function(c){ renderDigit(c.cnv, getSample(TEST_PX, c.ti)); });
+  }
+  function updateStrip(){
+    stripCards.forEach(function(c){
+      var pred = curNet ? argmax10(netLogits(curNet, TEST_XS[c.ti])) : argmax10(teacherLogits(getSample(TEST_PX, c.ti)));
+      var ok = pred === TEST_Y[c.ti];
+      c.el.classList.toggle('ok', ok);
+      c.el.classList.toggle('bad', !ok);
+      c.p.textContent = '→ ' + pred;
+      c.el.setAttribute('aria-label', 'a test ' + TEST_Y[c.ti] + ', read as ' + pred + (ok ? '' : ' — flipped'));
+    });
+  }
+  function resetChain(){
+    var cfg = MODES[mode];
+    animToken++;
+    running = false;
+    var trIdx;
+    if(cfg.M === 600){
+      trIdx = [];
+      for(var i = 0; i < DIGITS_DATA.transferCount; i++) trIdx.push(i);
+    } else {
+      trIdx = seededPick(cfg.M, 600, seed*331 + 9);
+    }
+    inputs = trIdx.map(function(ii){ return POOL_XS[ii]; });
+    prevLogits = trIdx.map(function(ii){ return teacherLogits(getSample(POOL_PX, ii)); });
+    accs = [TEACHER_ACC]; confs = [TEACHER_CONF]; gen = 0; curNet = null;
+    runBtn.disabled = false; newBtn.disabled = false;
+    modeBtns.forEach(function(b){ b.disabled = false; });
+    chips(); draw(); updateStrip(); note();
+  }
+  function chartCols(){
+    return {
+      card: isDark() ? '#171B23' : '#FFFFFF',
+      grid: isDark() ? 'rgba(166,173,191,.28)' : 'rgba(74,82,100,.2)',
+      text: isDark() ? '#A6ADBF' : '#4A5264',
+      line: cssVar('--hl'), teach: cssVar('--accent')
+    };
+  }
   function draw(){
-    var ctx = cvM.getContext('2d'), W = 640, H = 300, YR = 2.5;
-    function px(x){ return x*W; }
-    function py(v){ return H/2 - v*H/(2*YR); }
-    ctx.fillStyle = colCard(); ctx.fillRect(0, 0, W, H);
-    ctx.strokeStyle = colDim(); ctx.lineWidth = 1;
-    ctx.setLineDash([2,4]); ctx.beginPath(); ctx.moveTo(0, py(0)); ctx.lineTo(W, py(0)); ctx.stroke();
-    ctx.setLineDash([6,5]); ctx.lineWidth = 1.5; ctx.beginPath();
-    for(var a = 0; a < GN; a++){
-      var vx = px(a/(GN-1)), vy = py(Math.sin(2*Math.PI*a/(GN-1)));
-      if(a === 0) ctx.moveTo(vx, vy); else ctx.lineTo(vx, vy);
+    var ctx = cv.getContext('2d'), W = cv.width, H = cv.height, C = chartCols();
+    var L = 46, R = 86, TP = 14, B = 30, YMIN = 0.75, YMAX = 1.0;
+    function X(g){ return L + (W - L - R)*g/8; }
+    function Y(a){ return H - B - (H - TP - B)*(Math.max(a, YMIN) - YMIN)/(YMAX - YMIN); }
+    ctx.fillStyle = C.card; ctx.fillRect(0, 0, W, H);
+    ctx.font = '10.5px ui-monospace,Menlo,monospace';
+    ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+    [0.75, 0.8, 0.85, 0.9, 0.95, 1.0].forEach(function(gp){
+      ctx.beginPath(); ctx.moveTo(L, Y(gp)); ctx.lineTo(W - R, Y(gp)); ctx.stroke();
+      ctx.fillStyle = C.text;
+      ctx.fillText(Math.round(gp*100) + '%', 12, Y(gp) + 3.5);
+    });
+    ctx.fillStyle = C.text;
+    for(var g = 0; g <= 8; g++){
+      ctx.fillText(g === 0 ? (kidMode() ? 'T' : 'T') : String(g), X(g) - 3, H - 12);
     }
-    ctx.stroke(); ctx.setLineDash([]);
-    if(prevCurve){
-      ctx.strokeStyle = colAccent(); ctx.globalAlpha = 0.28; ctx.lineWidth = 2; ctx.beginPath();
-      for(a = 0; a < GN; a++){
-        var v = Math.max(-YR, Math.min(YR, prevCurve[a]));
-        if(a === 0) ctx.moveTo(px(a/(GN-1)), py(v)); else ctx.lineTo(px(a/(GN-1)), py(v));
-      }
-      ctx.stroke(); ctx.globalAlpha = 1;
+    ctx.fillText(kidMode() ? 'copy number (T = teacher)' : 'generation (T = teacher)', L + 4, H - 2);
+    ctx.strokeStyle = C.teach; ctx.setLineDash([6, 5]); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(L, Y(0.97)); ctx.lineTo(W - R, Y(0.97)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = C.teach;
+    ctx.fillText('teacher 97%', W - R + 6, Y(0.97) + 3.5);
+    ctx.strokeStyle = C.line; ctx.lineWidth = 2.6; ctx.beginPath();
+    for(g = 0; g < accs.length; g++){
+      var px = X(g), py = Y(accs[g]);
+      if(g === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
     }
-    if(curve){
-      var drawC = curve;
-      if(morphFrom && morphT < 1){
-        drawC = [];
-        var eT = morphT*(2 - morphT);
-        for(a = 0; a < GN; a++) drawC[a] = morphFrom[a] + (curve[a] - morphFrom[a])*eT;
-      }
-      ctx.strokeStyle = colAccent(); ctx.lineWidth = 2.6; ctx.beginPath();
-      for(a = 0; a < GN; a++){
-        var v2 = Math.max(-YR, Math.min(YR, drawC[a]));
-        if(a === 0) ctx.moveTo(px(a/(GN-1)), py(v2)); else ctx.lineTo(px(a/(GN-1)), py(v2));
-      }
-      ctx.stroke();
+    ctx.stroke();
+    ctx.fillStyle = C.line;
+    for(g = 0; g < accs.length; g++){
+      ctx.beginPath(); ctx.arc(X(g), Y(accs[g]), 3.4, 0, 2*Math.PI); ctx.fill();
     }
-    ctx.fillStyle = colDots();
-    for(var i = 0; i < N; i++){
-      ctx.beginPath(); ctx.arc(px(xs[i]), py(Math.max(-YR, Math.min(YR, ys[i]))), 3.2, 0, 2*Math.PI); ctx.fill();
+    if(accs.length){
+      var last = accs[accs.length - 1];
+      ctx.fillText((last*100).toFixed(1) + '%', X(accs.length - 1) + 8, Y(last) + (last > 0.985 ? 12 : 3.5));
     }
   }
-  function drawErr(){
-    var ctx = cvE.getContext('2d'), W = 640, H = 110;
-    ctx.fillStyle = colCard(); ctx.fillRect(0, 0, W, H);
-    var base = 0.7071, top = 0.95, pad = 26;
-    function ey(v){ return H - 14 - Math.min(v, top)/top*(H - 32); }
-    ctx.strokeStyle = colDim(); ctx.setLineDash([4,4]); ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(pad, ey(base)); ctx.lineTo(W - 6, ey(base)); ctx.stroke(); ctx.setLineDash([]);
-    ctx.fillStyle = colText(); ctx.font = '10px ui-monospace,Menlo,monospace';
-    ctx.fillText('blank page (flat zero) = 0.71', W - 196, ey(base) - 5);
-    ctx.fillText('distance to hidden truth, per generation', pad + 4, 12);
-    if(!errs.length) return;
-    var min = Math.min.apply(null, errs);
-    var bw = Math.min(30, (W - pad - 12)/Math.max(errs.length, 8) - 8);
-    for(var i = 0; i < errs.length; i++){
-      var bx = pad + 8 + i*(bw + 8);
-      var by = ey(errs[i]);
-      ctx.fillStyle = errs[i] === min ? (isDark() ? '#E3B23C' : '#D9A62E') : colAccent();
-      ctx.globalAlpha = (i === errs.length - 1) ? 1 : 0.55;
-      ctx.fillRect(bx, by, bw, H - 14 - by);
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = colText();
-      ctx.fillText(String(i), bx + bw/2 - 3, H - 3);
-    }
+  function chips(){
+    genEl.textContent = gen === 0 ? (kidMode() ? 'teacher' : 'teacher (0)') : String(gen) + ' of 8';
+    accEl.textContent = (accs[accs.length - 1]*100).toFixed(1) + '%';
+    confEl.textContent = (confs[confs.length - 1]*100).toFixed(0) + '% vs ' + (accs[accs.length - 1]*100).toFixed(0) + '%';
   }
-  function noteText(){
-    var kid = kidMode();
-    if(gen < 0) return kid
-      ? 'Fresh messy notes: a hidden wave plus scribbles. Press <strong>Distill the next generation</strong> and the first machine will draw its curve.'
-      : 'Fresh data: a hidden wave plus noise. Press <strong>Distill the next generation</strong> to train generation 0 — the deliberately overfit “teacher.”';
-    if(collapsed){
-      var base = kid
-        ? '<strong>Blank page!</strong> The last curve was so quiet that drawing <em>nothing at all</em> counted as a perfect copy — and “nothing” is the simplest drawing there is. That’s how the photocopy game always ends (generation ' + gen + ').'
-        : '<strong>Blank page.</strong> The previous curve was quiet enough that a flat zero fits it within the error budget — and zero is the simplest function of all. That’s the paper’s theorem doing exactly what it says (generation ' + gen + ').';
-      if(sdBet !== null){
-        var hit = (sdBet === 12 && gen >= 12) || gen === sdBet;
-        var diff = Math.abs(gen - sdBet);
-        var betLbl = sdBet === 12 ? '12+' : String(sdBet);
-        base += hit ? ' <strong>And your guess was dead on!</strong>'
-              : diff <= 2 ? ' Your guess (' + betLbl + ') was close — it went blank at generation ' + gen + '.'
-              : ' You guessed ' + betLbl + '; it actually went blank at generation ' + gen + '.';
+  function modeName(kid){
+    if(mode === 'soft') return kid ? 'copy-the-doubt' : 'soft';
+    if(mode === 'onehot') return kid ? 'answers-only' : 'one-hot';
+    return kid ? 'shrinking' : 'shrinking';
+  }
+  function note(){
+    var kid = kidMode(), h = '';
+    if(running){
+      h = kid
+        ? '<strong>Photocopying…</strong> copy ' + gen + ' is studying copy ' + (gen - 1 === 0 ? '“teacher”' : gen - 1) + '’s outputs. It will never see the teacher or the true answers.'
+        : '<strong>Generation ' + gen + ' training…</strong> targets are generation ' + (gen - 1) + '’s outputs over the same transfer digits. The teacher and true labels left the loop after gen 1.';
+    } else if(gen === 0){
+      if(mode === 'soft'){
+        h = kid
+          ? 'Setting: <strong>copy the doubt</strong> — each copy learns the previous robot’s full guess-list. Bet, then press <strong>Run the chain</strong>.'
+          : 'Mode: <strong>soft copies</strong> — each generation matches its predecessor’s beliefs at T = 4. Place your bet, then run the chain.';
+      } else if(mode === 'onehot'){
+        h = kid
+          ? 'Setting: <strong>copy only answers</strong> — each copy is told just the winning digit, nothing else. What do you think one copy costs?'
+          : 'Mode: <strong>one-hot copies</strong> — each hand-off keeps only the argmax. Target entropy hits zero at the very first copy. Run it.';
+      } else {
+        h = kid
+          ? 'Setting: <strong>shrinking copiers</strong> — every new robot is smaller: 48, 32, 24, … down to 6 neurons. Where does the doubt go when the room runs out?'
+          : 'Mode: <strong>shrinking copies</strong> — soft T = 4 hand-offs, but hidden width walks 48→32→24→16→12→10→8→6. Same doubt, less and less room to keep it.';
       }
-      return base;
+    } else if(gen >= 8){
+      var final_ = accs[8]*100, drop = (accs[0] - accs[8])*100;
+      var betBit = '';
+      if(mode === 'soft' && betOutcome){
+        betBit = betOutcome === 'won'
+          ? (kid ? '<strong>You called it!</strong> ' : '<strong>Your bet pays off.</strong> ')
+          : (kid ? '<strong>Surprise!</strong> ' : '<strong>Your bet loses.</strong> ');
+      }
+      if(mode === 'soft'){
+        h = betBit + (kid
+          ? '<strong>Almost nothing was lost.</strong> Eight photocopies later, the last student still reads ' + final_.toFixed(0) + ' digits out of 100 — the teacher read 97. The doubt is the part that survives copying. Now try <strong>copy only answers</strong>.'
+          : '<strong>Nearly lossless: ' + final_.toFixed(1) + '% after 8 generations</strong> (teacher: 97.0%). At this scale, soft self-distillation just… works; the similarity map survives every hand-off. That is the honest punchline — no hidden collapse. Now run <strong>one-hot copies</strong> for the contrast.');
+      } else if(mode === 'onehot'){
+        h = kid
+          ? '<strong>One copy did all the damage.</strong> The first answers-only copy dropped to ' + (accs[1]*100).toFixed(0) + '% and the chain never got better — or worse. The doubt died in one copy, and every later copy inherited the same blunt world. And look: the copies stay almost 100% sure of themselves.'
+          : '<strong>The drop happens at generation 1</strong> (' + (accs[1]*100).toFixed(1) + '%), then the chain goes flat: the first argmax hand-off set target entropy to zero — dark knowledge died in a single photocopy, unrecoverably. Meanwhile confidence stays ≈' + (confs[8]*100).toFixed(0) + '% against ' + final_.toFixed(0) + '% accuracy: blunt and sure of it.';
+      } else {
+        h = kid
+          ? '<strong>The slow leak.</strong> Each smaller copier lost a little more: ' + (accs[0]*100).toFixed(0) + '% down to ' + final_.toFixed(0) + '%. And the tiny copies never notice — they stay just as confident as the big ones. Squeezed doubt is lost doubt.'
+          : '<strong>Monotone bleed: 97.0% → ' + final_.toFixed(1) + '%</strong> (−' + drop.toFixed(1) + ' points over the chain) as the map is squeezed from 48 hidden units down to 6 — while mean confidence holds near ' + (confs[8]*100).toFixed(0) + '%. Confidence above accuracy, drifting apart: the signature of information bleed.';
+      }
+    } else {
+      h = kid
+        ? '<strong>Copy ' + gen + ' done</strong> — reading ' + (accs[gen]*100).toFixed(0) + ' of 100. Keep going.'
+        : '<strong>Generation ' + gen + ':</strong> ' + (accs[gen]*100).toFixed(1) + '% test accuracy.';
     }
-    if(gen === 0) return kid
-      ? '<strong>Generation 0 copies everything — even the scribbles.</strong> Now press again: the next machine learns only from this curve, never from the dots.'
-      : '<strong>Generation 0 fits the scribbles.</strong> Wiggly and overfit — its error budget forces it to chase the noise. Now distill: the next model learns only from this curve.';
-    var last = errs[errs.length - 1], min = Math.min.apply(null, errs);
-    if(last === min) return '<strong>Generation ' + gen + ' is the closest to the hidden truth so far.</strong> Smoother <em>and</em> more accurate — the noise dies before the wave does.';
-    if(last > 1.3*min) return kid
-      ? '<strong>Fading…</strong> The scribbles are long gone; now the wave itself is disappearing. Keep pressing…'
-      : '<strong>Over-smoothing.</strong> The noise is long gone; now the wave itself is eroding. The simplifying pressure keeps climbing — collapse is coming.';
-    return '<strong>Generation ' + gen + '.</strong> Distance to the hidden truth: ' + last.toFixed(3) + '. Keep pressing.';
+    if(h !== lastNote){ noteEl.innerHTML = h; lastNote = h; }
   }
-  function updateUI(){
-    genEl.textContent = gen < 0 ? '—' : String(gen);
-    rmseEl.textContent = errs.length ? errs[errs.length - 1].toFixed(3) : '—';
-    fitEl.textContent = lastFe === null ? '—' : lastFe.toFixed(3) + (gen > 0 && !collapsed ? ' (every generation — by design)' : '');
-    var w = 0;
-    if(cs.length){
-      var c = cs[cs.length - 1];
-      w = c === Infinity ? 100 : Math.max(0, Math.min(100, (Math.log(c)/Math.LN10 + 9)/12*100));
+  function targetsFromPrev(cfg){
+    return prevLogits.map(function(z){
+      if(cfg.onehot){
+        var tg = new Float64Array(10);
+        tg[argmax10(z)] = 1;
+        return tg;
+      }
+      return teacherSoftmax(z, cfg.T);
+    });
+  }
+  function trainGen(token, done){
+    var cfg = MODES[mode];
+    gen++;
+    var net = heNet(seed*100 + gen, cfg.hiddens[gen - 1]);
+    var trn = makeStudentTrainer(net, inputs, targetsFromPrev(cfg), {
+      lr: cfg.lr, T: cfg.onehot ? 1 : cfg.T, batch: 100, shuffleSeed: seed*100 + gen + 5000
+    });
+    function fin(){
+      prevLogits = inputs.map(function(x){ return netLogits(net, x); });
+      curNet = net;
+      accs.push(testAccOn(net, null));
+      confs.push(meanConfOf(net));
+      done();
     }
-    cFill.style.width = w + '%';
-    noteEl.innerHTML = noteText();
-    nextBtn.disabled = collapsed;
-    nextBtn.style.opacity = collapsed ? 0.5 : 1;
-    autoBtn.disabled = collapsed;
-    autoBtn.style.opacity = collapsed ? 0.5 : 1;
-    betSdEl.hidden = !(!collapsed && sdBet === null && gen < 1);
-  }
-  function refresh(){ draw(); drawErr(); updateUI(); }
-  function startMorph(){
-    if(reduceMotion || !prevCurve || !curve){ draw(); return; }
-    morphFrom = prevCurve; morphT = 0;
-    var token = ++morphToken, t0 = null;
-    function fr(ts){
-      if(token !== morphToken) return;
-      if(t0 === null) t0 = ts;
-      morphT = Math.min(1, (ts - t0)/420);
-      draw();
-      if(morphT < 1) requestAnimationFrame(fr);
+    if(reduceMotion){ trn.stepN(cfg.steps); fin(); return; }
+    var doneSteps = 0, per = Math.ceil(cfg.steps/30);
+    function fr(){
+      if(token !== animToken) return;
+      var n = Math.min(per, cfg.steps - doneSteps);
+      trn.stepN(n); doneSteps += n;
+      if(doneSteps < cfg.steps) requestAnimationFrame(fr); else fin();
     }
     requestAnimationFrame(fr);
   }
-  function stepAndShow(){
-    if(collapsed || gen >= MAXGEN) return;
-    step();
-    drawErr(); updateUI();
-    startMorph();
+  function finishChain(){
+    running = false;
+    if(mode === 'soft' && betChoice && !betOutcome){
+      betOutcome = betChoice === 'none' ? 'won' : 'lost';
+      betChoice = null;
+    }
+    runBtn.disabled = false; newBtn.disabled = false;
+    modeBtns.forEach(function(b){ b.disabled = false; });
+    runBtn.textContent = 'Run the chain again ▶';
+    chips(); draw(); updateStrip(); note();
   }
-  function stopAuto(){
-    if(autoTimer){ clearTimeout(autoTimer); autoTimer = null; }
-    autoBtn.textContent = 'Run the whole chain ▶';
+  function runChain(){
+    if(running) return;
+    resetChain();
+    if(mode === 'soft') betEl.hidden = true;
+    running = true;
+    runBtn.disabled = true; newBtn.disabled = true;
+    modeBtns.forEach(function(b){ b.disabled = true; });
+    var token = ++animToken;
+    function nextGen(){
+      if(token !== animToken) return;
+      note();
+      trainGen(token, function(){
+        chips(); draw(); updateStrip(); note();
+        if(gen >= 8){ finishChain(); return; }
+        if(reduceMotion){ nextGen(); return; }
+        setTimeout(function(){ if(token === animToken) nextGen(); }, 160);
+      });
+    }
+    nextGen();
   }
-  window.__sdRefresh = function(){ if(errs) updateUI(); };
-  nextBtn.addEventListener('click', function(){ stopAuto(); stepAndShow(); });
-  autoBtn.addEventListener('click', function(){
-    if(autoTimer){ stopAuto(); return; }
-    if(collapsed || gen >= MAXGEN) return;
-    autoBtn.textContent = 'Pause ⏸';
-    (function tick(){
-      stepAndShow();
-      if(collapsed || gen >= MAXGEN){ stopAuto(); return; }
-      autoTimer = setTimeout(tick, 820);
-    })();
-  });
-  betSdEl.querySelectorAll('button[data-sdbet]').forEach(function(b){
+  modeBtns.forEach(function(b){
     b.addEventListener('click', function(){
-      sdBet = parseInt(b.dataset.sdbet, 10);
-      betSdEl.hidden = true;
+      if(running) return;
+      mode = b.dataset.chmode;
+      modeBtns.forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.chmode === mode ? 'true' : 'false'); });
+      runBtn.textContent = 'Run the chain ▶';
+      resetChain();
     });
   });
-  newBtn.addEventListener('click', function(){ seed++; makeData(); refresh(); });
-  onThemeChange(refresh);
-  window.__sdBench = function(n){
-    n = n || 10;
-    var keep = { seed: seed, xs: xs, ys: ys, d: d, V: V, Kg: Kg, z: z, gen: gen, collapsed: collapsed, curve: curve, prevCurve: prevCurve, errs: errs, cs: cs, lastFe: lastFe, sdBet: sdBet };
-    var pass = 0, out = [];
-    for(var sd = 1; sd <= n; sd++){
-      seed = sd; makeData();
-      while(!collapsed && gen < MAXGEN) step();
-      var r0 = errs[0], min = Math.min.apply(null, errs);
-      var early = false;
-      for(var i = 1; i <= 3 && i < errs.length; i++) if(errs[i] <= 0.72*r0) early = true;
-      var pre = errs.length >= 2 ? errs[errs.length - 2] : 0;
-      var ok = early && min <= 0.65*r0 && collapsed && gen >= 3 && pre >= 1.4*min;
-      if(ok) pass++;
-      out.push(sd + (ok ? ':ok' : ':FAIL') + '[' + errs.map(function(e){ return e.toFixed(2); }).join(',') + ']');
+  betEl.querySelectorAll('button[data-chbet]').forEach(function(b){
+    b.addEventListener('click', function(){
+      betChoice = b.dataset.chbet;
+      betEl.hidden = true;
+      if(mode === 'soft' && !running) runChain();
+    });
+  });
+  runBtn.addEventListener('click', runChain);
+  newBtn.addEventListener('click', function(){
+    if(running) return;
+    seed++;
+    runChain();
+  });
+  onThemeChange(function(){
+    paintStrip(); updateStrip(); draw();
+  });
+  window.__chainBench = function(m){
+    m = m || mode;
+    var cfg = MODES[m];
+    var trIdx;
+    if(cfg.M === 600){
+      trIdx = [];
+      for(var i = 0; i < DIGITS_DATA.transferCount; i++) trIdx.push(i);
+    } else {
+      trIdx = seededPick(cfg.M, 600, seed*331 + 9);
     }
-    seed = keep.seed; xs = keep.xs; ys = keep.ys; d = keep.d; V = keep.V; Kg = keep.Kg; z = keep.z;
-    gen = keep.gen; collapsed = keep.collapsed; curve = keep.curve; prevCurve = keep.prevCurve;
-    errs = keep.errs; cs = keep.cs; lastFe = keep.lastFe; sdBet = keep.sdBet;
-    refresh();
-    return 'pass=' + pass + '/' + n + ' ' + out.join(' ');
+    var ins = trIdx.map(function(ii){ return POOL_XS[ii]; });
+    var pl = trIdx.map(function(ii){ return teacherLogits(getSample(POOL_PX, ii)); });
+    var out = ['teacher=97.0'];
+    for(var g = 1; g <= 8; g++){
+      var targets = pl.map(function(z){
+        if(cfg.onehot){
+          var tg = new Float64Array(10);
+          tg[argmax10(z)] = 1;
+          return tg;
+        }
+        return teacherSoftmax(z, cfg.T);
+      });
+      var net = heNet(seed*100 + g, cfg.hiddens[g - 1]);
+      makeStudentTrainer(net, ins, targets, {
+        lr: cfg.lr, T: cfg.onehot ? 1 : cfg.T, batch: 100, shuffleSeed: seed*100 + g + 5000
+      }).stepN(cfg.steps);
+      out.push('g' + g + '=' + (testAccOn(net, null)*100).toFixed(1));
+      pl = ins.map(function(x){ return netLogits(net, x); });
+    }
+    return out.join(' ');
   };
-  makeData();
-  refresh();
+  window.__chainRefresh = function(){
+    lastNote = '';
+    chips(); note(); draw();
+  };
+  paintStrip();
+  resetChain();
 })();
 
 /* ---------- D3: the missing digit (validated config B; middle rung T=2, see prose) ---------- */
@@ -2477,6 +2503,60 @@ function rmseToTruth(curve, gn){
   chips();
   note();
   refreshYours();
+})();
+
+/* ---------- dark-knowledge gallery: three story digits, clickable into the hero ---------- */
+(function(){
+  var wrap = document.getElementById('dk-gallery');
+  if(!wrap) return;
+  var STORY = [
+    { sk: 769,  kid: 'This 8 is almost a 2 — the teacher says 52% vs 48%.',
+                adult: 'An 8 read as 8 at only 0.52 — with 2 right behind at 0.48 (T = 1).' },
+    { sk: 1595, kid: 'This 7 is only 53% “seven” — and 25% “one.”',
+                adult: 'A 7 at 0.53, runner-up 1 at 0.25 (T = 1).' },
+    { sk: 746,  kid: 'This 4 has a shadow of a 7 in it — 78% vs 22%.',
+                adult: 'A 4 at 0.78 with a 7-shaped shadow at 0.22 (T = 1).' }
+  ];
+  var cards = [];
+  STORY.forEach(function(st){
+    var pos = DIGITS_DATA.testSklearnIdx.indexOf(st.sk);
+    if(pos < 0) return;
+    var p2 = teacherSoftmax(teacherLogits(getSample(TEST_PX, pos)), 2);
+    var top = argmax10(p2), second = -1, k;
+    for(k = 0; k < 10; k++) if(k !== top && (second < 0 || p2[k] > p2[second])) second = k;
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'dk-card';
+    btn.setAttribute('aria-label', 'A handwritten ' + TEST_Y[pos] + ' the teacher doubts — load it into the drawing pad');
+    var cnv = document.createElement('canvas');
+    cnv.width = 32; cnv.height = 32;
+    btn.appendChild(cnv);
+    var bars = document.createElement('span');
+    bars.className = 'dk-bars';
+    function brow(cls, digit, prob){
+      return '<span class="dk-brow ' + cls + '"><span>' + digit + '</span>'
+        + '<span class="trk"><span class="fil" style="width:' + (prob*100).toFixed(1) + '%"></span></span>'
+        + '<b>' + (prob*100).toFixed(1) + '%</b></span>';
+    }
+    bars.innerHTML = brow('top', top, p2[top]) + brow('', second, p2[second]);
+    btn.appendChild(bars);
+    var cap = document.createElement('span');
+    cap.className = 'dk-cap';
+    cap.innerHTML = '<span class="lv L1">' + st.kid + '</span><span class="lv L2 L3 L4">' + st.adult + '</span>';
+    btn.appendChild(cap);
+    btn.addEventListener('click', function(){
+      if(window.__heroLoad) window.__heroLoad(pos);
+      var hero = document.getElementById('kd-hero');
+      if(hero) hero.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    });
+    wrap.appendChild(btn);
+    cards.push({ cnv: cnv, pos: pos });
+  });
+  function paint(){
+    cards.forEach(function(c){ renderDigit(c.cnv, getSample(TEST_PX, c.pos)); });
+  }
+  onThemeChange(paint);
+  paint();
 })();
 
 /* ---------- deep links: parse #d<depth> (forward-compatible with -<lang>) ---------- */
