@@ -472,6 +472,21 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 .dg-card .cap{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--ink2);line-height:1.4;text-align:center}
 .dg-card .cap b{color:var(--ink)}
 
+/* ---------- D3: the missing digit ---------- */
+.md-threes{display:grid;grid-template-columns:repeat(auto-fill,52px);gap:8px;margin-top:16px}
+.md-th{display:grid;gap:2px;justify-items:center;padding:4px 4px 3px;border:1.5px solid var(--line);border-radius:7px}
+.md-th canvas{width:32px;height:32px;image-rendering:pixelated;display:block}
+.md-th .r{font-family:ui-monospace,Menlo,monospace;font-size:10px;color:var(--ink2);line-height:1.2}
+.md-th.ok{border-color:var(--accent)}
+.md-th.ok .r{color:var(--accent);font-weight:700}
+.md-th.bad{border-style:dashed;border-color:var(--hatch)}
+.md-yours{margin-top:16px;padding:12px 14px;border:1.5px dashed var(--line);border-radius:10px;font-size:14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.md-yours canvas{width:40px;height:40px;image-rendering:pixelated;border:1px solid var(--line);border-radius:6px;display:block;flex:0 0 auto}
+.md-bias{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px;font-size:13.5px;font-weight:700}
+.md-bias input[type=range]{accent-color:var(--accent);width:150px}
+.md-bias input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.md-bias .readout{font-weight:400}
+
 /* pressed state for toggle-style ghost buttons (ladder rungs, photocopier modes) */
 .demo-controls .btn.ghostb[aria-pressed="true"]{
   border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;background:var(--accent-soft);
@@ -710,46 +725,68 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 </section>
 
 <section class="chap" id="surpass">
-  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 4 · The twist</p>
-  <h2 class="display">Sometimes the student beats the teacher.</h2>
+  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 4 · The magic trick</p>
+  <h2 class="display">The student who never saw a 3.</h2>
   <div class="prose">
     <div class="lv L1">
-      <p>Now for a trick nobody expected. Take a student <strong>the same size</strong> as the teacher. Teach it from the teacher’s soft answers. Sometimes the student comes out <em>better than the teacher</em>.</p>
-      <p>Think of recopying your class notes. The first recopy usually comes out cleaner and better organized — you keep the important parts and drop the scribbles. This year’s student really can become next year’s teacher.</p>
-      <p>But hold on to the word <em>sometimes</em>. And in the next part, you’ll see what happens if you recopy your notes too many times…</p>
+      <p>Ready for a magic trick? We train a brand-new student — but first we <strong>steal every 3</strong> from its flashcards. It grows up never seeing a single 3. Not one.</p>
+      <p>Then we hand it thirty 3s and say: read these. Could <em>you</em> read a letter nobody ever taught you? Make your guess below — then try all three ways of teaching, and watch the trick happen (or not) in front of you.</p>
     </div>
     <div class="lv L2">
-      <p><strong>Born-again networks</strong> (Furlanello et al., 2018): train a network, freeze it, then train an identical twin from scratch to match the frozen one’s soft predictions. (On images, matching the teacher <em>alone</em> worked best — the paper’s language-modeling variant also kept the true labels.) On benchmarks like CIFAR and on language modeling, the twin comes out consistently a little better than the original. You can repeat this for a third and fourth generation — gains shrink fast — and even ensemble the generations.</p>
-      <p>The headline-grabbing cousin is <strong>Noisy Student</strong> (Xie et al., 2020), which pushed ImageNet accuracy to 88.4%. Honest label: that one is <em>self-training</em>, not compression. The student was equal or larger, saw 300&nbsp;million extra unlabeled images pseudo-labeled by the teacher, and trained under heavy noise (dropout, random augmentation, stochastic depth). The surpassing came from extra data + noise + capacity; soft targets were one ingredient, not the whole cake.</p>
-      <p>Sounds too good to be true? Below is the cleanest version of the claim we can build — a twin that never sees the data at all, only its teacher’s curve. Can the copy beat the original?</p>
+      <p>This mirrors the boldest experiment in Hinton’s 2015 paper: delete a whole digit class from the transfer set, distill, then test on the deleted class. Our version: the transfer set is the 540 digits of the pool that aren’t 3s. Three students train on it — one on the teacher’s hard answers, one on its softened beliefs at T = 2, one at T = 6 — and each is then shown the 30 held-out test 3s. The only place “3” exists in their training is inside the teacher’s <em>doubt about other digits</em>: the faint “…and a little 3-ish” it leaks on certain 8s, 9s and 5s. Bet first; then climb the ladder.</p>
     </div>
     <div class="lv L3">
-      <p>Why would copying a teacher’s outputs ever beat training on the truth? Soft targets look like <span class="term" data-tip="Replacing the 1-versus-0 target with, say, 0.9-versus-uniform — a standard regularizer that fights overconfidence.">label smoothing</span>, a known regularizer — but they are <em>instance-specific</em>: this particular blurry 2 looks like a 3; that crisp one doesn’t. Uniform smoothing carries zero bits about the input; dark knowledge carries the teacher’s whole similarity map.</p>
-      <p>The interplay is subtle enough to have its own research thread. Müller et al. (2019) found that teachers trained <em>with</em> label smoothing are better calibrated yet distill <em>worse</em> — smoothing pulls each class into a tight ball and erases the inter-class structure living in the logits. Shen et al. (2021) then contested how general that finding is at scale. Treat it as a live debate, not settled law.</p>
-      <p>What <em>is</em> settled is a recipe: <strong>“a good teacher is patient and consistent”</strong> (Beyer et al., 2022). Show teacher and student the <em>same augmented view</em> of each image — function matching, not dataset relabeling — and train far longer than feels reasonable. Still the strongest plain-KD recipe in vision.</p>
+      <p>Config: student 64→32→10, He init, SGD momentum 0.9, lr 0.05, minibatch B = 100 (seeded shuffle per epoch), 2,000 steps, transfer = all 540 non-3 pool digits, targets = teacher softmax at the rung’s temperature (or its one-hot argmax), scored by raw argmax on the 30 test 3s — no bias correction. One honest calibration note: on these 8×8 digits T = 1 is genuinely too cold — the 3-logit finishes around rank 6 of 10 and scores 0/30, exactly like the hard rung — so the ladder’s middle rung is T = 2, the lowest temperature that reliably lifts threes to the top. The bias slider below reproduces the paper’s garnish: add b to the 3-logit at evaluation time and watch the trade against the other nine classes.</p>
     </div>
     <div class="lv L4">
-      <p>Two families of theory compete to explain same-size gains. The <em>regularization view</em>: Yuan et al. (2020) showed “teacher-free KD” — distilling from a hand-designed smooth distribution, or even from a much <em>worse</em> teacher — still helps, so a large share of KD’s benefit is generic output-space regularization rather than transferred knowledge. The <em>ensemble view</em>: Allen-Zhu &amp; Li (2023) model data as carrying multiple predictive “views”; independently trained networks latch onto different subsets, ensembles union them, and distillation — including self-distillation, read as implicit ensemble-then-distill — transfers the union into one student.</p>
-      <p>And the honest boundary: in pure compression settings, students essentially never surpass their teachers — R1-Distill-32B is remarkable <em>for its size</em>; it does not beat R1. Surpassing needs same-or-larger capacity, extra data, or both.</p>
+      <p>Why is the hard rung not just bad but <em>stuck at zero</em>? Every one-hot target sets p(3) = 0, so training monotonically starves the 3-logit — emitting 3 is pure loss everywhere on the transfer set. The soft rungs invert that: at T = 6 the teacher’s mean softened p(3) across the 540 non-3s is ≈ 3% — small but <em>structured</em>, concentrated on 3-ish digits — enough supervision to aim the 3 direction in weight space without one positive example. The label-free way to choose the bias b, if you want one: raise b until the student predicts “3” at roughly the 1-in-10 prior rate. Hinton’s MNIST version needed that garnish for its headline (98.6% with the bias fix; raw accuracy in the tens of percent). Here temperature does nearly all the work — which is the honest headline about this dataset: 8×8 digits are unusually kind to the trick.</p>
     </div>
   </div>
 
   <div class="panel">
-    <div class="panel-head"><span class="ptitle">The twin experiment</span><span class="tag"><span class="lv L1">live · a copy vs its teacher</span><span class="lv L2 L3 L4">live · same size, zero labels</span></span></div>
-    <div class="panel-body sd-wrap">
-      <canvas id="ba-main" width="640" height="260" role="img" aria-label="Teacher curve versus twin curve against the hidden truth"></canvas>
-      <div class="demo-controls">
-        <button type="button" class="btn" id="ba-teach">Teach the twin</button>
-        <button type="button" class="btn ghostb" id="ba-new">New dataset</button>
+    <div class="panel-head"><span class="ptitle">The missing digit</span><span class="tag"><span class="lv L1">live · not one 3 in its lessons</span><span class="lv L2 L3 L4">live · 540 transfer digits, zero 3s</span></span></div>
+    <div class="panel-body">
+      <div class="bet" id="md-bet">
+        <span class="bet-q"><span class="lv L1">A student that never sees a single 3 — can it still read one?</span><span class="lv L2 L3 L4">Can a student that never sees a single 3 still recognize one?</span></span>
+        <button type="button" class="btn ghostb" data-mdbet="never">Never — 0 of 30</button>
+        <button type="button" class="btn ghostb" data-mdbet="some">A few, at best</button>
+        <button type="button" class="btn ghostb" data-mdbet="most">Almost all 30</button>
+      </div>
+      <div class="demo-controls" role="group" aria-label="Choose the training signal — each rung trains a fresh student, live">
+        <button type="button" class="btn ghostb" data-rung="hard" aria-pressed="false"><span class="lv L1">answers only</span><span class="lv L2 L3 L4">hard labels</span></button>
+        <button type="button" class="btn ghostb" data-rung="t2" aria-pressed="false"><span class="lv L1">cool doubt · T=2</span><span class="lv L2 L3 L4">soft targets · T=2</span></button>
+        <button type="button" class="btn ghostb" data-rung="t6" aria-pressed="false"><span class="lv L1">warm doubt · T=6</span><span class="lv L2 L3 L4">soft targets · T=6</span></button>
       </div>
       <div class="scorechips" aria-live="polite">
-        <span class="sc">teacher’s error <b id="ba-t">—</b></span>
-        <span class="sc">twin’s error <b id="ba-s">—</b></span>
-        <span class="sc" id="ba-w">twin wins: 0 of 0</span>
+        <span class="sc">hard labels <b id="md-hard">—</b></span>
+        <span class="sc">soft T=2 <b id="md-t2">—</b></span>
+        <span class="sc">soft T=6 <b id="md-t6">—</b></span>
       </div>
-      <p class="sd-note" id="ba-note" aria-live="polite"></p>
-      <p class="kdh-note lv L1 L2" style="min-height:0">Fair warning: this little lab is set up in the twin’s favor on purpose — the teacher memorized the scribbles, and copying filters them out. That’s the cleanest way to see the trick. With real AIs, the student beats the teacher only <em>sometimes</em>, as the stories above say.</p>
-      <p class="kdh-note lv L3 L4" style="min-height:0">Same machinery as Part 5’s photocopier — this is generation 1 vs generation 0 of the ε-budget kernel setup, so the effect is exact, repeatable, and honestly explained: the deliberately overfit teacher’s noise doesn’t survive being copied. Part 5 runs the chain to its end.</p>
+      <div class="md-threes" id="md-threes" role="group" aria-label="The 30 test threes, as read by the current student"></div>
+      <div class="md-yours" id="md-yours"></div>
+      <label class="md-bias lv L3 L4">bias on the 3-logit&nbsp;·&nbsp;b = <output id="md-bv">0.0</output>
+        <input type="range" id="md-bias" min="0" max="3" step="0.1" value="0" aria-label="Bias added to the 3 logit at evaluation time">
+        <span class="readout" id="md-breadout" aria-live="polite"></span>
+      </label>
+      <p class="kdh-note" id="md-note" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <div class="lv L1">
+      <p>So a student can know things nobody wrote on any flashcard. Here’s the stranger part: sometimes a student taught from another robot’s doubt ends up <strong>better than its teacher</strong>. Like recopying your class notes — the copy often comes out cleaner, because you keep the important parts and drop the scribbles. This year’s student really can become next year’s teacher.</p>
+      <p>But hold on to the word <em>sometimes</em>. In the next part, you’ll see what happens when you photocopy the photocopy, again and again…</p>
+    </div>
+    <div class="lv L2">
+      <p><strong>Born-again networks</strong> (Furlanello et al., 2018) run this logic at full scale: train a network, freeze it, train an identical twin from scratch to match its soft predictions — and the twin comes out consistently a little <em>better</em> than the original on benchmarks like CIFAR and language modeling. Third and fourth generations keep helping, less and less. The headline-grabbing cousin is <strong>Noisy Student</strong> (Xie et al., 2020), which pushed ImageNet to 88.4% — but honest label: that one is <em>self-training</em>, with an equal-or-larger student, 300 million extra pseudo-labeled images and heavy noise. Soft targets were one ingredient, not the whole cake.</p>
+      <p>And the honesty note this page owes you about its own demo: the missing-digit trick lands <em>much</em> harder on these 8×8 digits than in Hinton’s original MNIST run, where raw accuracy on the deleted class sat in the tens of percent until a bias correction. The temperature knob is the star of our version; the bias slider is garnish. Same phenomenon — friendlier stage.</p>
+    </div>
+    <div class="lv L3">
+      <p>Why would copying a teacher’s outputs ever beat training on the truth? Soft targets look like <span class="term" data-tip="Replacing the 1-versus-0 target with, say, 0.9-versus-uniform — a standard regularizer that fights overconfidence.">label smoothing</span>, a known regularizer — but they are <em>instance-specific</em>: this particular ambiguous 8 is half a 2; that crisp one isn’t. Uniform smoothing carries zero bits about the input; dark knowledge carries the teacher’s whole similarity map. The interplay has its own research thread: Müller et al. (2019) found that teachers trained <em>with</em> label smoothing are better calibrated yet distill <em>worse</em> — smoothing collapses the intra-class structure living in the logits. Shen et al. (2021) contested how general that is at scale; treat it as a live debate. What <em>is</em> settled is a recipe: <strong>“a good teacher is patient and consistent”</strong> (Beyer et al., 2022) — show teacher and student the same augmented view, train far longer than feels reasonable. Still the strongest plain-KD recipe in vision.</p>
+    </div>
+    <div class="lv L4">
+      <p>Two families of theory compete to explain same-size gains. The <em>regularization view</em>: Yuan et al. (2020) showed teacher-free KD — distilling from a hand-designed smooth distribution, or from a much worse teacher — still helps, so part of KD’s benefit is generic output-space regularization. The <em>ensemble view</em>: Allen-Zhu &amp; Li (2023) model data as carrying multiple predictive “views”; independently trained networks latch onto different subsets, and distillation — including self-distillation, read as implicit ensemble-then-distill — transfers the union. The missing-digit ladder sits squarely in the information camp: no generic regularizer can conjure a class absent from the data; only the teacher’s structured doubt carries it.</p>
+      <p>And the honest boundary: in pure compression settings, students essentially never surpass their teachers — R1-Distill-32B is remarkable <em>for its size</em>; it does not beat R1. Surpassing needs same-or-larger capacity, extra data, or both.</p>
     </div>
   </div>
 </section>
@@ -1065,7 +1102,6 @@ function setLevel(lv){
   });
   if(window.__sdRefresh) window.__sdRefresh();
   if(window.__kdHeroLang) window.__kdHeroLang();
-  if(window.__baRefresh) window.__baRefresh();
   if(window.__raceRefresh) window.__raceRefresh();
   if(window.__missRefresh) window.__missRefresh();
   if(window.__chainRefresh) window.__chainRefresh();
@@ -1297,6 +1333,7 @@ function normalizeInk(ink){
     var tops = rows(p);
     renderDigit(mini, current);
     window.__yourDigit = { pixels: Array.prototype.slice.call(current), label: curLabel };
+    if(window.__mdYours) window.__mdYours();
     var h = note(p, T, tops);
     if(h !== lastHeroNote){ noteEl.innerHTML = h; lastHeroNote = h; }
   }
@@ -2157,134 +2194,257 @@ function rmseToTruth(curve, gn){
   refresh();
 })();
 
-/* ---------- Part 4: the twin experiment — generation 1 vs generation 0 ---------- */
+/* ---------- D3: the missing digit (validated config B; middle rung T=2, see prose) ---------- */
 (function(){
-  var cv = document.getElementById('ba-main');
-  if(!cv) return;
-  var teachBtn = document.getElementById('ba-teach'), newBtn = document.getElementById('ba-new');
-  var tEl = document.getElementById('ba-t'), sEl = document.getElementById('ba-s'), wEl = document.getElementById('ba-w');
-  var noteEl = document.getElementById('ba-note');
-  var N = 25, ELL = 0.10, SIG = 0.5, EPS = 0.02, GN = 201;
-  var seed = 1, kd = null, teacherCurve = null, twinCurve = null, tErr = 0, sErr = 0, z1 = null;
-  var taught = false, wins = 0, total = 0, reveal = 1, revToken = 0;
-
-  function cAccent(){ return isDark() ? '#5FCDB0' : '#0E7A63'; }
-  function cCard(){ return isDark() ? '#171B23' : '#FFFFFF'; }
-  function cDim(){ return isDark() ? 'rgba(166,173,191,.6)' : 'rgba(74,82,100,.55)'; }
-  function cInk2(){ return isDark() ? '#A6ADBF' : '#4A5264'; }
-  function cDots(){ return isDark() ? '#7A8398' : '#8A93A6'; }
-
-  function build(){
-    kd = kernelData(seed, N, ELL, SIG, GN);
-    var r0 = epsRound(kd.d, kd.V, kd.ys, N, EPS);
-    teacherCurve = kgCurve(kd.Kg, r0.alpha, GN, N);
-    z1 = r0.znext;
-    twinCurve = null; sErr = 0;
-    tErr = rmseToTruth(teacherCurve, GN);
-    taught = false; reveal = 1; revToken++;
-    draw(); ui();
-  }
-  function draw(){
-    var ctx = cv.getContext('2d'), W = 640, H = 260, YR = 2.5;
-    function px(x){ return x*W; }
-    function py(v){ return H/2 - v*H/(2*YR); }
-    var a, v;
-    ctx.fillStyle = cCard(); ctx.fillRect(0, 0, W, H);
-    ctx.strokeStyle = cDim(); ctx.lineWidth = 1; ctx.setLineDash([2,4]);
-    ctx.beginPath(); ctx.moveTo(0, py(0)); ctx.lineTo(W, py(0)); ctx.stroke();
-    ctx.setLineDash([6,5]); ctx.lineWidth = 1.5; ctx.beginPath();
-    for(a = 0; a < GN; a++){
-      var vx = px(a/(GN-1)), vy = py(Math.sin(2*Math.PI*a/(GN-1)));
-      if(a === 0) ctx.moveTo(vx, vy); else ctx.lineTo(vx, vy);
-    }
-    ctx.stroke(); ctx.setLineDash([]);
-    ctx.fillStyle = cDots();
-    for(var i = 0; i < N; i++){
-      ctx.beginPath(); ctx.arc(px(kd.xs[i]), py(Math.max(-YR, Math.min(YR, kd.ys[i]))), 3, 0, 2*Math.PI); ctx.fill();
-    }
-    ctx.strokeStyle = cInk2(); ctx.lineWidth = 1.8; ctx.beginPath();
-    for(a = 0; a < GN; a++){
-      v = Math.max(-YR, Math.min(YR, teacherCurve[a]));
-      if(a === 0) ctx.moveTo(px(a/(GN-1)), py(v)); else ctx.lineTo(px(a/(GN-1)), py(v));
-    }
-    ctx.stroke();
-    if(taught && twinCurve){
-      var upto = Math.max(2, Math.floor(GN*reveal));
-      ctx.strokeStyle = cAccent(); ctx.lineWidth = 2.6; ctx.beginPath();
-      for(a = 0; a < upto; a++){
-        v = Math.max(-YR, Math.min(YR, twinCurve[a]));
-        if(a === 0) ctx.moveTo(px(a/(GN-1)), py(v)); else ctx.lineTo(px(a/(GN-1)), py(v));
-      }
-      ctx.stroke();
-    }
-  }
-  function ui(){
-    tEl.textContent = tErr.toFixed(3);
-    sEl.textContent = (taught && reveal >= 1) ? sErr.toFixed(3) : '—';
-    wEl.textContent = 'twin wins: ' + wins + ' of ' + total;
-    sEl.parentNode.classList.toggle('win', taught && reveal >= 1 && sErr < tErr);
-    tEl.parentNode.classList.toggle('win', taught && reveal >= 1 && tErr <= sErr);
-    teachBtn.disabled = taught;
-    teachBtn.style.opacity = taught ? 0.5 : 1;
-    var kid = kidMode();
-    if(!taught){
-      noteEl.innerHTML = kid
-        ? 'The gray curve is the <strong>teacher</strong> — it studied the messy dots. The twin will never see a single dot, only the teacher’s curve. Can a copy beat the original? Press <strong>Teach the twin</strong>.'
-        : 'The gray curve is the teacher, fit tightly to the noisy dots. The twin trains on <em>the teacher’s curve alone</em> — no data, no labels, same size. Press <strong>Teach the twin</strong>.';
-    } else if(reveal >= 1){
-      var won = sErr < tErr;
-      noteEl.innerHTML = (won
-        ? '<strong>The twin beat its teacher:</strong> ' + sErr.toFixed(3) + ' vs ' + tErr.toFixed(3) + ' from the hidden truth. '
-        : '<strong>This time the teacher held on:</strong> ' + tErr.toFixed(3) + ' vs ' + sErr.toFixed(3) + '. ')
-        + (kid ? 'Copying smooths away the scribbles — and the scribbles were the teacher’s mistakes. Try a new dataset!'
-               : 'Copying keeps what the error budget will pay for, and the teacher’s noise isn’t on the list. Try more datasets — the twin should win essentially every time here.');
-    } else {
-      noteEl.innerHTML = kid ? 'Taught! Watch it draw…' : 'Twin trained — drawing its curve…';
-    }
-  }
-  function completeReveal(){
-    total++;
-    if(sErr < tErr) wins++;
-    ui();
-  }
-  teachBtn.addEventListener('click', function(){
-    if(taught) return;
-    var r1 = epsRound(kd.d, kd.V, z1, N, EPS);
-    twinCurve = kgCurve(kd.Kg, r1.alpha, GN, N);
-    sErr = rmseToTruth(twinCurve, GN);
-    taught = true;
-    if(reduceMotion){ reveal = 1; draw(); completeReveal(); return; }
-    reveal = 0;
-    var token = ++revToken, t0 = null;
-    function fr(ts){
-      if(token !== revToken) return;
-      if(t0 === null) t0 = ts;
-      reveal = Math.min(1, (ts - t0)/700);
-      draw();
-      if(reveal < 1) requestAnimationFrame(fr); else completeReveal();
-    }
-    ui();
-    requestAnimationFrame(fr);
-  });
-  newBtn.addEventListener('click', function(){ seed++; build(); });
-  onThemeChange(function(){ if(kd) draw(); });
-  window.__baRefresh = function(){ if(kd) ui(); };
-  window.__baBench = function(n){
-    n = n || 10;
-    var w = 0, out = [];
-    for(var sd = 1; sd <= n; sd++){
-      var k2 = kernelData(sd, N, ELL, SIG, GN);
-      var r0 = epsRound(k2.d, k2.V, k2.ys, N, EPS);
-      var c0 = kgCurve(k2.Kg, r0.alpha, GN, N);
-      var r1 = epsRound(k2.d, k2.V, r0.znext, N, EPS);
-      var c1 = kgCurve(k2.Kg, r1.alpha, GN, N);
-      var e0 = rmseToTruth(c0, GN), e1 = rmseToTruth(c1, GN);
-      if(e1 < e0) w++;
-      out.push(sd + ':' + e0.toFixed(2) + '>' + e1.toFixed(2));
-    }
-    return 'twinWins=' + w + '/' + n + ' ' + out.join(' ');
+  var grid = document.getElementById('md-threes');
+  if(!grid) return;
+  var betEl = document.getElementById('md-bet'), noteEl = document.getElementById('md-note');
+  var yoursEl = document.getElementById('md-yours');
+  var chipEls = { hard: document.getElementById('md-hard'), t2: document.getElementById('md-t2'), t6: document.getElementById('md-t6') };
+  var biasIn = document.getElementById('md-bias'), biasVal = document.getElementById('md-bv'), biasRead = document.getElementById('md-breadout');
+  var SEED = 1, STEPS = 2000, LR = 0.05, BATCH = 100, HID = 32;
+  var RUNGS = {
+    hard: { T: 1, hard: true, idx: 1, kid: 'answers-only', adult: 'hard-label' },
+    t2:   { T: 2, hard: false, idx: 2, kid: 'cool-doubt (T=2)', adult: 'soft T=2' },
+    t6:   { T: 6, hard: false, idx: 3, kid: 'warm-doubt (T=6)', adult: 'soft T=6' }
   };
-  build();
+  var THREES = [], NON3 = [], TR3FREE = [], i;
+  for(i = 0; i < DIGITS_DATA.testCount; i++){
+    if(TEST_Y[i] === 3) THREES.push(i); else NON3.push(i);
+  }
+  for(i = 0; i < DIGITS_DATA.transferCount; i++) if(POOL_Y[i] !== 3) TR3FREE.push(i);
+  var nets = {}, scores = {};
+  var current = null, training = false, animToken = 0, bias = 0;
+  var betChoice = null, betOutcome = null, lastNote = '';
+  var rungBtns = document.querySelectorAll('button[data-rung]');
+  var thumbs = [];
+  THREES.forEach(function(ti){
+    var el = document.createElement('div');
+    el.className = 'md-th';
+    var cnv = document.createElement('canvas');
+    cnv.width = 32; cnv.height = 32;
+    el.appendChild(cnv);
+    var r = document.createElement('span');
+    r.className = 'r';
+    r.textContent = '—';
+    el.appendChild(r);
+    el.setAttribute('role', 'img');
+    el.setAttribute('aria-label', 'a test three — not read yet');
+    grid.appendChild(el);
+    thumbs.push({ el: el, cnv: cnv, r: r, ti: ti });
+  });
+  function paintThumbs(){
+    thumbs.forEach(function(th){ renderDigit(th.cnv, getSample(TEST_PX, th.ti)); });
+  }
+  function classifyB(net, ti){
+    var z = netLogits(net, TEST_XS[ti]);
+    z[3] += bias;
+    return argmax10(z);
+  }
+  function score3(net){
+    var c = 0;
+    THREES.forEach(function(ti){ if(classifyB(net, ti) === 3) c++; });
+    return c;
+  }
+  function scoreNon3(net){
+    var c = 0;
+    NON3.forEach(function(ti){ if(classifyB(net, ti) === TEST_Y[ti]) c++; });
+    return c;
+  }
+  function updateGrid(net){
+    thumbs.forEach(function(th){
+      var pred = classifyB(net, th.ti);
+      var ok = pred === 3;
+      th.el.classList.toggle('ok', ok);
+      th.el.classList.toggle('bad', !ok);
+      th.r.textContent = ok ? '✓' : '✗ ' + pred;
+      th.el.setAttribute('aria-label', 'a test three, read as ' + pred + (ok ? ' — correct' : ' — wrong'));
+    });
+  }
+  function resetGrid(){
+    thumbs.forEach(function(th){
+      th.el.classList.remove('ok'); th.el.classList.remove('bad');
+      th.r.textContent = '—';
+      th.el.setAttribute('aria-label', 'a test three — not read yet');
+    });
+  }
+  function chips(){
+    ['hard', 't2', 't6'].forEach(function(r){
+      chipEls[r].textContent = (r in scores) ? scores[r] + '/30' : '—';
+    });
+    var trained = Object.keys(scores);
+    var best = -1;
+    trained.forEach(function(r){ if(scores[r] > best) best = scores[r]; });
+    ['hard', 't2', 't6'].forEach(function(r){
+      chipEls[r].parentNode.classList.toggle('win', (r in scores) && trained.length > 1 && scores[r] === best && best > 0);
+    });
+  }
+  function biasReadout(){
+    if(!current || !nets[current] || !biasRead) return;
+    biasRead.textContent = 'threes ' + score3(nets[current]) + '/30 · non-3s ' + scoreNon3(nets[current]) + '/270';
+  }
+  function note(){
+    var kid = kidMode(), h = '';
+    if(training){
+      h = kid ? '<strong>Training…</strong> a fresh student is studying 540 flashcards — and not one of them is a 3.'
+              : '<strong>Training…</strong> 2,000 minibatch steps over the 540 non-3 transfer digits, live.';
+    } else if(!current){
+      h = kid ? 'Pick a teaching style above. Each one trains a brand-new student right here — and the 30 threes below will show what it learned.'
+              : 'Pick a rung. Each one trains a fresh 64→32→10 student on the 3-free transfer set and reads the 30 test threes. (Scores in the chips are raw argmax, b = 0.)';
+    } else {
+      var s = scores[current], cfg = RUNGS[current];
+      var betBit = '';
+      if(betOutcome){
+        betBit = betOutcome === 'won'
+          ? (kid ? '<strong>You called it!</strong> ' : '<strong>Your bet pays off.</strong> ')
+          : (kid ? '<strong>Surprise!</strong> ' : '<strong>Your bet loses.</strong> ');
+        if(current !== 't6') betBit = '';
+      }
+      if(current === 'hard'){
+        h = kid
+          ? '<strong>0 out of 30 — every single 3 missed.</strong> Of course: nothing in its life ever said “3.” Worse — every flashcard quietly taught it “whatever this is, it is NOT a 3.” Now try a doubt rung.'
+          : '<strong>0/30 — and it can never do better.</strong> One-hot targets actively push p(3) → 0 on every example; the 3-logit is pure loss to gradient descent. This rung is the control. Now hand the student some doubt.';
+      } else if(current === 't2'){
+        h = kid
+          ? '<strong>' + s + ' out of 30!</strong> This student has never seen a 3 — but on other digits the teacher whispered “…a tiny bit 3-ish,” and that whisper was enough for some. One rung warmer…'
+          : '<strong>' + s + '/30 from a student that never saw a single 3.</strong> At T = 2 the teacher’s beliefs put a little structured mass on 3 for 3-ish digits (certain 8s, 9s, 5s) — just enough to aim the 3-logit. One rung warmer…';
+      } else {
+        h = betBit + (kid
+          ? '<strong>' + s + ' out of 30 — almost all of them!</strong> Nobody ever told this student what a 3 looks like. The teacher only ever leaked “…and a little 3-ish” on OTHER numbers — warmed up, that was enough to learn 3 from the outside. The heat knob did the magic.'
+          : '<strong>' + s + '/30, raw</strong> — no bias trick, zero 3s in training. At T = 6 the teacher’s mean softened p(3) on the transfer set is ≈ 3%, and that structured whisper reconstructs the class. Honest caveat: these 8×8 digits make the trick far stronger than Hinton’s MNIST original (raw in the tens of percent there); the temperature knob is the star here.');
+      }
+    }
+    if(h !== lastNote){ noteEl.innerHTML = h; lastNote = h; }
+  }
+  function refreshYours(){
+    var kid = kidMode();
+    if(!current || !nets[current]){
+      yoursEl.innerHTML = kid
+        ? '<span>Want to test it on <strong>your</strong> handwriting? Train a student above first.</span>'
+        : '<span>Train a rung first — then the 3-free student will read your drawing from the hero pad here.</span>';
+      return;
+    }
+    if(!window.__yourDigit){
+      yoursEl.innerHTML = '<span>' + (kid
+        ? 'Now the fun part: <a href="#kd-hero">go draw a 3 in the drawing pad</a>, come back, and see if the student that never saw a 3 can read yours.'
+        : 'Test it yourself: <a href="#kd-hero">draw a 3 in the hero pad</a> and come back — the 3-free student will read it here.') + '</span>';
+      return;
+    }
+    var px = window.__yourDigit.pixels;
+    var x = new Float64Array(64), k;
+    for(k = 0; k < 64; k++) x[k] = px[k]/16;
+    var z = netLogits(nets[current], x);
+    z[3] += bias;
+    var pred = argmax10(z);
+    var cfg = RUNGS[current];
+    var msg = kid
+      ? 'The ' + cfg.kid + ' student reads your drawing as <strong>' + pred + '</strong>' + (pred === 3 ? ' — a 3 it never once saw in training!' : '.')
+      : 'The ' + cfg.adult + ' student reads your drawing as <strong>' + pred + '</strong>' + (pred === 3 ? ' — a class absent from its entire training set.' : '.');
+    yoursEl.innerHTML = '<canvas width="32" height="32" role="img" aria-label="your drawing"></canvas><span>' + msg + '</span>';
+    renderDigit(yoursEl.querySelector('canvas'), px);
+  }
+  function setPressed(rung){
+    rungBtns.forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.rung === rung ? 'true' : 'false'); });
+  }
+  function trainRung(rung, done){
+    var cfg = RUNGS[rung];
+    var targets = cfg.hard ? teacherHardTargets(TR3FREE) : teacherSoftTargets(TR3FREE, cfg.T);
+    var inputs = TR3FREE.map(function(ii){ return POOL_XS[ii]; });
+    var net = heNet(SEED*100 + cfg.idx, HID);
+    var trn = makeStudentTrainer(net, inputs, targets, {
+      lr: LR, T: cfg.hard ? 1 : cfg.T, batch: BATCH, shuffleSeed: SEED*97 + cfg.idx
+    });
+    if(reduceMotion){ trn.stepN(STEPS); done(net); return; }
+    var doneSteps = 0, token = ++animToken;
+    function fr(){
+      if(token !== animToken) return;
+      var n = Math.min(24, STEPS - doneSteps);
+      trn.stepN(n); doneSteps += n;
+      if(doneSteps % 120 === 0) updateGrid(net); /* ticks flicker alive as it learns */
+      if(doneSteps < STEPS) requestAnimationFrame(fr); else done(net);
+    }
+    requestAnimationFrame(fr);
+  }
+  function pick(rung){
+    if(training) return;
+    betEl.hidden = true;
+    setPressed(rung);
+    current = rung;
+    if(nets[rung]){
+      updateGrid(nets[rung]);
+      chips(); biasReadout(); note(); refreshYours();
+      return;
+    }
+    training = true;
+    resetGrid();
+    note();
+    trainRung(rung, function(net){
+      nets[rung] = net;
+      var keepB = bias;
+      bias = 0;
+      scores[rung] = score3(net);
+      bias = keepB;
+      training = false;
+      if(rung === 't6' && betChoice && !betOutcome){
+        var right = (scores.t6 >= 20 && betChoice === 'most') ||
+                    (scores.t6 > 0 && scores.t6 < 20 && betChoice === 'some') ||
+                    (scores.t6 === 0 && betChoice === 'never');
+        betOutcome = right ? 'won' : 'lost';
+      }
+      updateGrid(net);
+      chips(); biasReadout(); note(); refreshYours();
+    });
+  }
+  rungBtns.forEach(function(b){
+    b.addEventListener('click', function(){ pick(b.dataset.rung); });
+  });
+  betEl.querySelectorAll('button[data-mdbet]').forEach(function(b){
+    b.addEventListener('click', function(){
+      betChoice = b.dataset.mdbet;
+      betEl.hidden = true;
+      if(!current && !training) pick('hard'); /* start the ladder at the control rung */
+    });
+  });
+  biasIn.addEventListener('input', function(){
+    bias = parseFloat(biasIn.value);
+    biasVal.textContent = bias.toFixed(1);
+    if(current && nets[current] && !training){
+      updateGrid(nets[current]);
+      biasReadout();
+      refreshYours();
+    }
+  });
+  onThemeChange(function(){
+    paintThumbs();
+    if(yoursEl.querySelector('canvas') && window.__yourDigit) renderDigit(yoursEl.querySelector('canvas'), window.__yourDigit.pixels);
+  });
+  window.__mdYours = refreshYours;
+  window.__missBench = function(sd){
+    sd = sd || 1;
+    var out = [];
+    ['hard', 't2', 't6'].forEach(function(rung){
+      var cfg = RUNGS[rung];
+      var targets = cfg.hard ? teacherHardTargets(TR3FREE) : teacherSoftTargets(TR3FREE, cfg.T);
+      var inputs = TR3FREE.map(function(ii){ return POOL_XS[ii]; });
+      var net = heNet(sd*100 + cfg.idx, HID);
+      makeStudentTrainer(net, inputs, targets, {
+        lr: LR, T: cfg.hard ? 1 : cfg.T, batch: BATCH, shuffleSeed: sd*97 + cfg.idx
+      }).stepN(STEPS);
+      var c = 0;
+      THREES.forEach(function(ti){ if(argmax10(netLogits(net, TEST_XS[ti])) === 3) c++; });
+      out.push(rung + '=' + c + '/30');
+    });
+    return out.join(' ');
+  };
+  window.__missRefresh = function(){
+    lastNote = '';
+    note();
+    refreshYours();
+  };
+  paintThumbs();
+  chips();
+  note();
+  refreshYours();
 })();
 
 /* ---------- deep links: parse #d<depth> (forward-compatible with -<lang>) ---------- */
