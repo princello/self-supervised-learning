@@ -493,13 +493,22 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 .bet .bet-q{font-weight:700;margin-right:4px}
 .bet[hidden]{display:none}
 
-/* ---------- D2: two students demo ---------- */
-.kd2-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-@media (max-width:760px){.kd2-grid{grid-template-columns:1fr}}
-.kd2-grid figure{margin:0}
-.kd2-grid canvas{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px}
-.kd2-grid figcaption{font-size:12.5px;color:var(--ink2);margin-top:7px;line-height:1.45}
-.kd2-grid figcaption strong{color:var(--ink)}
+/* ---------- shared demo chart canvases ---------- */
+.chart-cv{width:100%;max-width:640px;height:auto;display:block;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+
+/* ---------- D2: the race ---------- */
+.dg-lbl{font-size:12.5px;color:var(--ink2);margin:16px 0 0}
+.dg-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.dg-card{display:grid;gap:4px;justify-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 9px;background:var(--panel-tint)}
+.dg-card canvas{width:36px;height:36px;image-rendering:pixelated;border-radius:4px;display:block}
+.dg-card .cap{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--ink2);line-height:1.4;text-align:center}
+.dg-card .cap b{color:var(--ink)}
+
+/* pressed state for toggle-style ghost buttons (ladder rungs, photocopier modes) */
+.demo-controls .btn.ghostb[aria-pressed="true"]{
+  border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;background:var(--accent-soft);
+}
+
 .demo-controls{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;margin-top:16px;font-size:13.5px}
 .demo-controls .btn{
   font:inherit;font-weight:700;font-size:13.5px;cursor:pointer;
@@ -597,9 +606,9 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
   <nav class="toc" aria-label="Contents">
     <a href="#why">1 · Why shrink a giant?</a>
     <a href="#dark">2 · Dark knowledge</a>
-    <a href="#evidence">3 · The evidence</a>
-    <a href="#surpass">4 · The twist</a>
-    <a href="#self">5 · The strange loop</a>
+    <a href="#evidence">3 · The race</a>
+    <a href="#surpass">4 · The magic trick</a>
+    <a href="#self">5 · The photocopier</a>
     <a href="#dino">6 · Déjà vu</a>
     <a href="#llm">7 · Today</a>
   </nav>
@@ -673,71 +682,61 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 </section>
 
 <section class="chap" id="evidence">
-  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 3 · The evidence</p>
+  <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 3 · The race</p>
   <h2 class="display">Two students, one teacher, one difference.</h2>
   <div class="prose">
     <div class="lv L1">
-      <p>Time for a real experiment — it runs right here, in your browser. The <strong>teacher</strong> (left) knows the true map: blue lives on the left, pink on the right, gold up top, with fuzzy zones where they mix. Two robot students want to copy the map, but they only get <strong>12 example dots</strong>.</p>
-      <p>Student A gets the answer key: just “this dot is blue.” Student B gets the teacher’s soft answer: “80% blue, 20% pink.” Who will draw the better map? <strong>Make your guess in the experiment below</strong> — then press <strong>New transfer set</strong> a few times and watch what happens to each student’s map.</p>
+      <p>Time for a real experiment — it runs right now, in your browser. Two robot students with <strong>exactly the same brain</strong> want to learn to read handwritten digits. Each gets the same <strong>60 flashcards</strong>, made by the teacher you met in the drawing pad.</p>
+      <p>One difference. Student A’s flashcards just say the answer: “this is a 7.” Student B’s flashcards show the teacher’s whole feeling: “mostly 7… a little 1… definitely not 0.” Same cards, same practice time. <strong>Make your guess in the experiment below</strong>, then watch them train — for real, live — and see whose line climbs higher.</p>
     </div>
     <div class="lv L2">
-      <p>Same dots, same student brain, same training — the <em>only</em> difference is what’s written on the labels. Could that alone matter? Place your bet below, then press <strong>New transfer set</strong> repeatedly and watch the boundaries re-train live. The faint ghost lines remember where a student’s boundary landed on earlier draws — watch which student needs them.</p>
+      <p>Same network, same 60 transfer digits, same optimizer, same number of steps — the <em>only</em> difference is what’s written on the labels. Student A gets the teacher’s answer key (one-hot: the winning digit, nothing else). Student B gets the teacher’s full softened beliefs. Could the labels alone matter? Place your bet below, then watch two real networks race — every press trains them from scratch, live in this page.</p>
     </div>
     <div class="lv L3">
-      <p>An honest, fully deterministic setup: three Gaussian classes (means (−1.3,0), (1.3,0), (0,3.5), identity covariance, equal priors). The “teacher” is an idealized big model — one that has learned the true class probabilities perfectly, so we can use the exact Bayes posterior and every run is reproducible. Both students are the <em>same</em> multinomial logistic regression on raw features [1,&nbsp;x,&nbsp;y], zero-initialized, full-batch gradient descent (lr 0.3, 3000 steps). Only the targets differ: one-hot argmax vs. the full distribution. Score: density-weighted expected accuracy against the true labels; the Bayes ceiling here is 90.4%.</p>
+      <p>The setup, fully seeded and reproducible. Both students are the same 64→24→10 ReLU network (1,810 weights) started from the <em>same</em> He-initialized draw; 60 transfer digits sampled from a 600-digit pool; full-batch SGD, momentum 0.9, lr 0.3, 1,500 steps. Student A’s targets: one-hot argmax of the hero’s 3,610-parameter teacher (97% test accuracy). Student B’s targets: the teacher’s softmax at T = 2, trained with the matching T²-scaled gradient (dz = T·(σ(z/T) − q)/B). The curves are accuracy on a fixed 200-digit held-out subset, evaluated as training runs.</p>
     </div>
     <div class="lv L4">
-      <p>The student can exactly represent the teacher’s boundary (linear logits → logistic student is realizable), and training is convex — so this demo isolates the pure <em>information-in-labels</em> channel, with optimization and capacity confounds deliberately removed. Even a student big enough to nail the answer can’t find it from hard labels alone.</p>
+      <p>One fairness check worth making before you bet: the hard student is not sandbagged by sharing the soft student’s hyperparameters. In offline validation, re-tuning the learning rate for the hard student alone doesn’t save it — it still loses on 10 of 10 seeds with its own best lr (mean gap ≈ 10.6 points). Whatever the curves show, it isn’t a tuning artifact.</p>
     </div>
   </div>
 
   <div class="panel">
-    <div class="panel-head"><span class="ptitle">The two-students experiment</span><span class="tag">live · real training on every press</span></div>
+    <div class="panel-head"><span class="ptitle">The race</span><span class="tag"><span class="lv L1">live · they really train, right here</span><span class="lv L2 L3 L4">live · two real networks train on every press</span></span></div>
     <div class="panel-body">
-      <div class="kd2-grid">
-        <figure>
-          <canvas id="kd2-t" width="300" height="300" role="img" aria-label="Teacher: true class probabilities over the plane"></canvas>
-          <figcaption><strong>The teacher.</strong> <span class="lv L1">Knows the real chances of every color, everywhere. Fuzzy zones = truly unsure.</span><span class="lv L2 L3 L4">True probability of each color at every point; fuzzy zones are genuine uncertainty.</span></figcaption>
-        </figure>
-        <figure>
-          <canvas id="kd2-h" width="300" height="300" role="img" aria-label="Student A trained on hard labels"></canvas>
-          <figcaption><strong>Student A — answer key.</strong> <span class="lv L1">Only told the right color for each dot. Faint lines: where its earlier maps landed.</span><span class="lv L2 L3 L4">Hard labels only. Faint lines: where earlier rounds’ boundaries landed.</span></figcaption>
-        </figure>
-        <figure>
-          <canvas id="kd2-s" width="300" height="300" role="img" aria-label="Student B trained on soft labels"></canvas>
-          <figcaption><strong>Student B — <span class="lv L1">soft answers</span><span class="lv L2 L3 L4">soft labels</span>.</strong> <span class="lv L1">Gets the teacher’s full “how sure” answer for each dot. Faint lines: where its earlier maps landed.</span><span class="lv L2 L3 L4">Each dot carries the teacher’s full probabilities. Faint lines: where earlier rounds’ boundaries landed.</span></figcaption>
-        </figure>
-      </div>
-      <div class="bet" id="kd2-bet">
-        <span class="bet-q"><span class="lv L1">Two students, 12 dots. Who will copy the teacher’s map better?</span><span class="lv L2 L3 L4">Before anything trains — which student will reproduce the teacher’s map better from these 12 dots?</span></span>
-        <button type="button" class="btn ghostb" data-bet="A">Student A — answer key</button>
-        <button type="button" class="btn ghostb" data-bet="B">Student B — <span class="lv L1">soft answers</span><span class="lv L2 L3 L4">soft labels</span></button>
+      <canvas id="race-cv" class="chart-cv" width="640" height="280" role="img" aria-label="Test accuracy versus training steps: soft-label student in amber, answer-key student in gray, dashed teacher reference at 97 percent"></canvas>
+      <div class="bet" id="race-bet">
+        <span class="bet-q"><span class="lv L1">Same brain, same flashcards — only the labels differ. Who reads more test digits after 1,500 steps?</span><span class="lv L2 L3 L4">Identical nets, identical 60-digit transfer set — only the targets differ. Who scores higher after 1,500 steps?</span></span>
+        <button type="button" class="btn ghostb" data-bet="hard">Student A — answer key</button>
+        <button type="button" class="btn ghostb" data-bet="soft">Student B — <span class="lv L1">the teacher’s doubt</span><span class="lv L2 L3 L4">soft labels</span></button>
       </div>
       <div class="demo-controls">
-        <button type="button" class="btn" id="kd2-new">New transfer set</button>
-        <label>examples <input type="range" id="kd2-m" min="0" max="5" step="1" value="1" aria-label="Number of transfer examples" aria-valuetext="12 examples"> <output id="kd2-mv">12</output></label>
-        <label><span class="lv L1">warm up T</span><span class="lv L2 L3 L4">soften T</span> <input type="range" id="kd2-tt" min="0" max="4" step="0.1" value="1" aria-label="Temperature applied to the soft targets"> <output id="kd2-tv">1.0</output></label>
+        <button type="button" class="btn" id="race-run">Run the race</button>
+        <button type="button" class="btn ghostb" id="race-new">New race</button>
       </div>
       <div class="scorechips" aria-live="polite">
-        <span class="sc">answer-key student <b id="kd2-ah">—</b></span>
-        <span class="sc">soft-label student <b id="kd2-as">—</b></span>
-        <span class="sc">best possible <b>90.4%</b></span>
-        <span class="sc" id="kd2-gap">Δ —</span>
+        <span class="sc">answer-key student <b id="race-h">—</b></span>
+        <span class="sc">soft-label student <b id="race-s">—</b></span>
+        <span class="sc">teacher <b>97.0%</b></span>
       </div>
-      <p class="kdh-note" id="kd2-note" aria-live="polite"></p>
+      <p class="dg-lbl" id="race-dglbl" hidden>Digits the soft student reads and the hard student misses:</p>
+      <div class="dg-strip" id="race-strip" role="group" aria-label="Test digits where the two students disagree"></div>
+      <p class="kdh-note" id="race-note" aria-live="polite"></p>
     </div>
   </div>
 
   <div class="prose">
+    <div class="lv L1">
+      <p>Student A stops learning almost immediately. Not because it’s dumb — because its flashcards <strong>run out of things to say</strong>. “It’s a 7” is one fact. “Mostly 7, a little 1” is a fact <em>plus a map</em>: it says which digits look alike. Student B keeps climbing because every card teaches the map, not just the answer.</p>
+    </div>
     <div class="lv L2">
-      <p>Why does it work? A soft label pins down the <em>value</em> of the teacher’s probability map at a point; a hard label only says which side of the line the point is on. To reproduce “80% blue / 20% pink” at even a dozen points, only one boundary works — position, angle <em>and</em> steepness. The dark knowledge is the margin information: “this one’s 60/40” versus “this one’s 99/1” tells the student exactly how far the boundary is and how fast the colors change — information the answer key throws away.</p>
-      <p>Now drag the <strong>examples</strong> slider up and watch the gap melt: with hundreds of dots, hard labels eventually pin the boundary too. That’s the honest lesson of the whole demo — distillation’s advantage is <em>information per example</em>. It matters most when the student can’t see much.</p>
+      <p>Why does the soft student keep climbing after the hard one flatlines? A one-hot label carries at most log₂10 ≈ 3.3 bits — “it’s a 7, full stop.” The teacher’s softened distribution carries its whole <em>similarity map between digit classes</em>: this 7 leans 1, that 8 is half a 2, 4s and 9s rhyme. With only 60 examples the answer key is exhausted within the first hundred steps — the hard student plateaus around 80% and stays there. The soft labels keep paying out, into the low 90s. The disagreement strip shows where the difference lives: mostly the borderline digits.</p>
+      <p>That’s the honest core of distillation’s advantage: <strong>information per example</strong>. Give the hard student ten times the flashcards and it would mostly catch up — soft targets matter most when the student can’t see much data.</p>
     </div>
     <div class="lv L3">
-      <p>Details worth noticing. With M = 12, hard labels are usually linearly separable, so the hard student’s cross-entropy keeps improving as its weights grow — it drifts toward the max-margin separator <em>of those particular 12 points</em>, whose angle is an accident of the draw; the wobble you see is sampling variance of the margin. The hard student is also visibly overconfident (saturated colors; mean max-probability ≈ 0.95+ against the teacher’s 0.90) — the soft student inherits the teacher’s calibration almost perfectly. The <strong>T</strong> slider tempers the targets q&nbsp;∝&nbsp;p<sup>1/T</sup>: at T = 0 the soft student <em>is</em> the hard student; from about T = 1 upward, the converged student lands in essentially the same place every time — the benefit here is the softness itself, not a finely tuned temperature. (Below T ≈ 1 the targets are <em>sharpened</em>, and this training budget no longer fully converges — try T = 0.5 and watch the score dip.) The page makes no “optimal middle temperature” claim (the capacity and noise effects that create one in real distillation are deliberately absent). Automated check: <span class="mono">window.__kdBench(10)</span> trains 20 students and asserts soft wins 10/10 seeds.</p>
+      <p>Details worth noticing. The teacher’s 97% line stays out of reach for both — this is compression, not magic. The hard student’s plateau is an information ceiling, not an optimization failure: its training loss keeps falling (it fits the 60 one-hot targets essentially perfectly) while test accuracy stalls — it is memorizing the last few cards, not learning the map. The T = 2 softening matters too: at T = 1 the teacher is so confident that most of the map hides in the last percent of probability. Automated check: <span class="mono">window.__raceBench(3)</span> replays the race on 3 seeds and reports wins and gaps.</p>
     </div>
     <div class="lv L4">
-      <p>Two honest counterpoints belong next to this demo. Yuan et al. (2020): much of KD’s benefit in the wild is generic regularization — even teacher-free or bad-teacher distillation helps — whereas here the gain is provably informational (the setting is convex and realizable, so there is nothing to regularize away). And Stanton et al. (2021): in deep, non-convex practice, students often <em>fail</em> to match their teacher even when they generalize better. Read this demo as the clean limiting case that isolates one of distillation’s several entangled mechanisms — not as a claim that the clean mechanism is the whole story at scale.</p>
+      <p>Two honest counterpoints belong next to this demo. Yuan et al. (2020): much of KD’s benefit in the wild is generic regularization — even teacher-free or bad-teacher distillation helps — and in a non-convex student like this one, regularization and information transfer are entangled; the design here (shared init, shared data, shared schedule, labels as the only difference) removes the usual confounds but cannot fully separate those two readings the way a convex toy could. And Stanton et al. (2021): students routinely <em>fail to match</em> their teachers even when they generalize better — look at the final curves: the soft student beats the hard one without coming close to the teacher’s line. Read the race as strong evidence for the label channel, not as a theorem.</p>
     </div>
   </div>
 </section>
@@ -1099,7 +1098,9 @@ function setLevel(lv){
   if(window.__sdRefresh) window.__sdRefresh();
   if(window.__kdHeroLang) window.__kdHeroLang();
   if(window.__baRefresh) window.__baRefresh();
-  if(window.__kd2Refresh) window.__kd2Refresh();
+  if(window.__raceRefresh) window.__raceRefresh();
+  if(window.__missRefresh) window.__missRefresh();
+  if(window.__chainRefresh) window.__chainRefresh();
   updateHash();
 }
 document.querySelectorAll('#dial-top button, #dial-hero button').forEach(function(b){
@@ -1446,6 +1447,180 @@ function isDark(){
   return window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
+/* ---------- shared student engine (Parts 3-5): seeded 1-hidden-layer ReLU MLPs ---------- */
+/* He-style init (randn·sqrt(2/fan_in)) from a seeded rng + Box-Muller */
+function heNet(seedVal, nHid){
+  var rng = mulberry32(seedVal);
+  function randn(){
+    var u1 = 1 - rng(), u2 = rng();
+    return Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+  }
+  var net = {
+    nHid: nHid,
+    W1: new Float64Array(64*nHid), b1: new Float64Array(nHid),
+    W2: new Float64Array(nHid*10), b2: new Float64Array(10)
+  };
+  var s1 = Math.sqrt(2/64), s2 = Math.sqrt(2/nHid), i;
+  for(i = 0; i < net.W1.length; i++) net.W1[i] = randn()*s1;
+  for(i = 0; i < net.W2.length; i++) net.W2[i] = randn()*s2;
+  return net;
+}
+function cloneNet(net){
+  return { nHid: net.nHid, W1: net.W1.slice(), b1: net.b1.slice(), W2: net.W2.slice(), b2: net.b2.slice() };
+}
+/* x: 64 inputs already scaled to 0..1 */
+function netLogits(net, x){
+  var H = net.nHid, h = new Float64Array(H), z = new Float64Array(10), i, j, k, s;
+  for(j = 0; j < H; j++){
+    s = net.b1[j];
+    for(i = 0; i < 64; i++) s += x[i]*net.W1[i*H + j];
+    h[j] = s > 0 ? s : 0;
+  }
+  for(k = 0; k < 10; k++){
+    s = net.b2[k];
+    for(j = 0; j < H; j++) s += h[j]*net.W2[j*10 + k];
+    z[k] = s;
+  }
+  return z;
+}
+function argmax10(z){
+  var am = 0;
+  for(var k = 1; k < 10; k++) if(z[k] > z[am]) am = k;
+  return am;
+}
+/* SGD + momentum trainer with the distillation gradient
+   dz = T·(softmax(z_s/T) − target_T)/B, backpropagated through the ReLU.
+   opts: lr, T (default 1), batch (0/absent => full batch), shuffleSeed, momentum (default 0.9) */
+function makeStudentTrainer(net, inputs, targets, opts){
+  var H = net.nHid, lr = opts.lr, T = opts.T || 1;
+  var mom = opts.momentum == null ? 0.9 : opts.momentum;
+  var n = inputs.length;
+  var B = (opts.batch && opts.batch < n) ? opts.batch : 0;
+  var vW1 = new Float64Array(64*H), vb1 = new Float64Array(H);
+  var vW2 = new Float64Array(H*10), vb2 = new Float64Array(10);
+  var gW1 = new Float64Array(64*H), gb1 = new Float64Array(H);
+  var gW2 = new Float64Array(H*10), gb2 = new Float64Array(10);
+  var h = new Float64Array(H), dh = new Float64Array(H);
+  var z = new Float64Array(10), dz = new Float64Array(10);
+  var order = [], cursor = 0, shufRng = mulberry32(opts.shuffleSeed || 1), oi;
+  for(oi = 0; oi < n; oi++) order.push(oi);
+  function reshuffle(){
+    for(var i = n - 1; i > 0; i--){
+      var j = Math.floor(shufRng()*(i + 1));
+      var tmp = order[i]; order[i] = order[j]; order[j] = tmp;
+    }
+    cursor = 0;
+  }
+  if(B) reshuffle();
+  function oneStep(){
+    var i, j, k, s, bi;
+    if(B && cursor >= n) reshuffle();
+    var m = B ? Math.min(B, n - cursor) : n;
+    gW1.fill(0); gb1.fill(0); gW2.fill(0); gb2.fill(0);
+    for(bi = 0; bi < m; bi++){
+      var idx = B ? order[cursor + bi] : bi;
+      var x = inputs[idx], tgt = targets[idx];
+      /* forward */
+      for(j = 0; j < H; j++){
+        s = net.b1[j];
+        for(i = 0; i < 64; i++) s += x[i]*net.W1[i*H + j];
+        h[j] = s > 0 ? s : 0;
+      }
+      var mx = -1e30;
+      for(k = 0; k < 10; k++){
+        s = net.b2[k];
+        for(j = 0; j < H; j++) s += h[j]*net.W2[j*10 + k];
+        z[k] = s;
+        if(s > mx) mx = s;
+      }
+      var se = 0;
+      for(k = 0; k < 10; k++){ dz[k] = Math.exp((z[k] - mx)/T); se += dz[k]; }
+      for(k = 0; k < 10; k++) dz[k] = T*(dz[k]/se - tgt[k])/m;
+      /* backward */
+      for(k = 0; k < 10; k++) gb2[k] += dz[k];
+      for(j = 0; j < H; j++){
+        var hj = h[j], sdh = 0;
+        for(k = 0; k < 10; k++){
+          var d = dz[k];
+          sdh += net.W2[j*10 + k]*d;
+          if(hj > 0) gW2[j*10 + k] += hj*d;
+        }
+        dh[j] = hj > 0 ? sdh : 0;
+      }
+      for(i = 0; i < 64; i++){
+        var xi = x[i];
+        if(xi === 0) continue;
+        for(j = 0; j < H; j++){
+          var dj = dh[j];
+          if(dj !== 0) gW1[i*H + j] += xi*dj;
+        }
+      }
+      for(j = 0; j < H; j++) gb1[j] += dh[j];
+    }
+    if(B) cursor += m;
+    /* momentum update: v = mom·v + g ; w -= lr·v */
+    for(i = 0; i < gW1.length; i++){ vW1[i] = mom*vW1[i] + gW1[i]; net.W1[i] -= lr*vW1[i]; }
+    for(j = 0; j < H; j++){ vb1[j] = mom*vb1[j] + gb1[j]; net.b1[j] -= lr*vb1[j]; }
+    for(i = 0; i < gW2.length; i++){ vW2[i] = mom*vW2[i] + gW2[i]; net.W2[i] -= lr*vW2[i]; }
+    for(k = 0; k < 10; k++){ vb2[k] = mom*vb2[k] + gb2[k]; net.b2[k] -= lr*vb2[k]; }
+  }
+  function stepN(nSteps){ for(var st = 0; st < nSteps; st++) oneStep(); }
+  return { net: net, stepN: stepN };
+}
+/* seeded pick of `count` distinct indices out of 0..total-1 */
+function seededPick(count, total, seedVal){
+  var rng = mulberry32(seedVal), idx = [], i;
+  for(i = 0; i < total; i++) idx.push(i);
+  for(i = total - 1; i > 0; i--){
+    var j = Math.floor(rng()*(i + 1));
+    var tmp = idx[i]; idx[i] = idx[j]; idx[j] = tmp;
+  }
+  return idx.slice(0, count);
+}
+/* scaled 0..1 input caches + teacher-target builders for the digit demos */
+var TEST_XS = [], POOL_XS = [];
+(function(){
+  var i, k;
+  for(i = 0; i < DIGITS_DATA.testCount; i++){
+    var s = getSample(TEST_PX, i), x = new Float64Array(64);
+    for(k = 0; k < 64; k++) x[k] = s[k]/16;
+    TEST_XS.push(x);
+  }
+  for(i = 0; i < DIGITS_DATA.transferCount; i++){
+    var s2 = getSample(POOL_PX, i), x2 = new Float64Array(64);
+    for(k = 0; k < 64; k++) x2[k] = s2[k]/16;
+    POOL_XS.push(x2);
+  }
+})();
+function teacherSoftTargets(idxList, T){
+  var out = [];
+  for(var i = 0; i < idxList.length; i++)
+    out.push(teacherSoftmax(teacherLogits(getSample(POOL_PX, idxList[i])), T));
+  return out;
+}
+function teacherHardTargets(idxList){
+  var out = [];
+  for(var i = 0; i < idxList.length; i++){
+    var z = teacherLogits(getSample(POOL_PX, idxList[i]));
+    var tg = new Float64Array(10);
+    tg[argmax10(z)] = 1;
+    out.push(tg);
+  }
+  return out;
+}
+function testAccOn(net, subset){
+  var n = subset ? subset.length : TEST_XS.length, c = 0;
+  for(var i = 0; i < n; i++){
+    var ti = subset ? subset[i] : i;
+    if(argmax10(netLogits(net, TEST_XS[ti])) === TEST_Y[ti]) c++;
+  }
+  return c/n;
+}
+var EVAL200 = seededPick(200, 300, 424242);
+function cssVar(name){
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
 /* shared kernel-regression core (the twin experiment and the photocopier) */
 function jacobiEig(A, n){
   var Vm = [], i, j;
@@ -1555,369 +1730,230 @@ function rmseToTruth(curve, gn){
   return Math.sqrt(s/gn);
 }
 
-/* ---------- D2: two students, one teacher ---------- */
+/* ---------- D2: the race — two students, one teacher (validated config A) ---------- */
 (function(){
-  var cvT = document.getElementById('kd2-t');
-  if(!cvT) return;
-  var cvH = document.getElementById('kd2-h'), cvS = document.getElementById('kd2-s');
-  var newBtn = document.getElementById('kd2-new');
-  var mSlider = document.getElementById('kd2-m'), mVal = document.getElementById('kd2-mv');
-  var tSlider = document.getElementById('kd2-tt'), tVal = document.getElementById('kd2-tv');
-  var ahEl = document.getElementById('kd2-ah'), asEl = document.getElementById('kd2-as');
-  var gapEl = document.getElementById('kd2-gap'), noteEl = document.getElementById('kd2-note');
+  var cv = document.getElementById('race-cv');
+  if(!cv) return;
+  var runBtn = document.getElementById('race-run'), newBtn = document.getElementById('race-new');
+  var hEl = document.getElementById('race-h'), sEl = document.getElementById('race-s');
+  var noteEl = document.getElementById('race-note'), betEl = document.getElementById('race-bet');
+  var stripEl = document.getElementById('race-strip'), stripLbl = document.getElementById('race-dglbl');
+  var STEPS = 1500, PER_FRAME = 12, M = 60, HID = 24, LR = 0.3, TSOFT = 2;
+  var seed = 1, netH = null, netS = null, trH = null, trS = null;
+  var xs = [], accH = [], accS = [], stepsDone = 0;
+  var state = 'idle'; /* idle | running | done */
+  var betChoice = null, betOutcome = null, lastNote = '', animToken = 0;
 
-  var MU = [[-1.3, 0], [1.3, 0], [0, 3.5]];
-  var M_OPTS = [8, 12, 20, 40, 80, 200];
-  var LR = 0.3, STEPS = 3000;
-  var X0 = -4.75, X1 = 4.75, Y0 = -2.75, Y1 = 6.75;
-  var seed = 1, M = 12, TT = 1.0;
-  var pts = [], hardW = null, softW = null, ghosts = [], ghostsS = [];
-
-  function posterior(x, y){
-    var l = [], m = -1e18, i;
-    for(i = 0; i < 3; i++){
-      l[i] = MU[i][0]*x + MU[i][1]*y - (MU[i][0]*MU[i][0] + MU[i][1]*MU[i][1])/2;
-      if(l[i] > m) m = l[i];
-    }
-    var s = 0, e = [];
-    for(i = 0; i < 3; i++){ e[i] = Math.exp(l[i] - m); s += e[i]; }
-    return [e[0]/s, e[1]/s, e[2]/s];
+  function setup(){
+    var tr = seededPick(M, 600, seed*7919 + 101);
+    var inputs = [];
+    for(var i = 0; i < M; i++) inputs.push(POOL_XS[tr[i]]);
+    var init = heNet(seed*211 + 7, HID);
+    netH = cloneNet(init); netS = cloneNet(init);
+    trH = makeStudentTrainer(netH, inputs, teacherHardTargets(tr), {lr: LR, T: 1});
+    trS = makeStudentTrainer(netS, inputs, teacherSoftTargets(tr, TSOFT), {lr: LR, T: TSOFT});
+    xs = [0];
+    accH = [testAccOn(netH, EVAL200)];
+    accS = [testAccOn(netS, EVAL200)];
+    stepsDone = 0;
   }
-
-  /* evaluation grid: density-weighted expected accuracy on [-6,7]x[-5,8], 241x241 */
-  var GN = 241, GP = new Float64Array(GN*GN*3), GW = new Float64Array(GN*GN);
-  var GX = new Float64Array(GN*GN), GY = new Float64Array(GN*GN), GWsum = 0;
-  (function(){
-    var k = 0;
-    for(var i = 0; i < GN; i++){
-      var gy = -5 + 13*i/(GN-1);
-      for(var j = 0; j < GN; j++){
-        var gx = -6 + 13*j/(GN-1);
-        var p = posterior(gx, gy);
-        GP[k*3] = p[0]; GP[k*3+1] = p[1]; GP[k*3+2] = p[2];
-        var w = 0;
-        for(var c = 0; c < 3; c++){
-          var dx = gx - MU[c][0], dy = gy - MU[c][1];
-          w += Math.exp(-(dx*dx + dy*dy)/2);
-        }
-        GW[k] = w; GX[k] = gx; GY[k] = gy; GWsum += w;
-        k++;
+  function chartCols(){
+    return {
+      card: isDark() ? '#171B23' : '#FFFFFF',
+      grid: isDark() ? 'rgba(166,173,191,.28)' : 'rgba(74,82,100,.2)',
+      text: isDark() ? '#A6ADBF' : '#4A5264',
+      soft: cssVar('--hl'), hard: cssVar('--hatch'), teach: cssVar('--accent')
+    };
+  }
+  function draw(){
+    var ctx = cv.getContext('2d'), W = cv.width, H = cv.height, C = chartCols();
+    var L = 44, R = 88, TP = 14, B = 30;
+    function X(st){ return L + (W - L - R)*st/STEPS; }
+    function Y(a){ return H - B - (H - TP - B)*a; }
+    ctx.fillStyle = C.card; ctx.fillRect(0, 0, W, H);
+    ctx.font = '10.5px ui-monospace,Menlo,monospace';
+    ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+    var gp;
+    for(gp = 0.25; gp <= 1.001; gp += 0.25){
+      ctx.beginPath(); ctx.moveTo(L, Y(gp)); ctx.lineTo(W - R, Y(gp)); ctx.stroke();
+      ctx.fillStyle = C.text;
+      ctx.fillText(Math.round(gp*100) + '%', 12, Y(gp) + 3.5);
+    }
+    ctx.fillStyle = C.text;
+    [0, 500, 1000, 1500].forEach(function(st){
+      ctx.fillText(String(st), X(st) - (st ? 10 : 2), H - 12);
+    });
+    ctx.fillText(kidMode() ? 'practice steps' : 'training steps', W - R - 82, H - 2);
+    ctx.strokeStyle = C.teach; ctx.setLineDash([6, 5]); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(L, Y(0.97)); ctx.lineTo(W - R, Y(0.97)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = C.teach;
+    ctx.fillText('teacher 97%', W - R + 6, Y(0.97) + 3.5);
+    function curve(arr, col, w){
+      ctx.strokeStyle = col; ctx.lineWidth = w; ctx.beginPath();
+      for(var i = 0; i < arr.length; i++){
+        var px = X(xs[i]), py = Y(arr[i]);
+        if(i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+    if(xs.length > 1){
+      curve(accH, C.hard, 2.2);
+      curve(accS, C.soft, 2.6);
+      var xe = X(xs[xs.length - 1]) + 6;
+      var yh = Y(accH[accH.length - 1]) + 3.5, ys = Y(accS[accS.length - 1]) + 3.5;
+      if(yh - ys < 12){ yh = ys + 12; }
+      ctx.fillStyle = C.hard; ctx.fillText('answer key', Math.min(xe, W - 66), yh);
+      ctx.fillStyle = C.soft; ctx.fillText('soft labels', Math.min(xe, W - 66), ys);
+    } else {
+      ctx.fillStyle = C.text;
+      ctx.fillText(kidMode() ? 'the race track is empty — make your bet!' : 'held-out accuracy vs training steps — place a bet or press Run', L + 14, Y(0.55));
+    }
+  }
+  function chips(final){
+    var has = xs.length > 1;
+    var fh = accH[accH.length - 1], fs = accS[accS.length - 1];
+    hEl.textContent = has ? (fh*100).toFixed(1) + '%' : '—';
+    sEl.textContent = has ? (fs*100).toFixed(1) + '%' : '—';
+    hEl.parentNode.classList.toggle('win', !!final && fh > fs);
+    sEl.parentNode.classList.toggle('win', !!final && fs >= fh);
+  }
+  function buildStrip(){
+    stripEl.innerHTML = '';
+    var shown = 0;
+    for(var i = 0; i < EVAL200.length && shown < 8; i++){
+      var ti = EVAL200[i];
+      var ph = argmax10(netLogits(netH, TEST_XS[ti]));
+      var ps = argmax10(netLogits(netS, TEST_XS[ti]));
+      if(ps === TEST_Y[ti] && ph !== TEST_Y[ti]){
+        var card = document.createElement('div');
+        card.className = 'dg-card';
+        card.setAttribute('role', 'img');
+        card.setAttribute('aria-label', 'A test ' + TEST_Y[ti] + ': the hard student says ' + ph + ', the soft student says ' + ps);
+        var cnv = document.createElement('canvas');
+        cnv.width = 32; cnv.height = 32;
+        card.appendChild(cnv);
+        var cap = document.createElement('span');
+        cap.className = 'cap';
+        cap.innerHTML = 'hard: ' + ph + ' ✗<br>soft: <b>' + ps + '</b> ✓';
+        card.appendChild(cap);
+        stripEl.appendChild(card);
+        renderDigit(cnv, getSample(TEST_PX, ti));
+        shown++;
       }
     }
-  })();
-
-  function sample(sd, m){
-    var rng = mulberry32(sd), out = [];
-    for(var i = 0; i < m; i++){
-      var c = Math.floor(rng()*3);
-      var u1 = 1 - rng(), u2 = rng();
-      var r = Math.sqrt(-2*Math.log(u1));
-      var x = MU[c][0] + r*Math.cos(2*Math.PI*u2);
-      var y = MU[c][1] + r*Math.sin(2*Math.PI*u2);
-      out.push({ x: x, y: y, q: posterior(x, y) });
-    }
-    return out;
+    stripLbl.hidden = shown === 0;
   }
-  function temper(q, T){
-    if(T < 0.05){
-      var a = q.indexOf(Math.max(q[0], q[1], q[2]));
-      return [a === 0 ? 1 : 0, a === 1 ? 1 : 0, a === 2 ? 1 : 0];
+  function note(){
+    var kid = kidMode(), h = '';
+    if(state === 'idle'){
+      h = kid
+        ? 'Two students, one difference: what the flashcards say. <strong>Make your bet</strong> — or press <strong>Run the race</strong> and watch them learn, live.'
+        : 'Place your bet — or press <strong>Run the race</strong> to skip straight to the training. Every run is real: 1,500 full-batch SGD steps for each student, in this tab.';
+    } else if(state === 'running'){
+      h = kid ? 'Training… watch the two lines climb!' : 'Training… both students are taking the same 1,500 steps; the curves are held-out accuracy, plotted live.';
+    } else {
+      var fh = accH[accH.length - 1]*100, fs = accS[accS.length - 1]*100;
+      var gap = fs - fh;
+      var betBit = '';
+      if(betOutcome === 'won') betBit = kid ? '<strong>You called it!</strong> ' : '<strong>Your bet pays off.</strong> ';
+      else if(betOutcome === 'lost') betBit = kid ? '<strong>Surprise!</strong> ' : '<strong>Your bet loses.</strong> ';
+      h = betBit + (kid
+        ? '<strong>Student A stopped climbing early</strong>, around ' + fh.toFixed(0) + '% — its answer-key cards had nothing more to teach. Student B kept climbing to ' + fs.toFixed(0) + '%: the teacher’s doubt kept teaching, worth about ' + Math.round(gap) + ' extra digits in every 100. Press <strong>New race</strong> for a fresh deal.'
+        : '<strong>The hard student plateaus early</strong> — ~' + fh.toFixed(1) + '%, most of it inside the first 100 steps; at 60 examples, one-hot labels run dry. The soft student keeps extracting signal to ' + fs.toFixed(1) + '% — a ' + (gap >= 0 ? '+' : '') + gap.toFixed(1) + '-point gap from the labels alone. <strong>New race</strong> = new transfer draw and a new shared init.');
     }
-    var e = [Math.pow(q[0], 1/T), Math.pow(q[1], 1/T), Math.pow(q[2], 1/T)];
-    var s = e[0] + e[1] + e[2];
-    return [e[0]/s, e[1]/s, e[2]/s];
+    if(h !== lastNote){ noteEl.innerHTML = h; lastNote = h; }
   }
-  function makeTrainer(data, targets){
-    var W = [[0,0,0],[0,0,0],[0,0,0]];
-    var m = data.length;
-    function stepN(nSteps){
-      for(var st = 0; st < nSteps; st++){
-        var g = [[0,0,0],[0,0,0],[0,0,0]], i, c;
-        for(i = 0; i < m; i++){
-          var x = data[i].x, y = data[i].y;
-          var u = [], mx = -1e18;
-          for(c = 0; c < 3; c++){ u[c] = W[c][0] + W[c][1]*x + W[c][2]*y; if(u[c] > mx) mx = u[c]; }
-          var s = 0, e = [];
-          for(c = 0; c < 3; c++){ e[c] = Math.exp(u[c] - mx); s += e[c]; }
-          for(c = 0; c < 3; c++){
-            var dd = (e[c]/s - targets[i][c]) / m;
-            g[c][0] += dd; g[c][1] += dd*x; g[c][2] += dd*y;
-          }
-        }
-        for(c = 0; c < 3; c++){ W[c][0] -= LR*g[c][0]; W[c][1] -= LR*g[c][1]; W[c][2] -= LR*g[c][2]; }
+  function finish(){
+    state = 'done';
+    if(betChoice){
+      betOutcome = ((accS[accS.length - 1] >= accH[accH.length - 1]) ? 'soft' : 'hard') === betChoice ? 'won' : 'lost';
+      betChoice = null;
+    }
+    chips(true); draw(); buildStrip(); note();
+    runBtn.disabled = false; newBtn.disabled = false;
+    runBtn.textContent = 'Replay this race';
+  }
+  function startRace(){
+    if(state === 'running') return;
+    betEl.hidden = true;
+    betOutcome = null;
+    setup();
+    stripEl.innerHTML = '';
+    stripLbl.hidden = true;
+    chips(false);
+    state = 'running';
+    note();
+    runBtn.disabled = true; newBtn.disabled = true;
+    if(reduceMotion){
+      while(stepsDone < STEPS){
+        trH.stepN(20); trS.stepN(20); stepsDone += 20;
+        xs.push(stepsDone);
+        accH.push(testAccOn(netH, EVAL200));
+        accS.push(testAccOn(netS, EVAL200));
       }
-    }
-    return { W: W, stepN: stepN };
-  }
-  function train(data, targets){
-    var t = makeTrainer(data, targets);
-    t.stepN(STEPS);
-    return t.W;
-  }
-  function accuracy(W){
-    var acc = 0;
-    for(var k = 0; k < GN*GN; k++){
-      var x = GX[k], y = GY[k];
-      var best = 0, bu = W[0][0] + W[0][1]*x + W[0][2]*y;
-      var u1 = W[1][0] + W[1][1]*x + W[1][2]*y;
-      var u2 = W[2][0] + W[2][1]*x + W[2][2]*y;
-      if(u1 > bu){ bu = u1; best = 1; }
-      if(u2 > bu){ best = 2; }
-      acc += GW[k]*GP[k*3 + best];
-    }
-    return acc/GWsum;
-  }
-  function probsOfW(W, x, y){
-    var u = [], mx = -1e18, c;
-    for(c = 0; c < 3; c++){ u[c] = W[c][0] + W[c][1]*x + W[c][2]*y; if(u[c] > mx) mx = u[c]; }
-    var s = 0, e = [];
-    for(c = 0; c < 3; c++){ e[c] = Math.exp(u[c] - mx); s += e[c]; }
-    return [e[0]/s, e[1]/s, e[2]/s];
-  }
-  function argmaxW(W, x, y){
-    var best = 0, bu = W[0][0] + W[0][1]*x + W[0][2]*y;
-    var u1 = W[1][0] + W[1][1]*x + W[1][2]*y;
-    var u2 = W[2][0] + W[2][1]*x + W[2][2]*y;
-    if(u1 > bu){ bu = u1; best = 1; }
-    if(u2 > bu){ best = 2; }
-    return best;
-  }
-  function palette(){
-    return isDark()
-      ? { cols: [[110,151,245],[240,109,156],[235,186,88]], bg: [23,27,35], dot: '#E9EBF2', ghost: '233,235,242' }
-      : { cols: [[59,111,224],[216,67,122],[223,163,60]], bg: [255,255,255], dot: '#14161D', ghost: '20,22,29' };
-  }
-  function paintMap(cv, probFn){
-    var ctx = cv.getContext('2d');
-    var img = ctx.createImageData(300, 300);
-    var pal = palette(), B = 2;
-    for(var py = 0; py < 300; py += B){
-      var y = Y1 - (py + B/2)*(Y1 - Y0)/300;
-      for(var px = 0; px < 300; px += B){
-        var x = X0 + (px + B/2)*(X1 - X0)/300;
-        var p = probFn(x, y);
-        var r = 0, g = 0, b = 0;
-        for(var c = 0; c < 3; c++){ r += p[c]*pal.cols[c][0]; g += p[c]*pal.cols[c][1]; b += p[c]*pal.cols[c][2]; }
-        r = 0.82*r + 0.18*pal.bg[0]; g = 0.82*g + 0.18*pal.bg[1]; b = 0.82*b + 0.18*pal.bg[2];
-        for(var by = 0; by < B; by++){
-          var base = ((py + by)*300 + px)*4;
-          for(var bx = 0; bx < B; bx++){
-            img.data[base] = r; img.data[base+1] = g; img.data[base+2] = b; img.data[base+3] = 255;
-            base += 4;
-          }
-        }
-      }
-    }
-    ctx.putImageData(img, 0, 0);
-  }
-  function drawGhosts(ctx, arr){
-    var pal = palette();
-    for(var gi = 0; gi < arr.length; gi++){
-      var W = arr[gi];
-      var alpha = 0.10 + 0.16*(gi + 1)/arr.length;
-      ctx.fillStyle = 'rgba(' + pal.ghost + ',' + alpha.toFixed(3) + ')';
-      var B = 2, prevRow = [];
-      for(var py = 0, ry = 0; py < 300; py += B, ry++){
-        var y = Y1 - (py + 1)*(Y1 - Y0)/300;
-        var row = [];
-        for(var px = 0, rx = 0; px < 300; px += B, rx++){
-          var x = X0 + (px + 1)*(X1 - X0)/300;
-          var a = argmaxW(W, x, y);
-          row[rx] = a;
-          if((rx > 0 && row[rx-1] !== a) || (ry > 0 && prevRow[rx] !== a)) ctx.fillRect(px, py, B, B);
-        }
-        prevRow = row;
-      }
-    }
-  }
-  function drawDots(cv, mode){
-    var ctx = cv.getContext('2d'), pal = palette();
-    for(var i = 0; i < pts.length; i++){
-      var p = pts[i];
-      var q = mode === 'hard' ? temper(p.q, 0) : (mode === 'soft' ? temper(p.q, TT) : p.q);
-      var r = 0, g = 0, b = 0;
-      for(var c = 0; c < 3; c++){ r += q[c]*pal.cols[c][0]; g += q[c]*pal.cols[c][1]; b += q[c]*pal.cols[c][2]; }
-      var px = (p.x - X0)/(X1 - X0)*300, py = (Y1 - p.y)/(Y1 - Y0)*300;
-      ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 2*Math.PI);
-      ctx.fillStyle = 'rgb(' + (r|0) + ',' + (g|0) + ',' + (b|0) + ')'; ctx.fill();
-      ctx.lineWidth = 1.5; ctx.strokeStyle = pal.dot; ctx.stroke();
-    }
-  }
-  var trained = false;
-  function drawUntrainedMark(cv){
-    var ctx = cv.getContext('2d');
-    ctx.font = '700 46px Georgia,serif';
-    ctx.fillStyle = isDark() ? 'rgba(233,235,242,.5)' : 'rgba(20,22,29,.35)';
-    ctx.textAlign = 'center';
-    ctx.fillText('?', 150, 128);
-    ctx.textAlign = 'start';
-  }
-  function paintTeacher(){
-    paintMap(cvT, posterior);
-    drawDots(cvT, 'true');
-  }
-  function paintStudents(){
-    paintMap(cvH, function(x, y){ return probsOfW(hardW, x, y); });
-    drawGhosts(cvH.getContext('2d'), ghosts);
-    paintMap(cvS, function(x, y){ return probsOfW(softW, x, y); });
-    drawGhosts(cvS.getContext('2d'), ghostsS);
-    drawDots(cvH, 'hard'); drawDots(cvS, 'soft');
-    if(!trained){ drawUntrainedMark(cvH); drawUntrainedMark(cvS); }
-  }
-  function paintAll(){
-    paintTeacher();
-    paintStudents();
-  }
-  function note(ah, as){
-    if(TT < 0.05) return '<strong>T = 0 means Student B gets hard labels too</strong> — the two students are now identical. Slide T back up to hand the dark knowledge back.';
-    if(M >= 80) return '<strong>With ' + M + ' examples, hard labels catch up.</strong> Enough dots pin the boundary on their own — distillation’s edge is information <em>per example</em>, so it shines when data is scarce.';
-    var dd = (as - ah)*100;
-    if(dd > 1) return '<strong>Same brain, same dots, same training.</strong> The only difference is what’s written on the labels — worth ' + dd.toFixed(1) + ' points here. Press “New transfer set” again and watch which student wobbles.';
-    return '<strong>A close one</strong> — some draws are kind to the answer-key student. Press “New transfer set” a few more times and watch the ghost lines pile up on the middle panel.';
-  }
-  var lastKd2Note = '';
-  var betChoice = null;
-  function betReveal(ah, as){
-    if(!betChoice) return '';
-    var winner = as >= ah ? 'B' : 'A';
-    var right = betChoice === winner;
-    var hi = (Math.max(ah, as)*100).toFixed(1), lo = (Math.min(ah, as)*100).toFixed(1);
-    betChoice = null;
-    if(kidMode()){
-      return right
-        ? '<strong>You called it!</strong> Student ' + winner + ' wins this round (' + hi + '% vs ' + lo + '%). '
-        : '<strong>Surprise!</strong> Student ' + winner + ' wins this round (' + hi + '% vs ' + lo + '%). The plain answer key looks like it should be enough — it isn’t. ';
-    }
-    return right
-      ? '<strong>Your bet pays off:</strong> Student ' + winner + ' wins (' + hi + '% vs ' + lo + '%). '
-      : '<strong>Your bet loses:</strong> Student ' + winner + ' wins (' + hi + '% vs ' + lo + '%) — the answer key looks sufficient, and isn’t. ';
-  }
-  function tickScore(){
-    var ah = accuracy(hardW), as = accuracy(softW);
-    ahEl.textContent = (ah*100).toFixed(1) + '%';
-    asEl.textContent = (as*100).toFixed(1) + '%';
-    ahEl.parentNode.classList.toggle('win', trained && ah > as);
-    asEl.parentNode.classList.toggle('win', trained && as >= ah);
-    var dd = (as - ah)*100;
-    gapEl.textContent = 'Δ ' + (dd >= 0 ? '+' : '') + dd.toFixed(1) + ' points';
-    return { ah: ah, as: as };
-  }
-  function updateScore(withBet){
-    var acc = tickScore();
-    var h = (withBet ? betReveal(acc.ah, acc.as) : '') + note(acc.ah, acc.as);
-    if(h !== lastKd2Note){ noteEl.innerHTML = h; lastKd2Note = h; }
-  }
-  var animToken = 0, animating = false;
-  function run(pushGhost, animate){
-    if(pushGhost && trained && hardW && !animating){
-      ghosts.push(hardW); ghostsS.push(softW);
-      if(ghosts.length > 5){ ghosts.shift(); ghostsS.shift(); }
-    }
-    pts = sample(seed, M);
-    var hardT = pts.map(function(p){ return temper(p.q, 0); });
-    var softT = pts.map(function(p){ return temper(p.q, TT); });
-    var token = ++animToken;
-    paintTeacher();
-    if(!animate || reduceMotion){
-      animating = false;
-      hardW = train(pts, hardT);
-      softW = train(pts, softT);
-      trained = true;
-      paintStudents();
-      updateScore(true);
+      finish();
       return;
     }
-    var th = makeTrainer(pts, hardT), ts = makeTrainer(pts, softT);
-    hardW = th.W; softW = ts.W;
-    trained = true;
-    animating = true;
-    var done = 0, CHUNK = 45, frameN = 0;
-    gapEl.textContent = 'training…';
+    var token = ++animToken;
     function fr(){
       if(token !== animToken) return;
-      var n = Math.min(CHUNK, STEPS - done);
-      th.stepN(n); ts.stepN(n); done += n; frameN++;
-      paintStudents();
-      if(frameN % 9 === 0) tickScore();
-      if(done < STEPS) requestAnimationFrame(fr);
-      else { animating = false; updateScore(true); }
+      var n = Math.min(PER_FRAME, STEPS - stepsDone);
+      trH.stepN(n); trS.stepN(n); stepsDone += n;
+      xs.push(stepsDone);
+      accH.push(testAccOn(netH, EVAL200));
+      accS.push(testAccOn(netS, EVAL200));
+      draw(); chips(false);
+      if(stepsDone < STEPS) requestAnimationFrame(fr); else finish();
     }
     requestAnimationFrame(fr);
   }
-  function runSoft(){
-    if(animating){ run(false, false); return; }
-    animToken++;
-    softW = train(pts, pts.map(function(p){ return temper(p.q, TT); }));
-    paintStudents();
-    updateScore(false);
-  }
-  var debTimer = null;
-  function schedule(job){
-    if(debTimer) clearTimeout(debTimer);
-    debTimer = setTimeout(function(){ debTimer = null; job(); }, 150);
-  }
-  var betEl2 = document.getElementById('kd2-bet');
-  function resolveBet(choice){
-    if(!betEl2.hidden){
-      betChoice = choice || null;
-      betEl2.hidden = true;
-    } else {
-      betChoice = null;
-    }
-  }
-  betEl2.querySelectorAll('button[data-bet]').forEach(function(b){
+  betEl.querySelectorAll('button[data-bet]').forEach(function(b){
     b.addEventListener('click', function(){
-      resolveBet(b.dataset.bet);
-      run(false, true);
+      betChoice = b.dataset.bet;
+      startRace();
     });
   });
+  runBtn.addEventListener('click', startRace);
   newBtn.addEventListener('click', function(){
-    resolveBet(null);
     seed++;
-    run(true, true);
+    runBtn.textContent = 'Run the race';
+    startRace();
   });
-  mSlider.addEventListener('input', function(){
-    M = M_OPTS[+mSlider.value]; mVal.textContent = M;
-    mSlider.setAttribute('aria-valuetext', M + ' examples');
-    resolveBet(null);
-    schedule(function(){ run(false, false); });
+  onThemeChange(function(){
+    draw();
+    if(state === 'done') buildStrip();
   });
-  tSlider.addEventListener('input', function(){
-    TT = parseFloat(tSlider.value); tVal.textContent = TT.toFixed(1);
-    resolveBet(null);
-    if(!trained){ schedule(function(){ run(false, false); }); return; }
-    schedule(runSoft);
-  });
-  onThemeChange(function(){ if(hardW) paintAll(); });
-  window.__kdBench = function(n){
-    n = n || 10;
-    var wins = 0, sum = 0, min = 1e9, per = [];
+  window.__raceBench = function(n){
+    n = n || 3;
+    var wins = 0, gaps = [], out = [];
     for(var sd = 1; sd <= n; sd++){
-      var data = sample(sd, 12);
-      var hW = train(data, data.map(function(p){ return temper(p.q, 0); }));
-      var sW = train(data, data.map(function(p){ return p.q; }));
-      var ah = accuracy(hW), as = accuracy(sW), gap = as - ah;
+      var tr = seededPick(M, 600, sd*7919 + 101);
+      var inputs = [];
+      for(var i = 0; i < M; i++) inputs.push(POOL_XS[tr[i]]);
+      var init = heNet(sd*211 + 7, HID);
+      var nh = cloneNet(init), ns = cloneNet(init);
+      makeStudentTrainer(nh, inputs, teacherHardTargets(tr), {lr: LR, T: 1}).stepN(STEPS);
+      makeStudentTrainer(ns, inputs, teacherSoftTargets(tr, TSOFT), {lr: LR, T: TSOFT}).stepN(STEPS);
+      var ah = testAccOn(nh, EVAL200), as = testAccOn(ns, EVAL200), gap = (as - ah)*100;
       if(gap > 0) wins++;
-      sum += gap; if(gap < min) min = gap;
-      per.push(sd + ':' + (ah*100).toFixed(2) + '|' + (as*100).toFixed(2));
+      gaps.push(gap);
+      out.push(sd + ':' + (ah*100).toFixed(1) + '|' + (as*100).toFixed(1));
     }
-    return 'wins=' + wins + '/' + n + ' meanGap=' + (sum/n*100).toFixed(2) + ' minGap=' + (min*100).toFixed(2) + ' ' + per.join(' ');
+    var mean = 0;
+    gaps.forEach(function(g){ mean += g; });
+    mean /= n;
+    return 'wins=' + wins + '/' + n + ' meanGap=' + mean.toFixed(1) + ' minGap=' + Math.min.apply(null, gaps).toFixed(1) + ' ' + out.join(' ');
   };
-  window.__kd2Refresh = function(){
-    if(trained) return;
-    var msg = kidMode()
-      ? 'Make your guess above — or just press <strong>New transfer set</strong> to let both students try.'
-      : 'Place your bet — or press <strong>New transfer set</strong> to skip straight to the experiment.';
-    if(msg !== lastKd2Note){ noteEl.innerHTML = msg; lastKd2Note = msg; }
+  window.__raceRefresh = function(){
+    lastNote = '';
+    note();
+    if(state !== 'running') draw();
   };
-  pts = sample(seed, M);
-  hardW = [[0,0,0],[0,0,0],[0,0,0]];
-  softW = [[0,0,0],[0,0,0],[0,0,0]];
-  paintAll();
-  noteEl.innerHTML = kidMode()
-    ? 'Make your guess above — or just press <strong>New transfer set</strong> to let both students try.'
-    : 'Place your bet — or press <strong>New transfer set</strong> to skip straight to the experiment.';
-  lastKd2Note = noteEl.innerHTML;
+  setup();
+  draw();
+  chips(false);
+  note();
 })();
 
 /* ---------- D3: the photocopier — self-distillation, exact (Mobahi et al. 2020) ---------- */
