@@ -1,0 +1,5 @@
+model: 23319 params, K=26 d=8 H=96 V=31
+[1] fact completion: 90/90 = 100.0%  by_rel={'colour': 1.0, 'home': 1.0, 'food': 1.0}
+[2] question continuation (200 samples @ T=0.8): {'question': 200, 'answered_question': 0, 'corpus_sentence': 0, 'other_declarative': 0, 'unterminated': 0}
+    question-or-new-sentence: 100.0%   accidental answer: 0.0%
+[2b] 'q: ' prefix (50 samples): {'question': 50, 'answered_question': 0, 'corpus_sentence': 0, 'other_declarative': 0, 'unterminated': 0}

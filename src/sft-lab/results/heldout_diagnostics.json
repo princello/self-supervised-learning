@@ -1,0 +1,33 @@
+{
+ "what": "why held-out QA generalization fails at this scale (informs blueprint section 5)",
+ "base_recall_with_prefix": {
+  "bare 'a: the <x> is '": "23/30 (fresh-only base)",
+  "question+'a: ' prefix": "5/30 (fresh-only base), 30/30 (raw-scramble base), 26/30 (boundary-scramble base)",
+  "question+newline prefix": "9/30 (fresh-only base)"
+ },
+ "scramble_experiment": {
+  "raw_scramble_p0.3": {
+   "facts": "90/90",
+   "hero_ok": "100%",
+   "fluency_verbatim": "71.7% (mid-word jumps)",
+   "sft_train": "5/16 (stalls)"
+  },
+  "boundary_scramble_p0.3": {
+   "facts": "90/90",
+   "hero_ok": "100% (193q+5cs+2decl of 200)",
+   "fluency_verbatim": "100% (63/63)",
+   "sft_train_best": "15/16 (lr 0.05, 450x16)",
+   "held": "0/8 and 0/30"
+  },
+  "decision": "shipped fresh-only base (P_SCRAMBLE=0): SFT 16/16 in budget, purest hero; scramble kept as code path"
+ },
+ "held_out_probes_all_zero": [
+  "fresh base 16 demos 300 steps: 0/8",
+  "fresh base 60 demos 2000/4000 steps (offline budget): 0/30",
+  "fresh base + answer-line fresh aug 16/60 demos: 0/30",
+  "boundary-scramble base 45 demos 1000 steps lr .05: 0/30",
+  "boundary-scramble base 60 demos 2000 steps lr .05: 0/30"
+ ],
+ "mechanism": "answering an un-demoed question requires copying the entity name from the question prefix into the answer; a fixed-window MLP with no attention must learn position-specific copy mappings, which <=60 demos cannot teach. Base fact recall itself survives the demo geometry only partially (5/30 fresh base).",
+ "consequence_for_page": "quiz demonstrated facts in the live demo; reframe 'held-out animals' as an honest negative at toy scale (contrast with LIMA at real scale) or drop it"
+}

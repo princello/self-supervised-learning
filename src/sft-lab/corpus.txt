@@ -1,0 +1,288 @@
+the seal lives in the sea.
+the toad is tan.
+the newt is black.
+the vole eats roots.
+the koi rests in the pond.
+the moth eats wool.
+the moth rests in the lamp.
+the lark lives in the sky.
+the koi lives in the pond.
+the whale is blue.
+the fox likes mice.
+the duck eats weeds.
+the ram eats grass.
+the toad likes grubs.
+the wren is brown.
+what colour is the owl? what colour is the pike? what colour is the bat? what does the crow eat? what colour is the crow?
+the pike eats fish.
+the wolf looks grey.
+the wren rests in the hedge.
+the mole rests in the burrow.
+the jay rests in the tree.
+the hare likes clover.
+the seal is grey.
+the vole rests in the meadow.
+the fox is red.
+the hare lives in the hill.
+the hare eats clover.
+the whale likes plankton.
+the frog is green.
+the snail lives in the garden.
+the fox eats mice.
+what colour is the toad? what colour is the jay? what does the bee eat? where does the crow live? where does the eel live?
+the whale eats plankton.
+the crab looks pink.
+the duck looks green.
+the ant lives in the hill.
+the vole is grey.
+the newt likes worms.
+the moth is grey.
+the koi lives in the pond.
+the frog lives in the pond.
+the swan rests in the lake.
+the vole lives in the meadow.
+the pike is green.
+the whale is blue.
+the lark is tan.
+the gull lives in the cliff.
+where does the koi live? what colour is the duck? where does the vole live? what colour is the ram? where does the crab live?
+the pike lives in the river.
+the moth looks grey.
+the crow is black.
+the fox is red.
+the hare lives in the hill.
+the snail is brown.
+the eel lives in the river.
+the seal rests in the sea.
+the owl eats mice.
+the whale looks blue.
+the ant rests in the hill.
+the eel rests in the river.
+the wasp lives in the nest.
+the ram eats grass.
+the snail looks brown.
+what colour is the eel? what colour is the hare? what colour is the hen? where does the wren live? where does the toad live?
+the toad lives in the marsh.
+the hare eats clover.
+the owl rests in the tree.
+the mole is brown.
+the jay eats nuts.
+the seal likes fish.
+the bat is black.
+the vole is grey.
+the jay eats nuts.
+the gull lives in the cliff.
+the moth lives in the lamp.
+the pike rests in the river.
+the wolf eats deer.
+the wolf is grey.
+the ram likes grass.
+where does the frog live? what colour is the moth? what colour is the wolf? what colour is the swan? where does the wolf live?
+the newt looks black.
+the wasp is gold.
+the ant lives in the hill.
+the whale lives in the sea.
+the toad rests in the marsh.
+the snail rests in the garden.
+the koi eats moss.
+the crab lives in the reef.
+the newt rests in the pond.
+the hen is red.
+the newt lives in the pond.
+the hen lives in the barn.
+the bee lives in the meadow.
+the swan eats weeds.
+the crab eats worms.
+what colour is the crab? what does the hare eat? where does the swan live? what does the crab eat? what does the bat eat?
+the swan eats weeds.
+the ram lives in the hill.
+the crow is black.
+the seal looks grey.
+the toad lives in the marsh.
+the lark eats bugs.
+the koi looks gold.
+the seal eats fish.
+the moth eats wool.
+the ram looks white.
+the bee lives in the meadow.
+the gull eats fish.
+the gull eats fish.
+the duck lives in the pond.
+the bee likes nectar.
+what colour is the whale? what does the fox eat? what does the moth eat? what colour is the bee? what does the swan eat?
+the owl lives in the tree.
+the vole likes roots.
+the koi is gold.
+the bee eats nectar.
+the vole looks grey.
+the ant eats crumbs.
+the mole eats worms.
+the gull is white.
+the moth lives in the lamp.
+the bat lives in the cave.
+the whale lives in the sea.
+the eel lives in the river.
+the owl likes mice.
+the ram rests in the hill.
+the eel is black.
+what does the koi eat? what colour is the ant? what does the frog eat? what colour is the seal? what does the owl eat?
+the jay is blue.
+the mole lives in the burrow.
+the toad is tan.
+the swan likes weeds.
+the wren lives in the hedge.
+the toad eats grubs.
+the wren is brown.
+the owl is grey.
+the duck eats weeds.
+the wolf eats deer.
+the hen is red.
+the jay looks blue.
+the bee eats nectar.
+the swan is white.
+the snail lives in the garden.
+what does the seal eat? where does the bat live? what colour is the vole? where does the ant live? what does the wasp eat?
+the hen eats corn.
+the seal eats fish.
+the bat lives in the cave.
+the eel looks black.
+the owl is grey.
+the duck is green.
+the ant looks black.
+the wren likes grubs.
+the owl lives in the tree.
+the snail is brown.
+the ant eats crumbs.
+the ant likes crumbs.
+the wolf likes deer.
+the crab eats worms.
+the crab likes worms.
+what colour is the mole? where does the moth live? what does the wren eat? what colour is the fox? what does the ant eat?
+the mole looks brown.
+the pike eats fish.
+the wren looks brown.
+the seal is grey.
+the bat eats figs.
+the fox lives in the forest.
+the bat likes figs.
+the fox eats mice.
+the ram lives in the hill.
+the eel is black.
+the jay likes nuts.
+the crab rests in the reef.
+the owl eats mice.
+the swan looks white.
+the bee looks gold.
+where does the lark live? where does the pike live? what colour is the koi? where does the newt live? where does the hen live?
+the eel eats worms.
+the wasp lives in the nest.
+the duck lives in the pond.
+the newt is black.
+the frog likes flies.
+the hen lives in the barn.
+the hen looks red.
+the whale eats plankton.
+the crow lives in the tree.
+the frog eats flies.
+the newt eats worms.
+the mole lives in the burrow.
+the mole is brown.
+the crab is pink.
+the crow looks black.
+what does the mole eat? where does the jay live? where does the wasp live? where does the duck live? what colour is the wren?
+the pike is green.
+the gull is white.
+the pike lives in the river.
+the newt lives in the pond.
+the whale rests in the sea.
+the hen likes corn.
+the eel likes worms.
+the koi is gold.
+the frog rests in the pond.
+the frog lives in the pond.
+the seal lives in the sea.
+the bat rests in the cave.
+the gull looks white.
+the bat looks black.
+the crab is pink.
+what does the eel eat? what does the jay eat? what does the hen eat? what colour is the frog? where does the snail live?
+the wasp rests in the nest.
+the fox rests in the forest.
+the ram is white.
+the duck is green.
+the wolf lives in the cave.
+the lark looks tan.
+the ant is black.
+the vole lives in the meadow.
+the duck rests in the pond.
+the wasp eats jam.
+the fox looks red.
+the wasp likes jam.
+the ram is white.
+the newt eats worms.
+the koi likes moss.
+what does the whale eat? what does the duck eat? what colour is the wasp? what does the lark eat? what colour is the gull?
+the pike likes fish.
+the hare looks white.
+the swan lives in the lake.
+the bat is black.
+the snail eats leaves.
+the wasp eats jam.
+the wolf rests in the cave.
+the pike looks green.
+the wasp looks gold.
+the vole eats roots.
+the wren eats grubs.
+the hare rests in the hill.
+the hen rests in the barn.
+the bat eats figs.
+the frog is green.
+where does the whale live? where does the ram live? where does the seal live? where does the fox live? what colour is the newt?
+the crow likes seeds.
+the lark likes bugs.
+the frog looks green.
+the jay lives in the tree.
+the lark is tan.
+the koi eats moss.
+the gull rests in the cliff.
+the wren eats grubs.
+the lark eats bugs.
+the ant is black.
+the crow eats seeds.
+the bee is gold.
+the duck likes weeds.
+the hare is white.
+the toad eats grubs.
+where does the gull live? what does the snail eat? what does the newt eat? what colour is the lark? where does the mole live?
+the frog eats flies.
+the bee is gold.
+the snail eats leaves.
+the jay is blue.
+the bee rests in the meadow.
+the crow rests in the tree.
+the lark lives in the sky.
+the swan lives in the lake.
+the swan is white.
+the moth is grey.
+the eel eats worms.
+the crow lives in the tree.
+the owl looks grey.
+the wasp is gold.
+the jay lives in the tree.
+where does the owl live? what does the pike eat? what does the ram eat? what does the vole eat? what does the toad eat?
+the mole likes worms.
+the crow eats seeds.
+the wolf lives in the cave.
+the crab lives in the reef.
+the hen eats corn.
+the snail likes leaves.
+the gull likes fish.
+the fox lives in the forest.
+the hare is white.
+the wren lives in the hedge.
+the wolf is grey.
+the toad looks tan.
+the mole eats worms.
+the lark rests in the sky.
+the moth likes wool.
+where does the hare live? what colour is the snail? where does the bee live? what does the wolf eat? what does the gull eat?

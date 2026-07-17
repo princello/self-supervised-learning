@@ -1,0 +1,618 @@
+{
+ "seed": 0,
+ "steps": 600,
+ "batch": 24,
+ "lr": 0.02,
+ "momentum": 0.9,
+ "n_demos": 60,
+ "n_held": 30,
+ "n_answer_positions": 1526,
+ "loss_curve": [
+  {
+   "step": 0,
+   "loss": 1.8485
+  },
+  {
+   "step": 50,
+   "loss": 1.7772
+  },
+  {
+   "step": 100,
+   "loss": 0.6649
+  },
+  {
+   "step": 150,
+   "loss": 0.8793
+  },
+  {
+   "step": 200,
+   "loss": 0.1736
+  },
+  {
+   "step": 250,
+   "loss": 0.3712
+  },
+  {
+   "step": 300,
+   "loss": 0.0091
+  },
+  {
+   "step": 350,
+   "loss": 0.6457
+  },
+  {
+   "step": 400,
+   "loss": 0.0059
+  },
+  {
+   "step": 450,
+   "loss": 0.0014
+  },
+  {
+   "step": 500,
+   "loss": 0.2198
+  },
+  {
+   "step": 550,
+   "loss": 0.0343
+  },
+  {
+   "step": 599,
+   "loss": 0.321
+  }
+ ],
+ "answer_rate_before": {
+  "train": 0.0,
+  "held": 0.0
+ },
+ "answer_rate_after": {
+  "train": 0.55,
+  "held": 0.0
+ },
+ "macs_fwd_bwd_total": 991180800,
+ "macs_budget": 500000000.0,
+ "rows_train": [
+  {
+   "q": "what colour is the fox?",
+   "got": "a: the hen is red.",
+   "want": "a: the fox is red.",
+   "ok": false
+  },
+  {
+   "q": "what does the snail eat?",
+   "got": "a: the snail eats leaves.",
+   "want": "a: the snail eats leaves.",
+   "ok": true
+  },
+  {
+   "q": "where does the swan live?",
+   "got": "a: the fikes looks blive.",
+   "want": "a: the swan lives in the lake.",
+   "ok": false
+  },
+  {
+   "q": "where does the ram live?",
+   "got": "a: the krlloleuts plowhe thlleat es wl rests.",
+   "want": "a: the ram lives in the hill.",
+   "ok": false
+  },
+  {
+   "q": "what does the owl eat?",
+   "got": "a: the hen eats crrmb.",
+   "want": "a: the owl eats mice.",
+   "ok": false
+  },
+  {
+   "q": "what does the newt eat?",
+   "got": "a: the newt eats worms.",
+   "want": "a: the newt eats worms.",
+   "ok": true
+  },
+  {
+   "q": "where does the gull live?",
+   "got": "a: the toll lives in the cliff.",
+   "want": "a: the gull lives in the cliff.",
+   "ok": false
+  },
+  {
+   "q": "what does the crab eat?",
+   "got": "a: the pive eats in the.",
+   "want": "a: the crab eats worms.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the lark?",
+   "got": "a: the hen eakeea:cthe layk is bl es.",
+   "want": "a: the lark is tan.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the crow?",
+   "got": "a: the crow is black.",
+   "want": "a: the crow is black.",
+   "ok": true
+  },
+  {
+   "q": "where does the seal live?",
+   "got": "a: the seal lives in the case.",
+   "want": "a: the seal lives in the sea.",
+   "ok": false
+  },
+  {
+   "q": "where does the bee live?",
+   "got": "a: the mowhatk in whileewtowh rotn liee.",
+   "want": "a: the bee lives in the meadow.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the koi?",
+   "got": "a: the koi is gold.",
+   "want": "a: the koi is gold.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the duck?",
+   "got": "a: the layk is gre.",
+   "want": "a: the duck is green.",
+   "ok": false
+  },
+  {
+   "q": "what does the bat eat?",
+   "got": "a: the bat eats figs.",
+   "want": "a: the bat eats figs.",
+   "ok": true
+  },
+  {
+   "q": "where does the frog live?",
+   "got": "a: the frog lives in the pond.",
+   "want": "a: the frog lives in the pond.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the jay?",
+   "got": "a: the jay is blue.",
+   "want": "a: the jay is blue.",
+   "ok": true
+  },
+  {
+   "q": "where does the pike live?",
+   "got": "a: the duck lives in the pond.",
+   "want": "a: the pike lives in the river.",
+   "ok": false
+  },
+  {
+   "q": "where does the snail live?",
+   "got": "a: the snail lives in the garden.",
+   "want": "a: the snail lives in the garden.",
+   "ok": true
+  },
+  {
+   "q": "what does the whale eat?",
+   "got": "a: the whale eats plankton.",
+   "want": "a: the whale eats plankton.",
+   "ok": true
+  },
+  {
+   "q": "where does the crow live?",
+   "got": "a: the crow lives in the tree.",
+   "want": "a: the crow lives in the tree.",
+   "ok": true
+  },
+  {
+   "q": "where does the ant live?",
+   "got": "a: the ant lives in the hill.",
+   "want": "a: the ant lives in the hill.",
+   "ok": true
+  },
+  {
+   "q": "where does the crab live?",
+   "got": "a: the tuee.",
+   "want": "a: the crab lives in the reef.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the crab?",
+   "got": "a: the wrol eats weats.",
+   "want": "a: the crab is pink.",
+   "ok": false
+  },
+  {
+   "q": "where does the vole live?",
+   "got": "a: the crab lives in the reef.",
+   "want": "a: the vole lives in the meadow.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the seal?",
+   "got": "a: the newt is black.",
+   "want": "a: the seal is grey.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the bee?",
+   "got": "a: the bee is gold.",
+   "want": "a: the bee is gold.",
+   "ok": true
+  },
+  {
+   "q": "what does the pike eat?",
+   "got": "a: the pike eats fish.",
+   "want": "a: the pike eats fish.",
+   "ok": true
+  },
+  {
+   "q": "where does the bat live?",
+   "got": "a: the bat lives in the cave.",
+   "want": "a: the bat lives in the cave.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the wren?",
+   "got": "a: the wren is brown.",
+   "want": "a: the wren is brown.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the wasp?",
+   "got": "a: the wasp is gold.",
+   "want": "a: the wasp is gold.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the hare?",
+   "got": "a: the crrkes.",
+   "want": "a: the hare is white.",
+   "ok": false
+  },
+  {
+   "q": "what does the hare eat?",
+   "got": "a: the hare eats clover.",
+   "want": "a: the hare eats clover.",
+   "ok": true
+  },
+  {
+   "q": "what does the lark eat?",
+   "got": "a: the lark eats bugs.",
+   "want": "a: the lark eats bugs.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the toad?",
+   "got": "a: the toad is tan.",
+   "want": "a: the toad is tan.",
+   "ok": true
+  },
+  {
+   "q": "what does the eel eat?",
+   "got": "a: the beab is black.",
+   "want": "a: the eel eats worms.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the hen?",
+   "got": "a: the hen is red.",
+   "want": "a: the hen is red.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the newt?",
+   "got": "a: the newt is black.",
+   "want": "a: the newt is black.",
+   "ok": true
+  },
+  {
+   "q": "what does the swan eat?",
+   "got": "a: the swan eats weeds.",
+   "want": "a: the swan eats weeds.",
+   "ok": true
+  },
+  {
+   "q": "where does the moth live?",
+   "got": "a: the frts lives in the pike.",
+   "want": "a: the moth lives in the lamp.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the mole?",
+   "got": "a: the mole is brown.",
+   "want": "a: the mole is brown.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the ant?",
+   "got": "a: the ant is black.",
+   "want": "a: the ant is black.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the moth?",
+   "got": "a: the moth is grey.",
+   "want": "a: the moth is grey.",
+   "ok": true
+  },
+  {
+   "q": "what does the bee eat?",
+   "got": "a: the bee eats nectar.",
+   "want": "a: the bee eats nectar.",
+   "ok": true
+  },
+  {
+   "q": "what does the moth eat?",
+   "got": "a: the moth eats wool.",
+   "want": "a: the moth eats wool.",
+   "ok": true
+  },
+  {
+   "q": "what does the hen eat?",
+   "got": "a: the bee eats nectar.",
+   "want": "a: the hen eats corn.",
+   "ok": false
+  },
+  {
+   "q": "where does the whale live?",
+   "got": "a: the whale lives in the sea.",
+   "want": "a: the whale lives in the sea.",
+   "ok": true
+  },
+  {
+   "q": "where does the mole live?",
+   "got": "a: the mole lives in the brre.",
+   "want": "a: the mole lives in the burrow.",
+   "ok": false
+  },
+  {
+   "q": "where does the lark live?",
+   "got": "a: the tkcg lives in the rave.",
+   "want": "a: the lark lives in the sky.",
+   "ok": false
+  },
+  {
+   "q": "what does the ant eat?",
+   "got": "a: the ant eats crumbs.",
+   "want": "a: the ant eats crumbs.",
+   "ok": true
+  },
+  {
+   "q": "what does the seal eat?",
+   "got": "a: the seal eats fish.",
+   "want": "a: the seal eats fish.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the owl?",
+   "got": "a: the koi is gold.",
+   "want": "a: the owl is grey.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the ram?",
+   "got": "a: the ram is white.",
+   "want": "a: the ram is white.",
+   "ok": true
+  },
+  {
+   "q": "where does the wolf live?",
+   "got": "a: the toll lives in the cliff.",
+   "want": "a: the wolf lives in the cave.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the pike?",
+   "got": "a: the hee eats wleree.",
+   "want": "a: the pike is green.",
+   "ok": false
+  },
+  {
+   "q": "where does the duck live?",
+   "got": "a: the fram lives in the raye.",
+   "want": "a: the duck lives in the pond.",
+   "ok": false
+  },
+  {
+   "q": "where does the hen live?",
+   "got": "a: the ben lives in the colfreewtsta lowhare",
+   "want": "a: the hen lives in the barn.",
+   "ok": false
+  },
+  {
+   "q": "where does the koi live?",
+   "got": "a: the kot lives in the pond.",
+   "want": "a: the koi lives in the pond.",
+   "ok": false
+  },
+  {
+   "q": "where does the fox live?",
+   "got": "a: the fox lives in the forest.",
+   "want": "a: the fox lives in the forest.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the frog?",
+   "got": "a: the frog is green.",
+   "want": "a: the frog is green.",
+   "ok": true
+  }
+ ],
+ "rows_held": [
+  {
+   "q": "where does the wasp live?",
+   "got": "ee toe ras live",
+   "want": "a: the wasp lives in the nest.",
+   "ok": false
+  },
+  {
+   "q": "what does the crow eat?",
+   "got": "a: the not live? ikatbeats flowk is greeeeats",
+   "want": "a: the crow eats seeds.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the gull?",
+   "got": "a: the heee is black.",
+   "want": "a: the gull is white.",
+   "ok": false
+  },
+  {
+   "q": "where does the owl live?",
+   "got": "a: the seal loess woen.",
+   "want": "a: the owl lives in the tree.",
+   "ok": false
+  },
+  {
+   "q": "where does the eel live?",
+   "got": "a: the helflleee re ts pine.",
+   "want": "a: the eel lives in the river.",
+   "ok": false
+  },
+  {
+   "q": "what does the koi eat?",
+   "got": "a: the aroposstb dact rests.",
+   "want": "a: the koi eats moss.",
+   "ok": false
+  },
+  {
+   "q": "what does the duck eat?",
+   "got": "a: the loxk eats in thin toee the eats livts",
+   "want": "a: the duck eats weeds.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the eel?",
+   "got": "a: the kes bee.",
+   "want": "a: the eel is black.",
+   "ok": false
+  },
+  {
+   "q": "where does the hare live?",
+   "got": "a: the the lark liveaduts whare ig bauth es.",
+   "want": "a: the hare lives in the hill.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the bat?",
+   "got": "a: the jay is bluen.",
+   "want": "a: the bat is black.",
+   "ok": false
+  },
+  {
+   "q": "what does the wren eat?",
+   "got": "a: the lavpisewtcre ts blise.",
+   "want": "a: the wren eats grubs.",
+   "ok": false
+  },
+  {
+   "q": "where does the toad live?",
+   "got": "a: the molh lives in the laye.",
+   "want": "a: the toad lives in the marsh.",
+   "ok": false
+  },
+  {
+   "q": "what does the wasp eat?",
+   "got": "a: the owl esear dn thabs ifrests dn the eea.",
+   "want": "a: the wasp eats jam.",
+   "ok": false
+  },
+  {
+   "q": "what does the toad eat?",
+   "got": "a: the erol eats fish.",
+   "want": "a: the toad eats grubs.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the swan?",
+   "got": "a: the nnth iseadl.",
+   "want": "a: the swan is white.",
+   "ok": false
+  },
+  {
+   "q": "what does the mole eat?",
+   "got": "a: the erobeas gram the dre lowov red.",
+   "want": "a: the mole eats worms.",
+   "ok": false
+  },
+  {
+   "q": "where does the wren live?",
+   "got": "a: the tuee lives in the gre.",
+   "want": "a: the wren lives in the hedge.",
+   "ok": false
+  },
+  {
+   "q": "where does the jay live?",
+   "got": "a: the ben lives in the colfreewtsta lowhare",
+   "want": "a: the jay lives in the tree.",
+   "ok": false
+  },
+  {
+   "q": "what does the wolf eat?",
+   "got": "a: the sear is bram.",
+   "want": "a: the wolf eats deer.",
+   "ok": false
+  },
+  {
+   "q": "where does the newt live?",
+   "got": "a: the s an lives in the cen l.",
+   "want": "a: the newt lives in the pond.",
+   "ok": false
+  },
+  {
+   "q": "what does the fox eat?",
+   "got": "a: the aut eats cis gres wrereen ee ts rois.",
+   "want": "a: the fox eats mice.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the vole?",
+   "got": "a: the newh is grow.",
+   "want": "a: the vole is grey.",
+   "ok": false
+  },
+  {
+   "q": "what does the ram eat?",
+   "got": "a: the arol eats fiks.",
+   "want": "a: the ram eats grass.",
+   "ok": false
+  },
+  {
+   "q": "what does the jay eat?",
+   "got": "a: the bat eats cois breedsen.",
+   "want": "a: the jay eats nuts.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the whale?",
+   "got": "e the buts ile?.",
+   "want": "a: the whale is blue.",
+   "ok": false
+  },
+  {
+   "q": "what does the frog eat?",
+   "got": "a: the latk looks togms.",
+   "want": "a: the frog eats flies.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the wolf?",
+   "got": "a: the turk is green.",
+   "want": "a: the wolf is grey.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the snail?",
+   "got": ": the col eatk leee where roes ihe an lila",
+   "want": "a: the snail is brown.",
+   "ok": false
+  },
+  {
+   "q": "what does the vole eat?",
+   "got": "a: the ees is toorn.",
+   "want": "a: the vole eats roots.",
+   "ok": false
+  },
+  {
+   "q": "what does the gull eat?",
+   "got": "a: the nntt eats foots iheds.",
+   "want": "a: the gull eats fish.",
+   "ok": false
+  }
+ ]
+}

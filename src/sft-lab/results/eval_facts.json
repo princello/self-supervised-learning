@@ -1,0 +1,733 @@
+{
+ "accuracy": 1.0,
+ "n_ok": 90,
+ "n_total": 90,
+ "by_relation": {
+  "colour": 1.0,
+  "home": 1.0,
+  "food": 1.0
+ },
+ "failures": [],
+ "rows": [
+  {
+   "entity": "fox",
+   "relation": "colour",
+   "prompt": "the fox is ",
+   "got": "red.",
+   "want": "red.",
+   "ok": true
+  },
+  {
+   "entity": "fox",
+   "relation": "home",
+   "prompt": "the fox lives in the ",
+   "got": "forest.",
+   "want": "forest.",
+   "ok": true
+  },
+  {
+   "entity": "fox",
+   "relation": "food",
+   "prompt": "the fox eats ",
+   "got": "mice.",
+   "want": "mice.",
+   "ok": true
+  },
+  {
+   "entity": "owl",
+   "relation": "colour",
+   "prompt": "the owl is ",
+   "got": "grey.",
+   "want": "grey.",
+   "ok": true
+  },
+  {
+   "entity": "owl",
+   "relation": "home",
+   "prompt": "the owl lives in the ",
+   "got": "tree.",
+   "want": "tree.",
+   "ok": true
+  },
+  {
+   "entity": "owl",
+   "relation": "food",
+   "prompt": "the owl eats ",
+   "got": "mice.",
+   "want": "mice.",
+   "ok": true
+  },
+  {
+   "entity": "frog",
+   "relation": "colour",
+   "prompt": "the frog is ",
+   "got": "green.",
+   "want": "green.",
+   "ok": true
+  },
+  {
+   "entity": "frog",
+   "relation": "home",
+   "prompt": "the frog lives in the ",
+   "got": "pond.",
+   "want": "pond.",
+   "ok": true
+  },
+  {
+   "entity": "frog",
+   "relation": "food",
+   "prompt": "the frog eats ",
+   "got": "flies.",
+   "want": "flies.",
+   "ok": true
+  },
+  {
+   "entity": "mole",
+   "relation": "colour",
+   "prompt": "the mole is ",
+   "got": "brown.",
+   "want": "brown.",
+   "ok": true
+  },
+  {
+   "entity": "mole",
+   "relation": "home",
+   "prompt": "the mole lives in the ",
+   "got": "burrow.",
+   "want": "burrow.",
+   "ok": true
+  },
+  {
+   "entity": "mole",
+   "relation": "food",
+   "prompt": "the mole eats ",
+   "got": "worms.",
+   "want": "worms.",
+   "ok": true
+  },
+  {
+   "entity": "whale",
+   "relation": "colour",
+   "prompt": "the whale is ",
+   "got": "blue.",
+   "want": "blue.",
+   "ok": true
+  },
+  {
+   "entity": "whale",
+   "relation": "home",
+   "prompt": "the whale lives in the ",
+   "got": "sea.",
+   "want": "sea.",
+   "ok": true
+  },
+  {
+   "entity": "whale",
+   "relation": "food",
+   "prompt": "the whale eats ",
+   "got": "plankton.",
+   "want": "plankton.",
+   "ok": true
+  },
+  {
+   "entity": "bee",
+   "relation": "colour",
+   "prompt": "the bee is ",
+   "got": "gold.",
+   "want": "gold.",
+   "ok": true
+  },
+  {
+   "entity": "bee",
+   "relation": "home",
+   "prompt": "the bee lives in the ",
+   "got": "meadow.",
+   "want": "meadow.",
+   "ok": true
+  },
+  {
+   "entity": "bee",
+   "relation": "food",
+   "prompt": "the bee eats ",
+   "got": "nectar.",
+   "want": "nectar.",
+   "ok": true
+  },
+  {
+   "entity": "crow",
+   "relation": "colour",
+   "prompt": "the crow is ",
+   "got": "black.",
+   "want": "black.",
+   "ok": true
+  },
+  {
+   "entity": "crow",
+   "relation": "home",
+   "prompt": "the crow lives in the ",
+   "got": "tree.",
+   "want": "tree.",
+   "ok": true
+  },
+  {
+   "entity": "crow",
+   "relation": "food",
+   "prompt": "the crow eats ",
+   "got": "seeds.",
+   "want": "seeds.",
+   "ok": true
+  },
+  {
+   "entity": "hare",
+   "relation": "colour",
+   "prompt": "the hare is ",
+   "got": "white.",
+   "want": "white.",
+   "ok": true
+  },
+  {
+   "entity": "hare",
+   "relation": "home",
+   "prompt": "the hare lives in the ",
+   "got": "hill.",
+   "want": "hill.",
+   "ok": true
+  },
+  {
+   "entity": "hare",
+   "relation": "food",
+   "prompt": "the hare eats ",
+   "got": "clover.",
+   "want": "clover.",
+   "ok": true
+  },
+  {
+   "entity": "wolf",
+   "relation": "colour",
+   "prompt": "the wolf is ",
+   "got": "grey.",
+   "want": "grey.",
+   "ok": true
+  },
+  {
+   "entity": "wolf",
+   "relation": "home",
+   "prompt": "the wolf lives in the ",
+   "got": "cave.",
+   "want": "cave.",
+   "ok": true
+  },
+  {
+   "entity": "wolf",
+   "relation": "food",
+   "prompt": "the wolf eats ",
+   "got": "deer.",
+   "want": "deer.",
+   "ok": true
+  },
+  {
+   "entity": "duck",
+   "relation": "colour",
+   "prompt": "the duck is ",
+   "got": "green.",
+   "want": "green.",
+   "ok": true
+  },
+  {
+   "entity": "duck",
+   "relation": "home",
+   "prompt": "the duck lives in the ",
+   "got": "pond.",
+   "want": "pond.",
+   "ok": true
+  },
+  {
+   "entity": "duck",
+   "relation": "food",
+   "prompt": "the duck eats ",
+   "got": "weeds.",
+   "want": "weeds.",
+   "ok": true
+  },
+  {
+   "entity": "moth",
+   "relation": "colour",
+   "prompt": "the moth is ",
+   "got": "grey.",
+   "want": "grey.",
+   "ok": true
+  },
+  {
+   "entity": "moth",
+   "relation": "home",
+   "prompt": "the moth lives in the ",
+   "got": "lamp.",
+   "want": "lamp.",
+   "ok": true
+  },
+  {
+   "entity": "moth",
+   "relation": "food",
+   "prompt": "the moth eats ",
+   "got": "wool.",
+   "want": "wool.",
+   "ok": true
+  },
+  {
+   "entity": "snail",
+   "relation": "colour",
+   "prompt": "the snail is ",
+   "got": "brown.",
+   "want": "brown.",
+   "ok": true
+  },
+  {
+   "entity": "snail",
+   "relation": "home",
+   "prompt": "the snail lives in the ",
+   "got": "garden.",
+   "want": "garden.",
+   "ok": true
+  },
+  {
+   "entity": "snail",
+   "relation": "food",
+   "prompt": "the snail eats ",
+   "got": "leaves.",
+   "want": "leaves.",
+   "ok": true
+  },
+  {
+   "entity": "crab",
+   "relation": "colour",
+   "prompt": "the crab is ",
+   "got": "pink.",
+   "want": "pink.",
+   "ok": true
+  },
+  {
+   "entity": "crab",
+   "relation": "home",
+   "prompt": "the crab lives in the ",
+   "got": "reef.",
+   "want": "reef.",
+   "ok": true
+  },
+  {
+   "entity": "crab",
+   "relation": "food",
+   "prompt": "the crab eats ",
+   "got": "worms.",
+   "want": "worms.",
+   "ok": true
+  },
+  {
+   "entity": "toad",
+   "relation": "colour",
+   "prompt": "the toad is ",
+   "got": "tan.",
+   "want": "tan.",
+   "ok": true
+  },
+  {
+   "entity": "toad",
+   "relation": "home",
+   "prompt": "the toad lives in the ",
+   "got": "marsh.",
+   "want": "marsh.",
+   "ok": true
+  },
+  {
+   "entity": "toad",
+   "relation": "food",
+   "prompt": "the toad eats ",
+   "got": "grubs.",
+   "want": "grubs.",
+   "ok": true
+  },
+  {
+   "entity": "wren",
+   "relation": "colour",
+   "prompt": "the wren is ",
+   "got": "brown.",
+   "want": "brown.",
+   "ok": true
+  },
+  {
+   "entity": "wren",
+   "relation": "home",
+   "prompt": "the wren lives in the ",
+   "got": "hedge.",
+   "want": "hedge.",
+   "ok": true
+  },
+  {
+   "entity": "wren",
+   "relation": "food",
+   "prompt": "the wren eats ",
+   "got": "grubs.",
+   "want": "grubs.",
+   "ok": true
+  },
+  {
+   "entity": "newt",
+   "relation": "colour",
+   "prompt": "the newt is ",
+   "got": "black.",
+   "want": "black.",
+   "ok": true
+  },
+  {
+   "entity": "newt",
+   "relation": "home",
+   "prompt": "the newt lives in the ",
+   "got": "pond.",
+   "want": "pond.",
+   "ok": true
+  },
+  {
+   "entity": "newt",
+   "relation": "food",
+   "prompt": "the newt eats ",
+   "got": "worms.",
+   "want": "worms.",
+   "ok": true
+  },
+  {
+   "entity": "vole",
+   "relation": "colour",
+   "prompt": "the vole is ",
+   "got": "grey.",
+   "want": "grey.",
+   "ok": true
+  },
+  {
+   "entity": "vole",
+   "relation": "home",
+   "prompt": "the vole lives in the ",
+   "got": "meadow.",
+   "want": "meadow.",
+   "ok": true
+  },
+  {
+   "entity": "vole",
+   "relation": "food",
+   "prompt": "the vole eats ",
+   "got": "roots.",
+   "want": "roots.",
+   "ok": true
+  },
+  {
+   "entity": "pike",
+   "relation": "colour",
+   "prompt": "the pike is ",
+   "got": "green.",
+   "want": "green.",
+   "ok": true
+  },
+  {
+   "entity": "pike",
+   "relation": "home",
+   "prompt": "the pike lives in the ",
+   "got": "river.",
+   "want": "river.",
+   "ok": true
+  },
+  {
+   "entity": "pike",
+   "relation": "food",
+   "prompt": "the pike eats ",
+   "got": "fish.",
+   "want": "fish.",
+   "ok": true
+  },
+  {
+   "entity": "swan",
+   "relation": "colour",
+   "prompt": "the swan is ",
+   "got": "white.",
+   "want": "white.",
+   "ok": true
+  },
+  {
+   "entity": "swan",
+   "relation": "home",
+   "prompt": "the swan lives in the ",
+   "got": "lake.",
+   "want": "lake.",
+   "ok": true
+  },
+  {
+   "entity": "swan",
+   "relation": "food",
+   "prompt": "the swan eats ",
+   "got": "weeds.",
+   "want": "weeds.",
+   "ok": true
+  },
+  {
+   "entity": "gull",
+   "relation": "colour",
+   "prompt": "the gull is ",
+   "got": "white.",
+   "want": "white.",
+   "ok": true
+  },
+  {
+   "entity": "gull",
+   "relation": "home",
+   "prompt": "the gull lives in the ",
+   "got": "cliff.",
+   "want": "cliff.",
+   "ok": true
+  },
+  {
+   "entity": "gull",
+   "relation": "food",
+   "prompt": "the gull eats ",
+   "got": "fish.",
+   "want": "fish.",
+   "ok": true
+  },
+  {
+   "entity": "lark",
+   "relation": "colour",
+   "prompt": "the lark is ",
+   "got": "tan.",
+   "want": "tan.",
+   "ok": true
+  },
+  {
+   "entity": "lark",
+   "relation": "home",
+   "prompt": "the lark lives in the ",
+   "got": "sky.",
+   "want": "sky.",
+   "ok": true
+  },
+  {
+   "entity": "lark",
+   "relation": "food",
+   "prompt": "the lark eats ",
+   "got": "bugs.",
+   "want": "bugs.",
+   "ok": true
+  },
+  {
+   "entity": "hen",
+   "relation": "colour",
+   "prompt": "the hen is ",
+   "got": "red.",
+   "want": "red.",
+   "ok": true
+  },
+  {
+   "entity": "hen",
+   "relation": "home",
+   "prompt": "the hen lives in the ",
+   "got": "barn.",
+   "want": "barn.",
+   "ok": true
+  },
+  {
+   "entity": "hen",
+   "relation": "food",
+   "prompt": "the hen eats ",
+   "got": "corn.",
+   "want": "corn.",
+   "ok": true
+  },
+  {
+   "entity": "ant",
+   "relation": "colour",
+   "prompt": "the ant is ",
+   "got": "black.",
+   "want": "black.",
+   "ok": true
+  },
+  {
+   "entity": "ant",
+   "relation": "home",
+   "prompt": "the ant lives in the ",
+   "got": "hill.",
+   "want": "hill.",
+   "ok": true
+  },
+  {
+   "entity": "ant",
+   "relation": "food",
+   "prompt": "the ant eats ",
+   "got": "crumbs.",
+   "want": "crumbs.",
+   "ok": true
+  },
+  {
+   "entity": "wasp",
+   "relation": "colour",
+   "prompt": "the wasp is ",
+   "got": "gold.",
+   "want": "gold.",
+   "ok": true
+  },
+  {
+   "entity": "wasp",
+   "relation": "home",
+   "prompt": "the wasp lives in the ",
+   "got": "nest.",
+   "want": "nest.",
+   "ok": true
+  },
+  {
+   "entity": "wasp",
+   "relation": "food",
+   "prompt": "the wasp eats ",
+   "got": "jam.",
+   "want": "jam.",
+   "ok": true
+  },
+  {
+   "entity": "bat",
+   "relation": "colour",
+   "prompt": "the bat is ",
+   "got": "black.",
+   "want": "black.",
+   "ok": true
+  },
+  {
+   "entity": "bat",
+   "relation": "home",
+   "prompt": "the bat lives in the ",
+   "got": "cave.",
+   "want": "cave.",
+   "ok": true
+  },
+  {
+   "entity": "bat",
+   "relation": "food",
+   "prompt": "the bat eats ",
+   "got": "figs.",
+   "want": "figs.",
+   "ok": true
+  },
+  {
+   "entity": "koi",
+   "relation": "colour",
+   "prompt": "the koi is ",
+   "got": "gold.",
+   "want": "gold.",
+   "ok": true
+  },
+  {
+   "entity": "koi",
+   "relation": "home",
+   "prompt": "the koi lives in the ",
+   "got": "pond.",
+   "want": "pond.",
+   "ok": true
+  },
+  {
+   "entity": "koi",
+   "relation": "food",
+   "prompt": "the koi eats ",
+   "got": "moss.",
+   "want": "moss.",
+   "ok": true
+  },
+  {
+   "entity": "jay",
+   "relation": "colour",
+   "prompt": "the jay is ",
+   "got": "blue.",
+   "want": "blue.",
+   "ok": true
+  },
+  {
+   "entity": "jay",
+   "relation": "home",
+   "prompt": "the jay lives in the ",
+   "got": "tree.",
+   "want": "tree.",
+   "ok": true
+  },
+  {
+   "entity": "jay",
+   "relation": "food",
+   "prompt": "the jay eats ",
+   "got": "nuts.",
+   "want": "nuts.",
+   "ok": true
+  },
+  {
+   "entity": "ram",
+   "relation": "colour",
+   "prompt": "the ram is ",
+   "got": "white.",
+   "want": "white.",
+   "ok": true
+  },
+  {
+   "entity": "ram",
+   "relation": "home",
+   "prompt": "the ram lives in the ",
+   "got": "hill.",
+   "want": "hill.",
+   "ok": true
+  },
+  {
+   "entity": "ram",
+   "relation": "food",
+   "prompt": "the ram eats ",
+   "got": "grass.",
+   "want": "grass.",
+   "ok": true
+  },
+  {
+   "entity": "eel",
+   "relation": "colour",
+   "prompt": "the eel is ",
+   "got": "black.",
+   "want": "black.",
+   "ok": true
+  },
+  {
+   "entity": "eel",
+   "relation": "home",
+   "prompt": "the eel lives in the ",
+   "got": "river.",
+   "want": "river.",
+   "ok": true
+  },
+  {
+   "entity": "eel",
+   "relation": "food",
+   "prompt": "the eel eats ",
+   "got": "worms.",
+   "want": "worms.",
+   "ok": true
+  },
+  {
+   "entity": "seal",
+   "relation": "colour",
+   "prompt": "the seal is ",
+   "got": "grey.",
+   "want": "grey.",
+   "ok": true
+  },
+  {
+   "entity": "seal",
+   "relation": "home",
+   "prompt": "the seal lives in the ",
+   "got": "sea.",
+   "want": "sea.",
+   "ok": true
+  },
+  {
+   "entity": "seal",
+   "relation": "food",
+   "prompt": "the seal eats ",
+   "got": "fish.",
+   "want": "fish.",
+   "ok": true
+  }
+ ]
+}

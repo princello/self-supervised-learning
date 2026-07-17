@@ -1,0 +1,13 @@
+{
+ "temp": 0.8,
+ "verbatim_corpus_sentence_frac": 1.0,
+ "n_sentences": 60,
+ "n_verbatim": 60,
+ "samples": [
+  "the gull likes fish.\nthe fox lives in the forest.\nthe bat likes figs.\nthe fox eats mice.\nthe ram lives in the hill.\nthe crow is black.\nthe seal looks grey.\nthe toad lives in the marsh.\nthe hare eats clover.\nthe owl rests in the tree.\nthe mole is brown.\nthe jay eats nuts.\nthe seal likes fish.\nthe bat",
+  "the snail lives in the garden.\nthe fox eats mice.\nwhat colour is the toad? what colour is the jay? what does the bee eat? where does the crow live? where does the eel live?\nthe whale eats plankton.\nthe crow lives in the tree.\nthe frog eats flies.\nthe newt eats worms.\nthe mole lives in the burrow.\nth",
+  "what colour is the seal? what does the owl eat?\nthe jay is blue.\nthe mole lives in the burrow.\nthe mole is brown.\nthe crab is pink.\nthe crow looks black.\nwhat does the mole eat? where does the jay live? where does the wasp live? where does the duck live? what colour is the newt?\nthe crow likes seeds",
+  "the pike eats fish.\nthe wolf looks grey.\nthe wren rests in the hedge.\nthe mole rests in the burrow.\nthe jay rests in the tree.\nthe hare likes clover.\nthe seal is grey.\nthe vole rests in the meadow.\nthe crow rests in the tree.\nthe lark lives in the sky.\nthe swan lives in the lake.\nthe swan is white.\n",
+  "the wren rests in the hedge.\nthe mole rests in the burrow.\nthe jay rests in the tree.\nthe hare likes clover.\nthe seal is grey.\nthe vole rests in the meadow.\nthe crow rests in the tree.\nthe lark lives in the sky.\nthe koi lives in the pond.\nthe frog lives in the pond.\nthe seal lives in the sea.\nthe to"
+ ]
+}

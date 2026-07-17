@@ -1,0 +1,146 @@
+[
+ {
+  "n_train": 16,
+  "steps": 300,
+  "batch": 24,
+  "lr": 0.02,
+  "p_fresh": 0.5,
+  "train": 15,
+  "held": 0,
+  "macs": 495590400,
+  "held_rows": [
+   {
+    "q": "what colour is the jay?",
+    "got": "a: the fox is red.",
+    "want": "a: the jay is blue.",
+    "ok": false
+   },
+   {
+    "q": "where does the pike live?",
+    "got": "a: the s lilihe lire?",
+    "want": "a: the pike lives in the river.",
+    "ok": false
+   },
+   {
+    "q": "where does the snail live?",
+    "got": "ja.",
+    "want": "a: the snail lives in the garden.",
+    "ok": false
+   },
+   {
+    "q": "what does the whale eat?",
+    "got": "euts fin togn thes.",
+    "want": "a: the whale eats plankton.",
+    "ok": false
+   },
+   {
+    "q": "where does the crow live?",
+    "got": "a: the tau laokssn.",
+    "want": "a: the crow lives in the tree.",
+    "ok": false
+   },
+   {
+    "q": "where does the ant live?",
+    "got": "a: the orogn is slatfds.",
+    "want": "a: the ant lives in the hill.",
+    "ok": false
+   },
+   {
+    "q": "where does the crab live?",
+    "got": "a: the bat  ioes in the covn wivts in the cro",
+    "want": "a: the crab lives in the reef.",
+    "ok": false
+   },
+   {
+    "q": "what colour is the crab?",
+    "got": "a: the fox  ioes.",
+    "want": "a: the crab is pink.",
+    "ok": false
+   },
+   {
+    "q": "where does the vole live?",
+    "got": "a: the sual lives in the kas llavptvestbe the",
+    "want": "a: the vole lives in the meadow.",
+    "ok": false
+   },
+   {
+    "q": "what colour is the seal?",
+    "got": "at dola eal rest.",
+    "want": "a: the seal is grey.",
+    "ok": false
+   }
+  ]
+ },
+ {
+  "n_train": 60,
+  "steps": 2000,
+  "batch": 24,
+  "lr": 0.02,
+  "p_fresh": 0.5,
+  "train": 53,
+  "held": 0,
+  "macs": 3303936000,
+  "held_rows": [
+   {
+    "q": "where does the wasp live?",
+    "got": "a: the coll lives in the cas..",
+    "want": "a: the wasp lives in the nest.",
+    "ok": false
+   },
+   {
+    "q": "what does the crow eat?",
+    "got": "a: the seal eats fish.",
+    "want": "a: the crow eats seeds.",
+    "ok": false
+   },
+   {
+    "q": "what colour is the gull?",
+    "got": "a: the toe sis.",
+    "want": "a: the gull is white.",
+    "ok": false
+   },
+   {
+    "q": "where does the owl live?",
+    "got": "a: the koi lives in the pond.",
+    "want": "a: the owl lives in the tree.",
+    "ok": false
+   },
+   {
+    "q": "where does the eel live?",
+    "got": "a: the kes lives nlack.",
+    "want": "a: the eel lives in the river.",
+    "ok": false
+   },
+   {
+    "q": "what does the koi eat?",
+    "got": "eat e eat eams weats weat toesut. the kai li",
+    "want": "a: the koi eats moss.",
+    "ok": false
+   },
+   {
+    "q": "what does the duck eat?",
+    "got": "a: the sean the lark.",
+    "want": "a: the duck eats weeds.",
+    "ok": false
+   },
+   {
+    "q": "what colour is the eel?",
+    "got": "a: the hen is golackhineat eats n lives in th",
+    "want": "a: the eel is black.",
+    "ok": false
+   },
+   {
+    "q": "where does the hare live?",
+    "got": "a: the lents.",
+    "want": "a: the hare lives in the hill.",
+    "ok": false
+   },
+   {
+    "q": "what colour is the bat?",
+    "got": "a: the pike eats fish.",
+    "want": "a: the bat is black.",
+    "ok": false
+   }
+  ]
+ }
+]

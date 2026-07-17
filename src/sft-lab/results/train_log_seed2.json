@@ -1,0 +1,322 @@
+{
+ "meta": {
+  "seed": 2,
+  "steps": 150000,
+  "batch": 256,
+  "lr": 0.3,
+  "momentum": 0.9,
+  "lr_schedule": "1.0x to 70%, 0.3x to 90%, 0.1x after",
+  "p_fresh_start_aug": 0.5,
+  "full_corpus_loss_nats_per_char": 0.01411,
+  "n_params": 23319,
+  "corpus_bytes": 8352,
+  "train_seconds": 100.4,
+  "weights_sha256_fp32": "195fa44cd9d2069ff74bb6b5d0189ddf44a82940257617bf1d32f2f375f64a56"
+ },
+ "log": [
+  {
+   "step": 0,
+   "batch_loss": 3.5036
+  },
+  {
+   "step": 2000,
+   "batch_loss": 0.1262
+  },
+  {
+   "step": 4000,
+   "batch_loss": 0.133
+  },
+  {
+   "step": 6000,
+   "batch_loss": 0.2127
+  },
+  {
+   "step": 8000,
+   "batch_loss": 0.1466
+  },
+  {
+   "step": 10000,
+   "batch_loss": 0.0972
+  },
+  {
+   "step": 12000,
+   "batch_loss": 0.2819
+  },
+  {
+   "step": 14000,
+   "batch_loss": 0.1485
+  },
+  {
+   "step": 16000,
+   "batch_loss": 0.1249
+  },
+  {
+   "step": 18000,
+   "batch_loss": 0.1224
+  },
+  {
+   "step": 20000,
+   "batch_loss": 0.1084
+  },
+  {
+   "step": 22000,
+   "batch_loss": 0.1173
+  },
+  {
+   "step": 24000,
+   "batch_loss": 0.1748
+  },
+  {
+   "step": 26000,
+   "batch_loss": 0.1639
+  },
+  {
+   "step": 28000,
+   "batch_loss": 0.185
+  },
+  {
+   "step": 30000,
+   "batch_loss": 0.1361
+  },
+  {
+   "step": 32000,
+   "batch_loss": 0.122
+  },
+  {
+   "step": 34000,
+   "batch_loss": 0.1105
+  },
+  {
+   "step": 36000,
+   "batch_loss": 0.1922
+  },
+  {
+   "step": 38000,
+   "batch_loss": 0.1968
+  },
+  {
+   "step": 40000,
+   "batch_loss": 0.1558
+  },
+  {
+   "step": 42000,
+   "batch_loss": 0.1399
+  },
+  {
+   "step": 44000,
+   "batch_loss": 0.16
+  },
+  {
+   "step": 46000,
+   "batch_loss": 0.1239
+  },
+  {
+   "step": 48000,
+   "batch_loss": 0.1359
+  },
+  {
+   "step": 50000,
+   "batch_loss": 0.0779
+  },
+  {
+   "step": 52000,
+   "batch_loss": 0.1547
+  },
+  {
+   "step": 54000,
+   "batch_loss": 0.2099
+  },
+  {
+   "step": 56000,
+   "batch_loss": 0.181
+  },
+  {
+   "step": 58000,
+   "batch_loss": 0.159
+  },
+  {
+   "step": 60000,
+   "batch_loss": 0.1294
+  },
+  {
+   "step": 62000,
+   "batch_loss": 0.1101
+  },
+  {
+   "step": 64000,
+   "batch_loss": 0.1715
+  },
+  {
+   "step": 66000,
+   "batch_loss": 0.1568
+  },
+  {
+   "step": 68000,
+   "batch_loss": 0.145
+  },
+  {
+   "step": 70000,
+   "batch_loss": 0.1456
+  },
+  {
+   "step": 72000,
+   "batch_loss": 0.1314
+  },
+  {
+   "step": 74000,
+   "batch_loss": 0.1891
+  },
+  {
+   "step": 76000,
+   "batch_loss": 0.0987
+  },
+  {
+   "step": 78000,
+   "batch_loss": 0.1034
+  },
+  {
+   "step": 80000,
+   "batch_loss": 0.1192
+  },
+  {
+   "step": 82000,
+   "batch_loss": 0.0974
+  },
+  {
+   "step": 84000,
+   "batch_loss": 0.1857
+  },
+  {
+   "step": 86000,
+   "batch_loss": 0.1423
+  },
+  {
+   "step": 88000,
+   "batch_loss": 0.1954
+  },
+  {
+   "step": 90000,
+   "batch_loss": 0.1164
+  },
+  {
+   "step": 92000,
+   "batch_loss": 0.1883
+  },
+  {
+   "step": 94000,
+   "batch_loss": 0.0825
+  },
+  {
+   "step": 96000,
+   "batch_loss": 0.1678
+  },
+  {
+   "step": 98000,
+   "batch_loss": 0.1923
+  },
+  {
+   "step": 100000,
+   "batch_loss": 0.156
+  },
+  {
+   "step": 102000,
+   "batch_loss": 0.1592
+  },
+  {
+   "step": 104000,
+   "batch_loss": 0.1327
+  },
+  {
+   "step": 106000,
+   "batch_loss": 0.1345
+  },
+  {
+   "step": 108000,
+   "batch_loss": 0.1528
+  },
+  {
+   "step": 110000,
+   "batch_loss": 0.1259
+  },
+  {
+   "step": 112000,
+   "batch_loss": 0.1235
+  },
+  {
+   "step": 114000,
+   "batch_loss": 0.1223
+  },
+  {
+   "step": 116000,
+   "batch_loss": 0.1301
+  },
+  {
+   "step": 118000,
+   "batch_loss": 0.1315
+  },
+  {
+   "step": 120000,
+   "batch_loss": 0.1123
+  },
+  {
+   "step": 122000,
+   "batch_loss": 0.1703
+  },
+  {
+   "step": 124000,
+   "batch_loss": 0.0792
+  },
+  {
+   "step": 126000,
+   "batch_loss": 0.1694
+  },
+  {
+   "step": 128000,
+   "batch_loss": 0.1639
+  },
+  {
+   "step": 130000,
+   "batch_loss": 0.1533
+  },
+  {
+   "step": 132000,
+   "batch_loss": 0.1255
+  },
+  {
+   "step": 134000,
+   "batch_loss": 0.1331
+  },
+  {
+   "step": 136000,
+   "batch_loss": 0.1079
+  },
+  {
+   "step": 138000,
+   "batch_loss": 0.2021
+  },
+  {
+   "step": 140000,
+   "batch_loss": 0.1731
+  },
+  {
+   "step": 142000,
+   "batch_loss": 0.1736
+  },
+  {
+   "step": 144000,
+   "batch_loss": 0.126
+  },
+  {
+   "step": 146000,
+   "batch_loss": 0.1319
+  },
+  {
+   "step": 148000,
+   "batch_loss": 0.1023
+  },
+  {
+   "step": 149999,
+   "batch_loss": 0.1293
+  }
+ ]
+}

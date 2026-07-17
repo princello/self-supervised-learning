@@ -1,0 +1,148 @@
+{
+ "n_samples": 200,
+ "temp": 0.8,
+ "counts": {
+  "question": 200,
+  "answered_question": 0,
+  "corpus_sentence": 0,
+  "other_declarative": 0,
+  "unterminated": 0
+ },
+ "question_or_new_sentence_frac": 1.0,
+ "accidental_answer_frac": 0.0,
+ "question_frac": 1.0,
+ "per_question": [
+  {
+   "question": 20,
+   "answered_question": 0,
+   "corpus_sentence": 0,
+   "other_declarative": 0,
+   "unterminated": 0
+  },
+  {
+   "question": 20,
+   "answered_question": 0,
+   "corpus_sentence": 0,
+   "other_declarative": 0,
+   "unterminated": 0
+  },
+  {
+   "question": 20,
+   "answered_question": 0,
+   "corpus_sentence": 0,
+   "other_declarative": 0,
+   "unterminated": 0
+  },
+  {
+   "question": 20,
+   "answered_question": 0,
+   "corpus_sentence": 0,
+   "other_declarative": 0,
+   "unterminated": 0
+  },
+  {
+   "question": 20,
+   "answered_question": 0,
+   "corpus_sentence": 0,
+   "other_declarative": 0,
+   "unterminated": 0
+  },
+  {
+   "question": 20,
+   "answered_question": 0,
+   "corpus_sentence": 0,
+   "other_declarative": 0,
+   "unterminated": 0
+  },
+  {
+   "question": 20,
+   "answered_question": 0,
+   "corpus_sentence": 0,
+   "other_declarative": 0,
+   "unterminated": 0
+  },
+  {
+   "question": 20,
+   "answered_question": 0,
+   "corpus_sentence": 0,
+   "other_declarative": 0,
+   "unterminated": 0
+  },
+  {
+   "question": 20,
+   "answered_question": 0,
+   "corpus_sentence": 0,
+   "other_declarative": 0,
+   "unterminated": 0
+  },
+  {
+   "question": 20,
+   "answered_question": 0,
+   "corpus_sentence": 0,
+   "other_declarative": 0,
+   "unterminated": 0
+  }
+ ],
+ "examples": [
+  {
+   "q": "what does the eel eat?",
+   "cont": " what does the jay eat? what does the hen eat? what colour is the frog",
+   "cat": "question"
+  },
+  {
+   "q": "what does the eel eat?",
+   "cont": " what does the jay eat? what does the hen eat? what colour is the frog",
+   "cat": "question"
+  },
+  {
+   "q": "what does the eel eat?",
+   "cont": " what does the jay eat? what does the hen eat? what colour is the fox?",
+   "cat": "question"
+  },
+  {
+   "q": "what does the eel eat?",
+   "cont": " what does the jay eat? what does the hen eat? what colour is the fox?",
+   "cat": "question"
+  },
+  {
+   "q": "what does the eel eat?",
+   "cont": " what does the jay eat? what does the hen eat? what colour is the frog",
+   "cat": "question"
+  },
+  {
+   "q": "what does the eel eat?",
+   "cont": " what does the jay eat? what does the hen eat? what colour is the frog",
+   "cat": "question"
+  },
+  {
+   "q": "what does the eel eat?",
+   "cont": " what does the jay eat? what does the hen eat? what colour is the fox?",
+   "cat": "question"
+  },
+  {
+   "q": "what does the eel eat?",
+   "cont": " what does the jay eat? what does the hen eat? what colour is the frog",
+   "cat": "question"
+  },
+  {
+   "q": "what does the eel eat?",
+   "cont": " what does the jay eat? what does the hen eat? what colour is the fox?",
+   "cat": "question"
+  },
+  {
+   "q": "what does the eel eat?",
+   "cont": " what does the jay eat? what does the hen eat? what colour is the fox?",
+   "cat": "question"
+  },
+  {
+   "q": "what does the eel eat?",
+   "cont": " what does the jay eat? what does the hen eat? what colour is the fox?",
+   "cat": "question"
+  },
+  {
+   "q": "what does the eel eat?",
+   "cont": " what does the jay eat? what does the hen eat? what colour is the frog",
+   "cat": "question"
+  }
+ ]
+}

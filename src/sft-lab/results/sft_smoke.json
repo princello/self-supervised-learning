@@ -1,0 +1,198 @@
+{
+ "seed": 0,
+ "steps": 300,
+ "batch": 24,
+ "lr": 0.02,
+ "momentum": 0.9,
+ "n_demos": 16,
+ "n_held": 8,
+ "n_answer_positions": 392,
+ "loss_curve": [
+  {
+   "step": 0,
+   "loss": 2.5962
+  },
+  {
+   "step": 50,
+   "loss": 1.3309
+  },
+  {
+   "step": 100,
+   "loss": 0.0047
+  },
+  {
+   "step": 150,
+   "loss": 0.0022
+  },
+  {
+   "step": 200,
+   "loss": 0.0021
+  },
+  {
+   "step": 250,
+   "loss": 0.0013
+  },
+  {
+   "step": 299,
+   "loss": 0.0056
+  }
+ ],
+ "answer_rate_before": {
+  "train": 0.0,
+  "held": 0.0
+ },
+ "answer_rate_after": {
+  "train": 1.0,
+  "held": 0.0
+ },
+ "macs_fwd_bwd_total": 495590400,
+ "macs_budget": 500000000.0,
+ "rows_train": [
+  {
+   "q": "what does the crow eat?",
+   "got": "a: the crow eats seeds.",
+   "want": "a: the crow eats seeds.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the pike?",
+   "got": "a: the pike is green.",
+   "want": "a: the pike is green.",
+   "ok": true
+  },
+  {
+   "q": "where does the wolf live?",
+   "got": "a: the wolf lives in the cave.",
+   "want": "a: the wolf lives in the cave.",
+   "ok": true
+  },
+  {
+   "q": "what does the eel eat?",
+   "got": "a: the eel eats worms.",
+   "want": "a: the eel eats worms.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the bat?",
+   "got": "a: the bat is black.",
+   "want": "a: the bat is black.",
+   "ok": true
+  },
+  {
+   "q": "what does the frog eat?",
+   "got": "a: the frog eats flies.",
+   "want": "a: the frog eats flies.",
+   "ok": true
+  },
+  {
+   "q": "where does the wren live?",
+   "got": "a: the wren lives in the hedge.",
+   "want": "a: the wren lives in the hedge.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the fox?",
+   "got": "a: the fox is red.",
+   "want": "a: the fox is red.",
+   "ok": true
+  },
+  {
+   "q": "what does the owl eat?",
+   "got": "a: the owl eats mice.",
+   "want": "a: the owl eats mice.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the ram?",
+   "got": "a: the ram is white.",
+   "want": "a: the ram is white.",
+   "ok": true
+  },
+  {
+   "q": "what does the wren eat?",
+   "got": "a: the wren eats grubs.",
+   "want": "a: the wren eats grubs.",
+   "ok": true
+  },
+  {
+   "q": "what colour is the gull?",
+   "got": "a: the gull is white.",
+   "want": "a: the gull is white.",
+   "ok": true
+  },
+  {
+   "q": "what does the moth eat?",
+   "got": "a: the moth eats wool.",
+   "want": "a: the moth eats wool.",
+   "ok": true
+  },
+  {
+   "q": "what does the swan eat?",
+   "got": "a: the swan eats weeds.",
+   "want": "a: the swan eats weeds.",
+   "ok": true
+  },
+  {
+   "q": "where does the seal live?",
+   "got": "a: the seal lives in the sea.",
+   "want": "a: the seal lives in the sea.",
+   "ok": true
+  },
+  {
+   "q": "where does the lark live?",
+   "got": "a: the lark lives in the sky.",
+   "want": "a: the lark lives in the sky.",
+   "ok": true
+  }
+ ],
+ "rows_held": [
+  {
+   "q": "where does the bat live?",
+   "got": "a: the crowois grim the crag laoe ts gruis an",
+   "want": "a: the bat lives in the cave.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the hen?",
+   "got": "a: the eat is black.",
+   "want": "a: the hen is red.",
+   "ok": false
+  },
+  {
+   "q": "where does the bee live?",
+   "got": "a: the mead lises in the sea.",
+   "want": "a: the bee lives in the meadow.",
+   "ok": false
+  },
+  {
+   "q": "where does the newt live?",
+   "got": "a: the loll is grey.",
+   "want": "a: the newt lives in the pond.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the jay?",
+   "got": "a: the bat is black.",
+   "want": "a: the jay is blue.",
+   "ok": false
+  },
+  {
+   "q": "what does the toad eat?",
+   "got": "a: the seal eat coop.",
+   "want": "a: the toad eats grubs.",
+   "ok": false
+  },
+  {
+   "q": "what does the bat eat?",
+   "got": "a: ts whel rowts.",
+   "want": "a: the bat eats figs.",
+   "ok": false
+  },
+  {
+   "q": "what colour is the owl?",
+   "got": "as toid gmm kats whin toe sea.",
+   "want": "a: the owl is grey.",
+   "ok": false
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+{
+ "prompt": "q: what colour is the fox?",
+ "n": 50,
+ "temp": 0.8,
+ "counts": {
+  "question": 50,
+  "answered_question": 0,
+  "corpus_sentence": 0,
+  "other_declarative": 0,
+  "unterminated": 0
+ },
+ "examples": [
+  " what does the ant eat?\nthe mole looks brown.\nthe pike eats fish.\nthe ",
+  " what does the ant eat?\nthe mole looks brown.\nthe pike eats fish.\nthe ",
+  " what does the ant eat?\nthe mole looks brown.\nthe pike eats fish.\nthe ",
+  " what does the ant eat?\nthe mole looks brown.\nthe pike eats fish.\nthe ",
+  " what does the ant eat?\nthe mole looks brown.\nthe pike eats fish.\nthe ",
+  " what does the ant eat?\nthe mole looks brown.\nthe pike eats fish.\nthe ",
+  " what does the ant eat?\nthe mole looks brown.\nthe pike eats fish.\nthe ",
+  " what does the ant eat?\nthe mole looks brown.\nthe pike eats fish.\nthe "
+ ]
+}

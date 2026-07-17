@@ -1,0 +1,323 @@
+{
+ "meta": {
+  "seed": 0,
+  "steps": 150000,
+  "batch": 256,
+  "lr": 0.3,
+  "momentum": 0.9,
+  "lr_schedule": "1.0x to 70%, 0.3x to 90%, 0.1x after",
+  "p_fresh_start_aug": 0.5,
+  "p_scramble_aug": 0.0,
+  "full_corpus_loss_nats_per_char": 0.01402,
+  "n_params": 23319,
+  "corpus_bytes": 8352,
+  "train_seconds": 101.8,
+  "weights_sha256_fp32": "652011026a73f9118f3224cc258c14556a1de5b066d66d1e551d136ca18866fa"
+ },
+ "log": [
+  {
+   "step": 0,
+   "batch_loss": 3.4889
+  },
+  {
+   "step": 2000,
+   "batch_loss": 0.207
+  },
+  {
+   "step": 4000,
+   "batch_loss": 0.1733
+  },
+  {
+   "step": 6000,
+   "batch_loss": 0.1335
+  },
+  {
+   "step": 8000,
+   "batch_loss": 0.0897
+  },
+  {
+   "step": 10000,
+   "batch_loss": 0.0764
+  },
+  {
+   "step": 12000,
+   "batch_loss": 0.1937
+  },
+  {
+   "step": 14000,
+   "batch_loss": 0.1439
+  },
+  {
+   "step": 16000,
+   "batch_loss": 0.1235
+  },
+  {
+   "step": 18000,
+   "batch_loss": 0.1746
+  },
+  {
+   "step": 20000,
+   "batch_loss": 0.153
+  },
+  {
+   "step": 22000,
+   "batch_loss": 0.0805
+  },
+  {
+   "step": 24000,
+   "batch_loss": 0.1857
+  },
+  {
+   "step": 26000,
+   "batch_loss": 0.1146
+  },
+  {
+   "step": 28000,
+   "batch_loss": 0.1943
+  },
+  {
+   "step": 30000,
+   "batch_loss": 0.1523
+  },
+  {
+   "step": 32000,
+   "batch_loss": 0.1685
+  },
+  {
+   "step": 34000,
+   "batch_loss": 0.1743
+  },
+  {
+   "step": 36000,
+   "batch_loss": 0.0813
+  },
+  {
+   "step": 38000,
+   "batch_loss": 0.1824
+  },
+  {
+   "step": 40000,
+   "batch_loss": 0.1979
+  },
+  {
+   "step": 42000,
+   "batch_loss": 0.1487
+  },
+  {
+   "step": 44000,
+   "batch_loss": 0.114
+  },
+  {
+   "step": 46000,
+   "batch_loss": 0.1473
+  },
+  {
+   "step": 48000,
+   "batch_loss": 0.1252
+  },
+  {
+   "step": 50000,
+   "batch_loss": 0.1192
+  },
+  {
+   "step": 52000,
+   "batch_loss": 0.2107
+  },
+  {
+   "step": 54000,
+   "batch_loss": 0.1266
+  },
+  {
+   "step": 56000,
+   "batch_loss": 0.127
+  },
+  {
+   "step": 58000,
+   "batch_loss": 0.0771
+  },
+  {
+   "step": 60000,
+   "batch_loss": 0.1714
+  },
+  {
+   "step": 62000,
+   "batch_loss": 0.148
+  },
+  {
+   "step": 64000,
+   "batch_loss": 0.1451
+  },
+  {
+   "step": 66000,
+   "batch_loss": 0.1767
+  },
+  {
+   "step": 68000,
+   "batch_loss": 0.1271
+  },
+  {
+   "step": 70000,
+   "batch_loss": 0.0947
+  },
+  {
+   "step": 72000,
+   "batch_loss": 0.2062
+  },
+  {
+   "step": 74000,
+   "batch_loss": 0.1469
+  },
+  {
+   "step": 76000,
+   "batch_loss": 0.1717
+  },
+  {
+   "step": 78000,
+   "batch_loss": 0.1557
+  },
+  {
+   "step": 80000,
+   "batch_loss": 0.2153
+  },
+  {
+   "step": 82000,
+   "batch_loss": 0.1179
+  },
+  {
+   "step": 84000,
+   "batch_loss": 0.101
+  },
+  {
+   "step": 86000,
+   "batch_loss": 0.1808
+  },
+  {
+   "step": 88000,
+   "batch_loss": 0.1074
+  },
+  {
+   "step": 90000,
+   "batch_loss": 0.166
+  },
+  {
+   "step": 92000,
+   "batch_loss": 0.1747
+  },
+  {
+   "step": 94000,
+   "batch_loss": 0.2199
+  },
+  {
+   "step": 96000,
+   "batch_loss": 0.1798
+  },
+  {
+   "step": 98000,
+   "batch_loss": 0.185
+  },
+  {
+   "step": 100000,
+   "batch_loss": 0.1557
+  },
+  {
+   "step": 102000,
+   "batch_loss": 0.1568
+  },
+  {
+   "step": 104000,
+   "batch_loss": 0.1299
+  },
+  {
+   "step": 106000,
+   "batch_loss": 0.0639
+  },
+  {
+   "step": 108000,
+   "batch_loss": 0.1346
+  },
+  {
+   "step": 110000,
+   "batch_loss": 0.0912
+  },
+  {
+   "step": 112000,
+   "batch_loss": 0.1402
+  },
+  {
+   "step": 114000,
+   "batch_loss": 0.132
+  },
+  {
+   "step": 116000,
+   "batch_loss": 0.1333
+  },
+  {
+   "step": 118000,
+   "batch_loss": 0.1288
+  },
+  {
+   "step": 120000,
+   "batch_loss": 0.0958
+  },
+  {
+   "step": 122000,
+   "batch_loss": 0.1349
+  },
+  {
+   "step": 124000,
+   "batch_loss": 0.1141
+  },
+  {
+   "step": 126000,
+   "batch_loss": 0.2272
+  },
+  {
+   "step": 128000,
+   "batch_loss": 0.1699
+  },
+  {
+   "step": 130000,
+   "batch_loss": 0.1513
+  },
+  {
+   "step": 132000,
+   "batch_loss": 0.124
+  },
+  {
+   "step": 134000,
+   "batch_loss": 0.1125
+  },
+  {
+   "step": 136000,
+   "batch_loss": 0.1462
+  },
+  {
+   "step": 138000,
+   "batch_loss": 0.1413
+  },
+  {
+   "step": 140000,
+   "batch_loss": 0.1582
+  },
+  {
+   "step": 142000,
+   "batch_loss": 0.1265
+  },
+  {
+   "step": 144000,
+   "batch_loss": 0.1739
+  },
+  {
+   "step": 146000,
+   "batch_loss": 0.1065
+  },
+  {
+   "step": 148000,
+   "batch_loss": 0.1443
+  },
+  {
+   "step": 149999,
+   "batch_loss": 0.1325
+  }
+ ]
+}
