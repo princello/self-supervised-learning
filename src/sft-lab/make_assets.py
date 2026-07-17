@@ -129,6 +129,9 @@ def main():
                      "lrMaskDemo": 0.02, "lrDamage": 0.05,
                      "checkpoints": [0, 10, 25, 50, 75, 100, 150, 200, 250,
                                      300]},
+        # pinned JS seeds (js/JS-SEED-REPORT.md) — the page reads these from
+        # SFT_ASSETS.pinnedSeeds; never hard-code them in the page JS
+        "pinnedSeeds": {"shipping": 7, "liar": 1, "overtraining": 4},
         # base accidentally answers 'where does the toad live?' — never use
         # it in a before beat (sft-validated-configs.md section A)
         "excludedHeroProbes": [{"entity": "toad", "relation": "home",
@@ -149,6 +152,8 @@ def main():
     assert len(back["fakeProbes"]) == 24
     assert len(back["answerFor"]) == 90
     assert len(back["heroChips"]) == 3
+    assert back["pinnedSeeds"] == {"shipping": 7, "liar": 1,
+                                   "overtraining": 4}
     assert question_text("toad", "home") not in back["heroChips"]
     assert all(q in back["answerFor"] for q in back["heroChips"])
     for f in back["facts90"]:
