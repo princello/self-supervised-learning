@@ -212,89 +212,12 @@ button.ghost{
 button.ghost:hover{border-color:var(--ink2)}
 button.act:focus-visible,button.ghost:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* ---------- cloze game ---------- */
-#cloze .sentence{
-  font-family:'Bricolage Grotesque','Avenir Next','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-weight:800;
-  font-size:clamp(21px,3.6vw,30px);line-height:1.35;letter-spacing:-.01em;margin:4px 0 18px;
-}
-#cloze .blank{
-  display:inline-block;min-width:3.2em;text-align:center;border-radius:6px;
-  background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--hatch) 55%, transparent) 0 5px,color-mix(in srgb,var(--hatch) 25%, transparent) 5px 10px);
-  color:transparent;padding:0 .3em;transition:all .3s;
-  border-bottom:3px solid var(--hatch);
-}
-#cloze .blank.revealed{background:var(--hl);color:var(--hl-ink);border-bottom-color:var(--hl)}
-.chips{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 8px}
-.chips button{
-  font:inherit;font-size:15.5px;font-weight:700;cursor:pointer;
-  border:1.5px solid var(--line);background:var(--card);color:var(--ink);
-  border-radius:999px;padding:7px 16px;transition:border-color .15s, background .15s;
-}
-.chips button:hover{border-color:var(--accent)}
-.chips button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.chips button.picked{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.chips button:disabled{cursor:default;opacity:.85}
-.bars{display:grid;gap:7px;margin:16px 0 4px}
-.bar-row{display:grid;grid-template-columns:6.5em minmax(72px,1fr) auto;align-items:center;gap:10px;font-size:14px}
-.bar-row .bw{font-weight:700;text-align:right}
-.bar-track{background:var(--panel-tint);border-radius:5px;height:20px;overflow:hidden}
-.bar-fill{height:100%;width:0;border-radius:5px;background:var(--accent);opacity:.55;transition:width .8s cubic-bezier(.2,.7,.2,1);display:block}
-.bar-row.true .bar-fill{opacity:1}
-.bar-row .tag{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--ink2)}
-.bar-row.true .tag{color:var(--accent);font-weight:700}
-.punch{margin-top:14px;padding:12px 14px;border-left:3px solid var(--hl);background:color-mix(in srgb,var(--hl) 12%, transparent);border-radius:0 8px 8px 0;font-size:15px}
-.loss-note{margin-top:10px;font-size:13.5px}
-
-/* ---------- hide-guess-check loop diagram ---------- */
-.loop{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:20px 0}
-.loop .lstep{
-  border:1.5px solid var(--line);border-radius:10px;background:var(--card);
-  padding:8px 14px;font-weight:700;font-size:14.5px;
-}
-.loop .lstep small{display:block;font-weight:400;font-size:12px;color:var(--ink2)}
-.loop .larrow{color:var(--ink2);font-size:16px}
-.loop .lstep:nth-child(1){border-color:var(--hatch)}
-.loop .lstep:nth-child(5){border-color:var(--accent)}
-
-/* ---------- log-scale chart ---------- */
-.logchart{display:grid;gap:16px;margin:20px 0 8px}
-.lc-row{display:grid;gap:4px}
-.lc-label{font-size:14px;display:flex;justify-content:space-between;gap:12px;align-items:baseline}
-.lc-label .lc-val{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--ink2);white-space:nowrap}
-.lc-track{background:var(--panel-tint);border-radius:6px;height:26px;overflow:hidden;position:relative}
-.lc-fill{height:100%;width:0;border-radius:6px;background:var(--hatch);transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
-.lc-row.hero-bar .lc-fill{background:var(--accent)}
-.lc-row.in .lc-fill{width:var(--w)}
-.lc-note{font-size:12.5px;color:var(--ink2)}
-
-/* ---------- MAE demo ---------- */
-.mae-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:6px 0 14px}
-@media (max-width:760px){.mae-grid{grid-template-columns:1fr;max-width:340px}}
-.mae-cell{display:grid;gap:6px}
-.mae-cell canvas{width:100%;height:auto;border-radius:8px;border:1px solid var(--line);display:block;background:var(--panel-tint)}
-.mae-cell .clabel{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
-.ctrl-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:10px 0 4px}
-.ctrl-row label{font-size:14px;font-weight:700;display:flex;align-items:center;gap:10px}
-.ctrl-row input[type=range]{accent-color:var(--accent);width:150px}
+/* ---------- shared readout chip (used by the missing-digit bias slider) ---------- */
 .readout{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
 .readout b{color:var(--ink)}
 
-/* ---------- contrastive demo ---------- */
-.probe-grid{display:grid;grid-template-columns:repeat(2,minmax(0,300px));gap:14px;margin:6px 0 14px}
-@media (max-width:640px){.probe-grid{grid-template-columns:1fr;max-width:300px}}
-.probe-grid canvas{width:100%;height:auto;border-radius:8px;border:1px solid var(--line);display:block;background:var(--panel-tint)}
-.ctr-layout{display:grid;grid-template-columns:minmax(0,380px) 1fr;gap:22px;align-items:start}
-@media (max-width:760px){.ctr-layout{grid-template-columns:1fr}}
-#ctr-canvas{width:100%;max-width:380px;height:auto;display:block;border-radius:10px;border:1px solid var(--line);background:var(--panel-tint)}
-.ctr-controls{display:grid;gap:14px}
-.ctr-controls .crow{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-.ctr-controls label.chk{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:700;cursor:pointer}
-.ctr-controls input[type=checkbox]{accent-color:var(--accent);width:17px;height:17px}
-.metrics{display:grid;grid-template-columns:repeat(3,auto);gap:8px 22px;justify-content:start;font-variant-numeric:tabular-nums;margin:0}
-.metrics .m dt{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
-.metrics .m dd{margin:0;font-family:ui-monospace,Menlo,monospace;font-size:17px}
-#ctr-note{min-height:1.4em;font-size:13.5px;color:var(--ink2);margin:0}
-#spark{width:190px;height:38px;display:block}
+/* ---------- visually hidden (screen-reader-only live regions) ---------- */
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* ---------- math ---------- */
 .eqcard{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:16px 18px;margin:16px 0;overflow-x:auto}
@@ -327,31 +250,6 @@ button.act:focus-visible,button.ghost:focus-visible{outline:2px solid var(--acce
   border:1.5px dashed var(--hatch);border-radius:12px;padding:18px;margin:16px 0;max-width:66ch;
   background:repeating-linear-gradient(45deg,transparent 0 8px,color-mix(in srgb,var(--hatch) 10%, transparent) 8px 10px);
 }
-
-/* ---------- timeline ---------- */
-.tl-scroller{overflow-x:auto;padding:6px 2px 16px;scroll-snap-type:x proximity}
-.tl{display:flex;gap:14px;min-width:min-content}
-.tl-card{
-  scroll-snap-align:start;flex:0 0 240px;
-  border:1px solid var(--line);border-radius:12px;background:var(--card);
-  padding:14px 15px;display:grid;gap:6px;align-content:start;
-}
-.tl-card .yr{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink2)}
-.tl-card .nm{font-weight:700;font-size:16.5px;line-height:1.25}
-.tl-card .fam{justify-self:start;font-size:10.5px;font-family:ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);display:flex;align-items:center;gap:5px}
-.tl-card .fam i{width:7px;height:7px;border-radius:2px;display:inline-block}
-.fam-gen i{background:#5B8DEF}.fam-con i{background:#D6608F}.fam-dis i{background:#3AAE9F}.fam-lat i{background:#E3A23C}.fam-sta i{background:#8A67D6}
-.tl-card p{margin:0;font-size:13.5px;color:var(--ink2);line-height:1.5}
-.tl-card p b{color:var(--ink)}
-.tl-card a{font-size:12px}
-
-/* ---------- applications ---------- */
-.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:20px 0}
-.app-card{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:16px;display:grid;gap:7px;align-content:start}
-.app-card h4{margin:0;font-size:16px;display:flex;align-items:center;gap:9px}
-.app-card h4 i{width:10px;height:10px;border-radius:3px;background:var(--accent);flex:0 0 auto}
-.app-card p{margin:0;font-size:14px;color:var(--ink2);line-height:1.55}
-.app-card p b{color:var(--ink)}
 
 /* ---------- takeaway ---------- */
 .take{
@@ -602,9 +500,11 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
         <label class="kdh-slider"><span class="lv L1">Heat:</span><span class="lv L2 L3 L4">Temperature T =</span> <output id="kdh-tval">2.0</output>
           <input type="range" id="kdh-t" min="0.5" max="8" step="0.1" value="2" aria-label="Softmax temperature">
         </label>
-        <p class="kdh-note" id="kdh-note" aria-live="polite"></p>
+        <p class="kdh-note" id="kdh-note"></p>
+        <span class="vh" id="kdh-live" aria-live="polite"></span>
       </figure>
     </div>
+    <p class="hd-cap"><span class="lv L1">Honesty note: it only ever studied handwriting like the samples above — if it misreads yours, try drawing more like those.</span><span class="lv L2 L3 L4">Honesty note: the teacher only ever saw this dataset’s handwriting style; drawings far from it (a straight-tailed 9, say) can genuinely misread — the bars always report what the network really says.</span></p>
     <p class="hd-throughline"><span class="lv L1">The tallest bar is the <strong>answer</strong>. All the little bars are the <strong>doubt</strong>. This whole page is about one trick: <strong>copy the doubt, not the answer.</strong></span><span class="lv L2 L3 L4">The tallest bar is the answer. Everything else is the doubt — and the doubt is where the knowledge lives. This page is one idea, five experiments: <strong>copy the doubt, not the answer.</strong></span></p>
   </div>
 
@@ -716,14 +616,14 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <p>The setup, fully seeded and reproducible. Both students are the same 64→24→10 ReLU network (1,810 weights) started from the <em>same</em> He-initialized draw; 60 transfer digits sampled from a 600-digit pool; full-batch SGD, momentum 0.9, lr 0.3, 1,500 steps. Student A’s targets: one-hot argmax of the hero’s 3,610-parameter teacher (97% test accuracy). Student B’s targets: the teacher’s softmax at T = 2, trained with the matching T²-scaled gradient (dz = T·(σ(z/T) − q)/B). The curves are accuracy on a fixed 200-digit held-out subset, evaluated as training runs.</p>
     </div>
     <div class="lv L4">
-      <p>One fairness check worth making before you bet: the hard student is not sandbagged by sharing the soft student’s hyperparameters. In offline validation, re-tuning the learning rate for the hard student alone doesn’t save it — it still loses on 10 of 10 seeds with its own best lr (mean gap ≈ 10.6 points). Whatever the curves show, it isn’t a tuning artifact.</p>
+      <p>One fairness check worth making before you bet: the hard student is not sandbagged by sharing the soft student’s hyperparameters. In offline validation with this exact configuration, giving the hard student its own best learning rate from a 7-point sweep (0.05–0.5) doesn’t save it — it still loses on 10 of 10 seeds, mean gap ≈ 6.3 points and never under 1 (at the shared lr the mean gap is ≈ 7.5). Whatever the curves show, it isn’t a tuning artifact.</p>
     </div>
   </div>
 
   <div class="panel">
     <div class="panel-head"><span class="ptitle">The race</span><span class="tag"><span class="lv L1">live · they really train, right here</span><span class="lv L2 L3 L4">live · two real networks train on every press</span></span></div>
     <div class="panel-body">
-      <canvas id="race-cv" class="chart-cv" width="640" height="280" role="img" aria-label="Test accuracy versus training steps: soft-label student in amber, answer-key student in gray, dashed teacher reference at 97 percent"></canvas>
+      <canvas id="race-cv" class="chart-cv" width="640" height="280" role="img" aria-label="Test accuracy versus training steps: soft-label student in amber, answer-key student in gray, dashed teacher reference line measured on the same evaluation subset"></canvas>
       <div class="bet" id="race-bet">
         <span class="bet-q"><span class="lv L1">Same brain, same flashcards — only the labels differ. Who reads more test digits after 1,500 steps?</span><span class="lv L2 L3 L4">Identical nets, identical 60-digit transfer set — only the targets differ. Who scores higher after 1,500 steps?</span></span>
         <button type="button" class="btn ghostb" data-bet="hard">Student A — answer key</button>
@@ -733,12 +633,12 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
         <button type="button" class="btn" id="race-run">Run the race</button>
         <button type="button" class="btn ghostb" id="race-new">New race</button>
       </div>
-      <div class="scorechips" aria-live="polite">
-        <span class="sc">answer-key student <b id="race-h">—</b></span>
-        <span class="sc">soft-label student <b id="race-s">—</b></span>
-        <span class="sc">teacher <b>97.0%</b></span>
+      <div class="scorechips">
+        <span class="sc"><span class="lv L1">Student A (answer key)</span><span class="lv L2 L3 L4">answer-key student</span> <b id="race-h">—</b></span>
+        <span class="sc"><span class="lv L1">Student B (doubt)</span><span class="lv L2 L3 L4">soft-label student</span> <b id="race-s">—</b></span>
+        <span class="sc">teacher <b id="race-t">—</b></span>
       </div>
-      <p class="dg-lbl" id="race-dglbl" hidden>Digits the soft student reads and the hard student misses:</p>
+      <p class="dg-lbl" id="race-dglbl" hidden><span class="lv L1">Digits Student B reads and Student A misses:</span><span class="lv L2 L3 L4">Digits the soft student reads and the hard student misses:</span></p>
       <div class="dg-strip" id="race-strip" role="group" aria-label="Test digits where the two students disagree"></div>
       <p class="kdh-note" id="race-note" aria-live="polite"></p>
     </div>
@@ -753,7 +653,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <p>That’s the honest core of distillation’s advantage: <strong>information per example</strong>. Give the hard student ten times the flashcards and it would mostly catch up — soft targets matter most when the student can’t see much data.</p>
     </div>
     <div class="lv L3">
-      <p>Details worth noticing. The teacher’s 97% line stays out of reach for both — this is compression, not magic. The hard student’s plateau is an information ceiling, not an optimization failure: its training loss keeps falling (it fits the 60 one-hot targets essentially perfectly) while test accuracy stalls — it is memorizing the last few cards, not learning the map. The T = 2 softening matters too: at T = 1 the teacher is so confident that most of the map hides in the last percent of probability. Automated check: <span class="mono">window.__raceBench(3)</span> replays the race on 3 seeds and reports wins and gaps.</p>
+      <p>Details worth noticing. The teacher’s dashed line is drawn at its accuracy on the <em>same</em> fixed 200-digit eval subset the curves use — 98.0% there, 97.0% on all 300 test digits — and it stays out of reach for both students; this is compression, not magic. The hard student’s plateau is an information ceiling, not an optimization failure: its training loss keeps falling (it fits the 60 one-hot targets essentially perfectly) while test accuracy stalls — it is memorizing the last few cards, not learning the map. The T = 2 softening matters too: at T = 1 the teacher is so confident that most of the map hides in the last percent of probability. Automated check: <span class="mono">window.__raceBench(3)</span> replays the race on 3 seeds and reports wins and gaps.</p>
     </div>
     <div class="lv L4">
       <p>Two honest counterpoints belong next to this demo. Yuan et al. (2020): much of KD’s benefit in the wild is generic regularization — even teacher-free or bad-teacher distillation helps — and in a non-convex student like this one, regularization and information transfer are entangled; the design here (shared init, shared data, shared schedule, labels as the only difference) removes the usual confounds but cannot fully separate those two readings the way a convex toy could. And Stanton et al. (2021): students routinely <em>fail to match</em> their teachers even when they generalize better — look at the final curves: the soft student beats the hard one without coming close to the teacher’s line. Read the race as strong evidence for the label channel, not as a theorem.</p>
@@ -773,10 +673,10 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <p>This mirrors the boldest experiment in Hinton’s 2015 paper: delete a whole digit class from the transfer set, distill, then test on the deleted class. Our version: the transfer set is the 540 digits of the pool that aren’t 3s. Three students train on it — one on the teacher’s hard answers, one on its softened beliefs at T = 2, one at T = 6 — and each is then shown the 30 held-out test 3s. The only place “3” exists in their training is inside the teacher’s <em>doubt about other digits</em>: the faint “…and a little 3-ish” it leaks on certain 8s, 9s and 5s. Bet first; then climb the ladder.</p>
     </div>
     <div class="lv L3">
-      <p>Config: student 64→32→10, He init, SGD momentum 0.9, lr 0.05, minibatch B = 100 (seeded shuffle per epoch), 2,000 steps, transfer = all 540 non-3 pool digits, targets = teacher softmax at the rung’s temperature (or its one-hot argmax), scored by raw argmax on the 30 test 3s — no bias correction. One honest calibration note: on these 8×8 digits T = 1 is genuinely too cold — the 3-logit finishes around rank 6 of 10 and scores 0/30, exactly like the hard rung — so the ladder’s middle rung is T = 2, the lowest temperature that reliably lifts threes to the top. The bias slider below reproduces the paper’s garnish: add b to the 3-logit at evaluation time and watch the trade against the other nine classes.</p>
+      <p>Config: student 64→32→10, He init, SGD momentum 0.9, lr 0.05, minibatch B = 100 (seeded shuffle per epoch), 2,000 steps, transfer = all 540 non-3 pool digits, targets = teacher softmax at the rung’s temperature (or its one-hot argmax), scored by raw argmax on the 30 test 3s — no bias correction. One honest calibration note: on these 8×8 digits T = 1 is genuinely too cold — the 3-logit finishes around rank 7 of 10 and scores 0/30, exactly like the hard rung — so the ladder’s middle rung is T = 2, the lowest temperature that reliably lifts the 3-logit into the top two (top-two on ~25 of 30 test threes; outright top on roughly half). The bias slider below reproduces the paper’s garnish: add b to the 3-logit at evaluation time and watch the trade against the other nine classes.</p>
     </div>
     <div class="lv L4">
-      <p>Why is the hard rung not just bad but <em>stuck at zero</em>? Every one-hot target sets p(3) = 0, so training monotonically starves the 3-logit — emitting 3 is pure loss everywhere on the transfer set. The soft rungs invert that: at T = 6 the teacher’s mean softened p(3) across the 540 non-3s is ≈ 3% — small but <em>structured</em>, concentrated on 3-ish digits — enough supervision to aim the 3 direction in weight space without one positive example. The label-free way to choose the bias b, if you want one: raise b until the student predicts “3” at roughly the 1-in-10 prior rate. Hinton’s MNIST version needed that garnish for its headline (98.6% with the bias fix; raw accuracy in the tens of percent). Here temperature does nearly all the work — which is the honest headline about this dataset: 8×8 digits are unusually kind to the trick.</p>
+      <p>Why is the hard rung not just bad but <em>stuck at zero</em>? Every one-hot target sets p(3) = 0, so training monotonically starves the 3-logit — emitting 3 is pure loss everywhere on the transfer set. The soft rungs invert that: at T = 6 the teacher’s mean softened p(3) across the 540 non-3s is ≈ 3% — small but <em>structured</em>, concentrated on 3-ish digits — enough supervision to aim the 3 direction in weight space without one positive example. The label-free way to choose the bias b, if you want one: raise b until the student predicts “3” at roughly the 1-in-10 prior rate. For calibration: Hinton’s MNIST version was already strong <em>before</em> that garnish — the distilled model read 877 of the 1,010 test 3s (≈87%) raw, and 98.6% after raising the 3-logit by 3.5 (Hinton, Vinyals &amp; Dean 2015, §3). Our warm rung reaches ≈90% raw with no bias at all — the honest contrast is the garnish budget, not the raw score: 8×8 digits let temperature do the whole job.</p>
     </div>
   </div>
 
@@ -795,15 +695,16 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
         <button type="button" class="btn ghostb" data-rung="t6" aria-pressed="false"><span class="lv L1">warm doubt · T=6</span><span class="lv L2 L3 L4">soft targets · T=6</span></button>
       </div>
       <div class="scorechips" aria-live="polite">
-        <span class="sc">hard labels <b id="md-hard">—</b></span>
-        <span class="sc">soft T=2 <b id="md-t2">—</b></span>
-        <span class="sc">soft T=6 <b id="md-t6">—</b></span>
+        <span class="sc"><span class="lv L1">answers only</span><span class="lv L2 L3 L4">hard labels</span> <b id="md-hard">—</b></span>
+        <span class="sc"><span class="lv L1">cool doubt · T=2</span><span class="lv L2 L3 L4">soft T=2</span> <b id="md-t2">—</b></span>
+        <span class="sc"><span class="lv L1">warm doubt · T=6</span><span class="lv L2 L3 L4">soft T=6</span> <b id="md-t6">—</b></span>
       </div>
       <div class="md-threes" id="md-threes" role="group" aria-label="The 30 test threes, as read by the current student"></div>
       <div class="md-yours" id="md-yours"></div>
       <label class="md-bias lv L3 L4">bias on the 3-logit&nbsp;·&nbsp;b = <output id="md-bv">0.0</output>
         <input type="range" id="md-bias" min="0" max="3" step="0.1" value="0" aria-label="Bias added to the 3 logit at evaluation time">
-        <span class="readout" id="md-breadout" aria-live="polite"></span>
+        <span class="readout" id="md-breadout"></span>
+        <span class="vh" id="md-blive" aria-live="polite"></span>
       </label>
       <p class="kdh-note" id="md-note" aria-live="polite"></p>
     </div>
@@ -816,7 +717,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
     </div>
     <div class="lv L2">
       <p><strong>Born-again networks</strong> (Furlanello et al., 2018) run this logic at full scale: train a network, freeze it, train an identical twin from scratch to match its soft predictions — and the twin comes out consistently a little <em>better</em> than the original on benchmarks like CIFAR and language modeling. Third and fourth generations keep helping, less and less. The headline-grabbing cousin is <strong>Noisy Student</strong> (Xie et al., 2020), which pushed ImageNet to 88.4% — but honest label: that one is <em>self-training</em>, with an equal-or-larger student, 300 million extra pseudo-labeled images and heavy noise. Soft targets were one ingredient, not the whole cake.</p>
-      <p>And the honesty note this page owes you about its own demo: the missing-digit trick lands <em>much</em> harder on these 8×8 digits than in Hinton’s original MNIST run, where raw accuracy on the deleted class sat in the tens of percent until a bias correction. The temperature knob is the star of our version; the bias slider is garnish. Same phenomenon — friendlier stage.</p>
+      <p>And the honesty note this page owes you about its own demo: Hinton’s original MNIST run was already startlingly good raw — the distilled model read about 87% of the deleted 3s before any correction, and 98.6% after a small bias fix on the 3’s output. Our 8×8 version reaches roughly 90% raw and needs no bias fix at all; the middle rung of the ladder shows how much of that the temperature knob alone buys. Same phenomenon, friendlier stage — the honest difference is the garnish: their headline needed the bias nudge, ours doesn’t.</p>
     </div>
     <div class="lv L3">
       <p>Why would copying a teacher’s outputs ever beat training on the truth? Soft targets look like <span class="term" data-tip="Replacing the 1-versus-0 target with, say, 0.9-versus-uniform — a standard regularizer that fights overconfidence.">label smoothing</span>, a known regularizer — but they are <em>instance-specific</em>: this particular ambiguous 8 is half a 2; that crisp one isn’t. Uniform smoothing carries zero bits about the input; dark knowledge carries the teacher’s whole similarity map. The interplay has its own research thread: Müller et al. (2019) found that teachers trained <em>with</em> label smoothing are better calibrated yet distill <em>worse</em> — smoothing collapses the intra-class structure living in the logits. Shen et al. (2021) contested how general that is at scale; treat it as a live debate. What <em>is</em> settled is a recipe: <strong>“a good teacher is patient and consistent”</strong> (Beyer et al., 2022) — show teacher and student the same augmented view, train far longer than feels reasonable. Still the strongest plain-KD recipe in vision.</p>
@@ -834,13 +735,13 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
   <div class="prose">
     <div class="lv L1">
       <p>Everyone knows what happens when you photocopy a photocopy: the page gets uglier every time. Let’s test that on robots. The teacher trains a student. That student — <em>without ever seeing the teacher again</em> — trains the next student. And so on, eight copies deep.</p>
-      <p>The fun part: this photocopier has <strong>three settings</strong>. Copy the doubt. Copy only the answers. Or make every new copier smaller than the last. Bet first: after 8 doubt-copies, how much reading skill is lost?</p>
+      <p>The fun part: this photocopier has <strong>three settings</strong>. Copy the doubt. Copy only the answers. Or send the page through smaller and smaller copiers. Bet first: after 8 doubt-copies, how much reading skill is lost?</p>
     </div>
     <div class="lv L2">
-      <p>The chain: teacher → S1 → S2 → … → S8. Each generation trains <em>only</em> on the previous generation’s outputs over the same transfer digits — after the first hand-off, the original teacher and the true labels are gone from the loop forever. Three modes: <strong>soft copies</strong> (each hand-off passes beliefs at T = 4), <strong>one-hot copies</strong> (each hand-off keeps only the winning digit), and <strong>shrinking copies</strong> (soft, but every student smaller than its teacher). Everyone “knows” copies of copies degrade. Place your bet, then run the chain and watch the accuracy line — and the six borderline digits below it.</p>
+      <p>The chain: teacher → S1 → S2 → … → S8. Each generation trains <em>only</em> on the previous generation’s outputs over the same transfer digits — after the first hand-off, the original teacher and the true labels are gone from the loop forever. Three modes: <strong>soft copies</strong> (each hand-off passes beliefs at T = 4), <strong>one-hot copies</strong> (each hand-off keeps only the winning digit), and <strong>shrinking copies</strong> (soft hand-offs, but the students step down in size — the first matches the teacher’s parameter count, and every one after is smaller than the last). Everyone “knows” copies of copies degrade. Place your bet, then run the chain and watch the accuracy line — and the six borderline digits below it.</p>
     </div>
     <div class="lv L3">
-      <p>Config: soft and one-hot generations are 64→32→10 (fresh seeded init per generation), M = 400 pool digits, B = 100, 1,000 steps; lr 0.1 with T = 4 targets for soft, lr 0.3 with argmax targets for one-hot. Shrinking mode walks hidden sizes 48→32→24→16→12→10→8→6 over the full 600-digit pool, 2,000 steps, lr 0.1, T = 4. Accuracy is scored on all 300 held-out test digits. The Engineer chip tracks <strong>mean confidence vs accuracy</strong> — watch it in the lossy modes: confidence holds near 98% while accuracy falls. Overconfident copies are the signature of information bleed.</p>
+      <p>Config: soft and one-hot generations are 64→32→10 (fresh seeded init per generation), M = 400 pool digits, B = 100, 1,000 steps; lr 0.1 with T = 4 targets for soft, lr 0.3 with argmax targets for one-hot. Shrinking mode walks hidden sizes 48→32→24→16→12→10→8→6 over the full 600-digit pool, 2,000 steps, lr 0.1, T = 4. Accuracy is scored on all 300 held-out test digits. Disclosure: the default seed (4) was picked for drama — its shrinking chain loses ≈13 points where nearby seeds typically lose 3–9, and one validated seed (7) collapses below 70%. <strong>New seed</strong> shows you the distribution; the caption always reports the run you actually got. The Engineer chip tracks <strong>mean confidence vs accuracy</strong> — watch it in the lossy modes: confidence holds near 98% while accuracy falls. Overconfident copies are the signature of information bleed.</p>
     </div>
     <div class="lv L4">
       <p>The one-hot chain is the clean information-theoretic case: the first argmax hand-off sets target entropy to zero, so whatever dark knowledge the teacher carried is unrecoverable from generation 1 onward — later generations copy an already-blunt world, and the chain goes flat rather than continuing to decay. The shrinking chain is the capacity story: each generation preserves the similarity map as well as its width allows, and the bleed compounds. Note what does <em>not</em> happen at this scale: the soft same-size chain does not collapse. That absence is a finding, and the demo is built around it.</p>
@@ -868,11 +769,11 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
         <button type="button" class="btn ghostb" id="ch-new">New seed</button>
       </div>
       <div class="scorechips" aria-live="polite">
-        <span class="sc">generation <b id="ch-gen">teacher</b></span>
-        <span class="sc">test accuracy <b id="ch-acc">97.0%</b></span>
+        <span class="sc"><span class="lv L1">copy</span><span class="lv L2 L3 L4">generation</span> <b id="ch-gen">teacher</b></span>
+        <span class="sc"><span class="lv L1">reading score</span><span class="lv L2 L3 L4">test accuracy</span> <b id="ch-acc">97.0%</b></span>
         <span class="sc lv L3 L4">confidence vs accuracy <b id="ch-conf">—</b></span>
       </div>
-      <p class="dg-lbl">Six borderline digits, as the current generation reads them:</p>
+      <p class="dg-lbl"><span class="lv L1">Six tricky digits, as the current copy reads them:</span><span class="lv L2 L3 L4">Six borderline digits, as the current generation reads them:</span></p>
       <div class="ch-strip" id="ch-strip" role="group" aria-label="Six borderline test digits and the current generation&#39;s readings"></div>
       <p class="sd-note" id="ch-note" aria-live="polite"></p>
     </div>
@@ -883,7 +784,10 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <p>The doubt-photocopier barely loses anything — eight copies later, still reading fine. The answers-only photocopier ruins the page <strong>in one copy</strong>, then faithfully re-copies the ruin. And the shrinking copiers leak a little every time, without ever noticing. The lesson of the whole page, one more time: <strong>the doubt is the knowledge.</strong> Copy it and the knowledge survives. Drop it, and one copy is all it takes.</p>
     </div>
     <div class="lv L2">
-      <p><strong>The debrief.</strong> Soft copies: the chain ends within about a point of where it started, generation after generation — at this scale, soft self-distillation is a nearly lossless photocopier, and that <em>is</em> the punchline; no secret collapse was hiding in the fine print. One-hot copies: the damage all happens in generation 1 — the moment the doubt is flattened to a single answer, the similarity map dies, permanently; everything after is a faithful copy of a blunter machine. Shrinking copies: a slow, near-monotone bleed as the map is squeezed into fewer and fewer neurons — while every generation stays as confident as the first. Confidence above accuracy, drifting apart: that mismatch is how you detect a decaying chain from the inside, without labels.</p>
+      <p><strong>The debrief.</strong> Soft copies: the chain dips a couple of points at the first hand-off, then holds — ending within one to three points of the teacher on every seed we validated. At this scale, soft self-distillation is a nearly lossless photocopier, and that <em>is</em> the punchline; no secret collapse was hiding in the fine print. One-hot copies: the damage all happens in generation 1 — the moment the doubt is flattened to a single answer, the similarity map dies, permanently; later copies wobble around that blunted level without ever approaching the teacher again. Shrinking copies: a bleed that compounds as the map is squeezed into fewer and fewer neurons — a few points on most seeds, double digits on unlucky draws (the page’s default seed is deliberately one of the dramatic ones; <strong>New seed</strong> shows you typical runs) — while every generation stays as confident as the first. Confidence above accuracy, drifting apart: that mismatch is how you detect a decaying chain from the inside, without labels.</p>
+    </div>
+    <div class="lv L3">
+      <p><strong>The debrief, with the diagnostic.</strong> Soft copies dip ≈1–2 points at the first hand-off and then hold, ending 1–3 points under the teacher across validated seeds — no collapse at constant capacity. One-hot copies pay their whole toll at generation 1, where the argmax hand-off zeroes the target entropy; after that the chain just re-fits a blunter function, wobbling a point or two either way. Shrinking copies are the compound-interest case, and the chip to watch is <strong>confidence vs accuracy</strong>: mean top-1 confidence stays in the high 90s while accuracy slides — on lossy chains the two drift apart, and that gap is a label-free decay detector you can use on real pipelines. Seeds differ widely in how hard the squeeze bites (≈3 points up to ≈30 on the worst validated draw — and the default seed was picked for drama, so press <strong>New seed</strong>); the caption under the chart always describes the run you just watched. Replay any chain headlessly with <span class="mono">window.__chainBench('soft'|'onehot'|'shrink', seed)</span>.</p>
     </div>
     <div class="lv L4">
       <p>The exact-math version of this chain lives in kernel regression: Mobahi, Farajtabar &amp; Bartlett (NeurIPS 2020) prove that ε-budget self-distillation in an RKHS multiplies a spectral filter onto the solution each round — regularization amplifies, a few rounds help a deliberately overfit model, and the chain provably collapses to the zero function in finitely many rounds. An earlier version of this page ran that construction live; this one demonstrates the phenomenon on real data instead, where the honest headline changes: with soft targets and constant capacity the chain is nearly lossless, and knowledge only dies through a lossy hand-off — argmax or shrinking width. The theorem and the demo agree on the mechanism (every hand-off filters); they disagree, instructively, on how fast the filter bites. Both readings of self-distillation theory remain live: regularization amplification, exact in the RKHS, and Allen-Zhu &amp; Li’s implicit ensemble-then-distill for deep networks.</p>
@@ -896,7 +800,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 
 <section class="chap" id="dino">
   <p class="eyebrow"><span class="dropmark"><svg width="11" height="14" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--accent)"/></svg></span> Part 6 · Déjà vu</p>
-  <h2 class="display">You've seen this before.</h2>
+  <h2 class="display">You’ve seen this before.</h2>
   <div class="prose">
     <div class="lv L1">
       <p>Here’s a secret about Part 1 of this series — the page about machines that teach themselves. The guessing games there had a teacher all along. It was <strong>the same robot</strong>: a calmer, steadier copy of itself.</p>
@@ -1351,14 +1255,27 @@ function normalizeInk(ink){
         : 'The bars are waiting. <strong>Draw a digit</strong> — or tap a dataset sample — and the network’s full belief appears here.';
     }
     var p0 = (p[tops.top]*100).toFixed(0), p1 = (p[tops.second]*100).toFixed(1);
+    var what = curLabel === null ? 'your drawing' : 'this dataset ' + curLabel;
     var head = kid
-      ? '<strong>It thinks your drawing is a ' + tops.top + '</strong> (' + p0 + '% sure) — and its next guess is ' + tops.second + ' (' + p1 + '%). '
-      : '<strong>Reading: ' + tops.top + '</strong> at ' + p0 + '%, runner-up ' + tops.second + ' at ' + p1 + '%. ';
+      ? '<strong>It thinks ' + what + ' is a ' + tops.top + '</strong> (' + p0 + '% sure) — and its next guess is ' + tops.second + ' (' + p1 + '%). '
+      : '<strong>Reading ' + what + ': ' + tops.top + '</strong> at ' + p0 + '%, runner-up ' + tops.second + ' at ' + p1 + '%. ';
     var tail;
     if(T < 1.2) tail = kid ? 'Cold: the doubt is squeezed almost invisible. Warm it up!' : 'Cold — near the argmax. The doubt is barely visible; slide T up to expose it.';
     else if(T <= 4.5) tail = kid ? 'That second guess is the <strong>dark knowledge</strong> — the secret this whole page is about.' : 'The runner-up ranking is the <strong>dark knowledge</strong> — the structure this whole page is about copying.';
     else tail = kid ? 'Very hot: everything melts toward equal. The middle is where the secrets are.' : 'Very hot — the distribution flattens toward uniform and the signal washes out. Useful temperatures live in the middle.';
     return head + tail;
+  }
+  /* screen-reader announcements are debounced (~0.8s after the last change) so
+     dragging the temperature slider doesn't flood aria-live with stale readings */
+  var liveEl = document.getElementById('kdh-live'), liveTimer = null;
+  function announceNote(){
+    if(!liveEl) return;
+    if(liveTimer) clearTimeout(liveTimer);
+    liveTimer = setTimeout(function(){
+      liveTimer = null;
+      var t = noteEl.textContent;
+      if(liveEl.textContent !== t) liveEl.textContent = t;
+    }, 800);
   }
   function classify(){
     var T = parseFloat(tSlider.value);
@@ -1366,7 +1283,7 @@ function normalizeInk(ink){
     if(!current){
       emptyBars();
       var h0 = note(null, T, null);
-      if(h0 !== lastHeroNote){ noteEl.innerHTML = h0; lastHeroNote = h0; }
+      if(h0 !== lastHeroNote){ noteEl.innerHTML = h0; lastHeroNote = h0; announceNote(); }
       return;
     }
     var z = teacherLogits(current);
@@ -1376,7 +1293,7 @@ function normalizeInk(ink){
     window.__yourDigit = { pixels: Array.prototype.slice.call(current), label: curLabel };
     if(window.__mdYours) window.__mdYours();
     var h = note(p, T, tops);
-    if(h !== lastHeroNote){ noteEl.innerHTML = h; lastHeroNote = h; }
+    if(h !== lastHeroNote){ noteEl.innerHTML = h; lastHeroNote = h; announceNote(); }
   }
 
   /* drawing */
@@ -1452,7 +1369,7 @@ function normalizeInk(ink){
   onThemeChange(function(){
     clearPad();
     paintStrip();
-    if(current){ renderDigit(mini, current); }
+    renderDigit(mini, current || new Float64Array(64));  /* repaint the empty state too */
   });
   window.__kdHeroLang = function(){ lastHeroNote = ''; classify(); };
   window.__heroBench = function(){
@@ -1465,9 +1382,10 @@ function normalizeInk(ink){
     }
     return correct + '/' + DIGITS_DATA.testCount;
   };
-  window.__heroLoad = function(i){  /* test hook: load test sample i */
+  window.__heroLoad = function(i){  /* gallery + test hook: load test sample i */
     current = Array.prototype.slice.call(getSample(TEST_PX, i));
     curLabel = TEST_Y[i];
+    clearPad();  /* drop any stale strokes so the pad matches the loaded digit */
     classify();
     return curLabel;
   };
@@ -1676,6 +1594,18 @@ function cssVar(name){
   var noteEl = document.getElementById('race-note'), betEl = document.getElementById('race-bet');
   var stripEl = document.getElementById('race-strip'), stripLbl = document.getElementById('race-dglbl');
   var STEPS = 1500, PER_FRAME = 12, M = 60, HID = 24, LR = 0.3, TSOFT = 2;
+  /* the teacher reference is measured on the SAME eval subset as the curves (EVAL200),
+     so the drawn gap is honest: 196/200 = 98.0% here vs 97.0% on the full 300 */
+  var TEACHER_ACC200 = (function(){
+    var c = 0;
+    for(var i = 0; i < EVAL200.length; i++){
+      var ti = EVAL200[i];
+      if(argmax10(teacherLogits(getSample(TEST_PX, ti))) === TEST_Y[ti]) c++;
+    }
+    return c/EVAL200.length;
+  })();
+  var teachEl = document.getElementById('race-t');
+  if(teachEl) teachEl.textContent = (TEACHER_ACC200*100).toFixed(1) + '%';
   var seed = 1, netH = null, netS = null, trH = null, trS = null;
   var xs = [], accH = [], accS = [], stepsDone = 0;
   var state = 'idle'; /* idle | running | done */
@@ -1722,10 +1652,10 @@ function cssVar(name){
     });
     ctx.fillText(kidMode() ? 'practice steps' : 'training steps', W - R - 82, H - 2);
     ctx.strokeStyle = C.teach; ctx.setLineDash([6, 5]); ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(L, Y(0.97)); ctx.lineTo(W - R, Y(0.97)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(L, Y(TEACHER_ACC200)); ctx.lineTo(W - R, Y(TEACHER_ACC200)); ctx.stroke();
     ctx.setLineDash([]);
     ctx.fillStyle = C.teach;
-    ctx.fillText('teacher 97%', W - R + 6, Y(0.97) + 3.5);
+    ctx.fillText('teacher ' + (TEACHER_ACC200*100).toFixed(0) + '%', W - R + 6, Y(TEACHER_ACC200) + 3.5);
     function curve(arr, col, w){
       ctx.strokeStyle = col; ctx.lineWidth = w; ctx.beginPath();
       for(var i = 0; i < arr.length; i++){
@@ -1738,7 +1668,7 @@ function cssVar(name){
       curve(accH, C.hard, 2.2);
       curve(accS, C.soft, 2.6);
       var xe = X(xs[xs.length - 1]) + 6;
-      var ty = Y(0.97) + 3.5;
+      var ty = Y(TEACHER_ACC200) + 3.5;
       var yh = Y(accH[accH.length - 1]) + 3.5, ys = Y(accS[accS.length - 1]) + 3.5;
       if(Math.abs(ys - ty) < 12) ys = ty + 12;   /* keep clear of the teacher label */
       if(yh - ys < 12) yh = ys + 12;             /* and keep the two curve labels apart */
@@ -1774,7 +1704,8 @@ function cssVar(name){
         card.appendChild(cnv);
         var cap = document.createElement('span');
         cap.className = 'cap';
-        cap.innerHTML = 'hard: ' + ph + ' ✗<br>soft: <b>' + ps + '</b> ✓';
+        cap.innerHTML = '<span class="lv L1">A: ' + ph + ' ✗<br>B: <b>' + ps + '</b> ✓</span>'
+                      + '<span class="lv L2 L3 L4">hard: ' + ph + ' ✗<br>soft: <b>' + ps + '</b> ✓</span>';
         card.appendChild(cap);
         stripEl.appendChild(card);
         renderDigit(cnv, getSample(TEST_PX, ti));
@@ -1824,17 +1755,22 @@ function cssVar(name){
     state = 'running';
     note();
     runBtn.disabled = true; newBtn.disabled = true;
+    var token = ++animToken;
     if(reduceMotion){
-      while(stepsDone < STEPS){
-        trH.stepN(20); trS.stepN(20); stepsDone += 20;
+      /* same math, but chunked through the task queue so the page keeps painting
+         and stays responsive — reduced motion means no animation, not a frozen tab */
+      (function tick(){
+        if(token !== animToken) return;
+        var n = Math.min(100, STEPS - stepsDone);
+        trH.stepN(n); trS.stepN(n); stepsDone += n;
         xs.push(stepsDone);
         accH.push(testAccOn(netH, EVAL200));
         accS.push(testAccOn(netS, EVAL200));
-      }
-      finish();
+        draw(); chips(false);
+        if(stepsDone < STEPS) setTimeout(tick, 0); else finish();
+      })();
       return;
     }
-    var token = ++animToken;
     function fr(){
       if(token !== animToken) return;
       var n = Math.min(PER_FRAME, STEPS - stepsDone);
@@ -1997,17 +1933,22 @@ function cssVar(name){
   }
   function draw(){
     var ctx = cv.getContext('2d'), W = cv.width, H = cv.height, C = chartCols();
-    var L = 46, R = 86, TP = 14, B = 30, YMIN = 0.75, YMAX = 1.0;
+    var L = 46, R = 86, TP = 14, B = 30, YMAX = 1.0;
+    /* the axis floor follows the data: real collapses get drawn where they land,
+       never clamped onto a gridline */
+    var lo = Math.min.apply(null, accs);
+    var YMIN = Math.min(0.75, Math.max(0, Math.floor((lo - 0.02)*20)/20));
     function X(g){ return L + (W - L - R)*g/8; }
-    function Y(a){ return H - B - (H - TP - B)*(Math.max(a, YMIN) - YMIN)/(YMAX - YMIN); }
+    function Y(a){ return H - B - (H - TP - B)*(a - YMIN)/(YMAX - YMIN); }
     ctx.fillStyle = C.card; ctx.fillRect(0, 0, W, H);
     ctx.font = '10.5px ui-monospace,Menlo,monospace';
     ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
-    [0.75, 0.8, 0.85, 0.9, 0.95, 1.0].forEach(function(gp){
+    var gstep = (YMAX - YMIN) > 0.35 ? 0.1 : 0.05;
+    for(var gp = YMAX; gp >= YMIN - 0.001; gp -= gstep){
       ctx.beginPath(); ctx.moveTo(L, Y(gp)); ctx.lineTo(W - R, Y(gp)); ctx.stroke();
       ctx.fillStyle = C.text;
       ctx.fillText(Math.round(gp*100) + '%', 12, Y(gp) + 3.5);
-    });
+    }
     ctx.fillStyle = C.text;
     for(var g = 0; g <= 8; g++){
       ctx.fillText(g === 0 ? (kidMode() ? 'T' : 'T') : String(g), X(g) - 3, H - 12);
@@ -2064,7 +2005,11 @@ function cssVar(name){
           : 'Mode: <strong>shrinking copies</strong> — soft T = 4 hand-offs, but hidden width walks 48→32→24→16→12→10→8→6. Same doubt, less and less room to keep it.';
       }
     } else if(gen >= 8){
-      var final_ = accs[8]*100, drop = (accs[0] - accs[8])*100;
+      /* every verdict below is derived from the accs/confs this run actually measured,
+         so the caption tells the truth on every seed — not just the default one */
+      var t0 = accs[0]*100, final_ = accs[8]*100, drop = t0 - final_;
+      var g1 = accs[1]*100, d1 = t0 - g1, endRel = final_ - g1;
+      var conf8 = (confs[8]*100).toFixed(0);
       var betBit = '';
       if(mode === 'soft' && betOutcome){
         betBit = betOutcome === 'won'
@@ -2072,17 +2017,40 @@ function cssVar(name){
           : (kid ? '<strong>Surprise!</strong> ' : '<strong>Your bet loses.</strong> ');
       }
       if(mode === 'soft'){
+        var softKid, softAdult;
+        if(drop <= 1.5){
+          softKid = '<strong>Almost nothing was lost.</strong> Eight photocopies later, the last student still reads ' + final_.toFixed(0) + ' digits out of 100 — the teacher read ' + t0.toFixed(0) + '.';
+          softAdult = '<strong>Nearly lossless: ' + final_.toFixed(1) + '% after 8 generations</strong> (teacher: ' + t0.toFixed(1) + '%). At this scale, soft self-distillation just… works; the similarity map survives every hand-off. That is the honest punchline — no hidden collapse.';
+        } else if(drop <= 4){
+          softKid = '<strong>Only a little was lost.</strong> Eight photocopies later, the last student reads ' + final_.toFixed(0) + ' of 100 — the teacher read ' + t0.toFixed(0) + '. A few points slipped away, but the doubt kept almost everything alive.';
+          softAdult = '<strong>' + final_.toFixed(1) + '% after 8 generations</strong> (teacher: ' + t0.toFixed(1) + '%, −' + drop.toFixed(1) + ' points). A small toll and no collapse — the similarity map survives every hand-off; this draw just pays a little more than the luckiest ones.';
+        } else {
+          softKid = '<strong>This chain slipped more than most.</strong> Eight photocopies took the score from ' + t0.toFixed(0) + ' down to ' + final_.toFixed(0) + ' of 100 — an unlucky draw; press <strong>New seed</strong> to see a more typical chain.';
+          softAdult = '<strong>' + final_.toFixed(1) + '% after 8 generations</strong> (teacher: ' + t0.toFixed(1) + '%, −' + drop.toFixed(1) + ' points) — an unusually lossy draw for the soft chain; validated seeds typically end within 1–3 points. Still no collapse, and still far gentler than the lossy modes.';
+        }
         h = betBit + (kid
-          ? '<strong>Almost nothing was lost.</strong> Eight photocopies later, the last student still reads ' + final_.toFixed(0) + ' digits out of 100 — the teacher read 97. The doubt is the part that survives copying. Now try <strong>copy only answers</strong>.'
-          : '<strong>Nearly lossless: ' + final_.toFixed(1) + '% after 8 generations</strong> (teacher: 97.0%). At this scale, soft self-distillation just… works; the similarity map survives every hand-off. That is the honest punchline — no hidden collapse. Now run <strong>one-hot copies</strong> for the contrast.');
+          ? softKid + ' The doubt is the part that survives copying. Now try <strong>copy only answers</strong>.'
+          : softAdult + ' Now run <strong>one-hot copies</strong> for the contrast.');
       } else if(mode === 'onehot'){
+        var kidShape, adultShape;
+        if(Math.abs(endRel) <= 1.5){
+          kidShape = ', and eight copies later it still reads about the same (' + final_.toFixed(0) + '%). The doubt died in one copy, and every later copy inherited the same blunt world.';
+          adultShape = ', then the chain stays roughly flat (gen 8: ' + final_.toFixed(1) + '%)';
+        } else if(endRel > 1.5){
+          kidShape = '. Later copies wobbled back up to ' + final_.toFixed(0) + '% — but none ever got near the teacher again. The doubt died in one copy, and no amount of re-copying brings it back.';
+          adultShape = ', then later generations wobble back up to ' + final_.toFixed(1) + '% — above the first copy, never near the teacher';
+        } else {
+          kidShape = ', and later copies kept slipping — down to ' + final_.toFixed(0) + '%. The doubt died in the first copy; the rest just re-copied a blunter world.';
+          adultShape = ', and later generations keep slipping to ' + final_.toFixed(1) + '%';
+        }
         h = kid
-          ? '<strong>One copy did all the damage.</strong> The first answers-only copy dropped to ' + (accs[1]*100).toFixed(0) + '% and the chain never got better — or worse. The doubt died in one copy, and every later copy inherited the same blunt world. And look: the copies stay almost 100% sure of themselves.'
-          : '<strong>The drop happens at generation 1</strong> (' + (accs[1]*100).toFixed(1) + '%), then the chain goes flat: the first argmax hand-off set target entropy to zero — dark knowledge died in a single photocopy, unrecoverably. Meanwhile confidence stays ≈' + (confs[8]*100).toFixed(0) + '% against ' + final_.toFixed(0) + '% accuracy: blunt and sure of it.';
+          ? '<strong>One copy did all the damage.</strong> The first answers-only copy dropped to ' + g1.toFixed(0) + '%' + kidShape + ' And look: the copies stay almost 100% sure of themselves.'
+          : '<strong>The big drop happens at generation 1</strong> (' + g1.toFixed(1) + '%, −' + d1.toFixed(1) + ' points)' + adultShape + ': the first argmax hand-off set target entropy to zero — dark knowledge died in a single photocopy, unrecoverably. Meanwhile confidence stays ≈' + conf8 + '% against ' + final_.toFixed(0) + '% accuracy: blunt and sure of it.';
       } else {
+        var confGap = confs[8]*100 - final_;
         h = kid
-          ? '<strong>The slow leak.</strong> Each smaller copier lost a little more: ' + (accs[0]*100).toFixed(0) + '% down to ' + final_.toFixed(0) + '%. And the tiny copies never notice — they stay just as confident as the big ones. Squeezed doubt is lost doubt.'
-          : '<strong>Monotone bleed: 97.0% → ' + final_.toFixed(1) + '%</strong> (−' + drop.toFixed(1) + ' points over the chain) as the map is squeezed from 48 hidden units down to 6 — while mean confidence holds near ' + (confs[8]*100).toFixed(0) + '%. Confidence above accuracy, drifting apart: the signature of information bleed.';
+          ? '<strong>The leak.</strong> The shrinking copiers lost ' + drop.toFixed(0) + ' points between them: ' + t0.toFixed(0) + '% down to ' + final_.toFixed(0) + '%. And the tiny copies never notice — they stay almost as sure of themselves as the big ones. Squeezed doubt is lost doubt.'
+          : '<strong>The squeeze costs ' + drop.toFixed(1) + ' points: ' + t0.toFixed(1) + '% → ' + final_.toFixed(1) + '%</strong> as the map is crushed from 48 hidden units down to 6 — while mean confidence sits at ' + conf8 + '% against ' + final_.toFixed(0) + '% accuracy' + (confGap >= 3 ? ': confidence above accuracy, drifting apart — the signature of information bleed.' : '.') + ' Seeds differ a lot here; <strong>New seed</strong> redraws the lottery.';
       }
     } else {
       h = kid
@@ -2115,8 +2083,18 @@ function cssVar(name){
       confs.push(meanConfOf(net));
       done();
     }
-    if(reduceMotion){ trn.stepN(cfg.steps); fin(); return; }
     var doneSteps = 0, per = Math.ceil(cfg.steps/30);
+    if(reduceMotion){
+      /* identical math, chunked through the task queue so notes and chips can paint
+         between generations instead of freezing the tab for the whole chain */
+      (function tick(){
+        if(token !== animToken) return;
+        var n = Math.min(per*3, cfg.steps - doneSteps);
+        trn.stepN(n); doneSteps += n;
+        if(doneSteps < cfg.steps) setTimeout(tick, 0); else fin();
+      })();
+      return;
+    }
     function fr(){
       if(token !== animToken) return;
       var n = Math.min(per, cfg.steps - doneSteps);
@@ -2128,7 +2106,14 @@ function cssVar(name){
   function finishChain(){
     running = false;
     if(mode === 'soft' && betChoice && !betOutcome){
-      betOutcome = betChoice === 'none' ? 'won' : 'lost';
+      /* grade the bet against the measured drop; adjacent readings of a borderline
+         drop (e.g. ~1 point = "almost nothing" or "a little") both count as wins */
+      var dPts = (accs[0] - accs[8])*100;
+      var right = (betChoice === 'none' && dPts <= 2.5) ||
+                  (betChoice === 'little' && dPts >= 0.5 && dPts <= 15) ||
+                  (betChoice === 'half' && dPts >= 20 && dPts <= 70) ||
+                  (betChoice === 'all' && dPts > 65);
+      betOutcome = right ? 'won' : 'lost';
       betChoice = null;
     }
     runBtn.disabled = false; newBtn.disabled = false;
@@ -2150,8 +2135,9 @@ function cssVar(name){
       trainGen(token, function(){
         chips(); draw(); updateStrip(); note();
         if(gen >= 8){ finishChain(); return; }
-        if(reduceMotion){ nextGen(); return; }
-        setTimeout(function(){ if(token === animToken) nextGen(); }, 160);
+        /* yield to the event loop between generations even under reduced motion,
+           so each generation's chart point and note actually paint */
+        setTimeout(function(){ if(token === animToken) nextGen(); }, reduceMotion ? 0 : 160);
       });
     }
     nextGen();
@@ -2181,15 +2167,16 @@ function cssVar(name){
   onThemeChange(function(){
     paintStrip(); updateStrip(); draw();
   });
-  window.__chainBench = function(m){
+  window.__chainBench = function(m, sd){
     m = m || mode;
+    sd = sd || seed;
     var cfg = MODES[m];
     var trIdx;
     if(cfg.M === 600){
       trIdx = [];
       for(var i = 0; i < DIGITS_DATA.transferCount; i++) trIdx.push(i);
     } else {
-      trIdx = seededPick(cfg.M, 600, seed*331 + 9);
+      trIdx = seededPick(cfg.M, 600, sd*331 + 9);
     }
     var ins = trIdx.map(function(ii){ return POOL_XS[ii]; });
     var pl = trIdx.map(function(ii){ return teacherLogits(getSample(POOL_PX, ii)); });
@@ -2203,14 +2190,25 @@ function cssVar(name){
         }
         return teacherSoftmax(z, cfg.T);
       });
-      var net = heNet(seed*100 + g, cfg.hiddens[g - 1]);
+      var net = heNet(sd*100 + g, cfg.hiddens[g - 1]);
       makeStudentTrainer(net, ins, targets, {
-        lr: cfg.lr, T: cfg.onehot ? 1 : cfg.T, batch: 100, shuffleSeed: seed*100 + g + 5000
+        lr: cfg.lr, T: cfg.onehot ? 1 : cfg.T, batch: 100, shuffleSeed: sd*100 + g + 5000
       }).stepN(cfg.steps);
       out.push('g' + g + '=' + (testAccOn(net, null)*100).toFixed(1));
       pl = ins.map(function(x){ return netLogits(net, x); });
     }
     return out.join(' ');
+  };
+  window.__chainRunSeed = function(m, sd){  /* test hook: run the real UI chain on a chosen mode+seed */
+    if(running) return false;
+    mode = m || mode;
+    if(sd) seed = sd;
+    modeBtns.forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.chmode === mode ? 'true' : 'false'); });
+    runChain();
+    return true;
+  };
+  window.__chainState = function(){  /* test hook: inspect the finished run */
+    return { running: running, mode: mode, seed: seed, accs: accs.slice(), note: noteEl.textContent };
   };
   window.__chainRefresh = function(){
     lastNote = '';
@@ -2305,9 +2303,18 @@ function cssVar(name){
       chipEls[r].parentNode.classList.toggle('win', (r in scores) && trained.length > 1 && scores[r] === best && best > 0);
     });
   }
+  var biasLive = document.getElementById('md-blive'), biasLiveTimer = null;
   function biasReadout(){
     if(!current || !nets[current] || !biasRead) return;
     biasRead.textContent = 'threes ' + score3(nets[current]) + '/30 · non-3s ' + scoreNon3(nets[current]) + '/270';
+    /* debounced screen-reader mirror: announce once the slider settles, not per tick */
+    if(biasLive){
+      if(biasLiveTimer) clearTimeout(biasLiveTimer);
+      biasLiveTimer = setTimeout(function(){
+        biasLiveTimer = null;
+        if(biasLive.textContent !== biasRead.textContent) biasLive.textContent = biasRead.textContent;
+      }, 800);
+    }
   }
   function note(){
     var kid = kidMode(), h = '';
@@ -2337,7 +2344,7 @@ function cssVar(name){
       } else {
         h = betBit + (kid
           ? '<strong>' + s + ' out of 30 — almost all of them!</strong> Nobody ever told this student what a 3 looks like. The teacher only ever leaked “…and a little 3-ish” on OTHER numbers — warmed up, that was enough to learn 3 from the outside. The heat knob did the magic.'
-          : '<strong>' + s + '/30, raw</strong> — no bias trick, zero 3s in training. At T = 6 the teacher’s mean softened p(3) on the transfer set is ≈ 3%, and that structured whisper reconstructs the class. Honest caveat: these 8×8 digits make the trick far stronger than Hinton’s MNIST original (raw in the tens of percent there); the temperature knob is the star here.');
+          : '<strong>' + s + '/30, raw</strong> — no bias trick, zero 3s in training. At T = 6 the teacher’s mean softened p(3) on the transfer set is ≈ 3%, and that structured whisper reconstructs the class. Honest calibration: Hinton’s MNIST original was already strong raw (≈87% on the deleted 3s; 98.6% after a bias fix) — what these 8×8 digits change is that no bias fix is needed at all. The temperature knob is the star here.');
       }
     }
     if(h !== lastNote){ noteEl.innerHTML = h; lastNote = h; }
@@ -2357,16 +2364,20 @@ function cssVar(name){
       return;
     }
     var px = window.__yourDigit.pixels;
+    var srcLbl = window.__yourDigit.label;  /* null = drawn by hand; a number = loaded dataset sample */
     var x = new Float64Array(64), k;
     for(k = 0; k < 64; k++) x[k] = px[k]/16;
     var z = netLogits(nets[current], x);
     z[3] += bias;
     var pred = argmax10(z);
     var cfg = RUNGS[current];
+    var what = srcLbl === null
+      ? 'your drawing'
+      : (kid ? 'the digit you loaded (a real dataset ' + srcLbl + ')' : 'the digit you loaded — a real dataset ' + srcLbl + ' —');
     var msg = kid
-      ? 'The ' + cfg.kid + ' student reads your drawing as <strong>' + pred + '</strong>' + (pred === 3 ? ' — a 3 it never once saw in training!' : '.')
-      : 'The ' + cfg.adult + ' student reads your drawing as <strong>' + pred + '</strong>' + (pred === 3 ? ' — a class absent from its entire training set.' : '.');
-    yoursEl.innerHTML = '<canvas width="32" height="32" role="img" aria-label="your drawing"></canvas><span>' + msg + '</span>';
+      ? 'The ' + cfg.kid + ' student reads ' + what + ' as <strong>' + pred + '</strong>' + (pred === 3 ? ' — a 3 it never once saw in training!' : '.')
+      : 'The ' + cfg.adult + ' student reads ' + what + ' as <strong>' + pred + '</strong>' + (pred === 3 ? ' — a class absent from its entire training set.' : '.');
+    yoursEl.innerHTML = '<canvas width="32" height="32" role="img" aria-label="' + (srcLbl === null ? 'your drawing' : 'the loaded dataset digit') + '"></canvas><span>' + msg + '</span>';
     renderDigit(yoursEl.querySelector('canvas'), px);
   }
   function setPressed(rung){
@@ -2380,8 +2391,18 @@ function cssVar(name){
     var trn = makeStudentTrainer(net, inputs, targets, {
       lr: LR, T: cfg.hard ? 1 : cfg.T, batch: BATCH, shuffleSeed: SEED*97 + cfg.idx
     });
-    if(reduceMotion){ trn.stepN(STEPS); done(net); return; }
     var doneSteps = 0, token = ++animToken;
+    if(reduceMotion){
+      /* identical math, chunked through the task queue: the "Training…" note can
+         paint and the tab stays responsive; no decorative per-tick grid updates */
+      (function tick(){
+        if(token !== animToken) return;
+        var n = Math.min(250, STEPS - doneSteps);
+        trn.stepN(n); doneSteps += n;
+        if(doneSteps < STEPS) setTimeout(tick, 0); else done(net);
+      })();
+      return;
+    }
     function fr(){
       if(token !== animToken) return;
       var n = Math.min(24, STEPS - doneSteps);
@@ -2464,6 +2485,18 @@ function cssVar(name){
   };
   window.__missRefresh = function(){
     lastNote = '';
+    /* the bias slider only exists at L3/L4 — when the depth dial hides it, an
+       invisible bias would silently contradict the chips, so reset it to 0 */
+    var lv = app.dataset.level;
+    if((lv === '1' || lv === '2') && bias !== 0){
+      bias = 0;
+      biasIn.value = '0';
+      biasVal.textContent = '0.0';
+      if(biasRead) biasRead.textContent = '';
+      if(current && nets[current] && !training){
+        updateGrid(nets[current]);
+      }
+    }
     note();
     refreshYours();
   };
@@ -2477,13 +2510,15 @@ function cssVar(name){
 (function(){
   var wrap = document.getElementById('dk-gallery');
   if(!wrap) return;
+  /* captions are templates filled from the SAME T=2 distribution the bars show,
+     so numbers and bars can never disagree ({p0}/{p1}: percents, {q0}/{q1}: 0-1) */
   var STORY = [
-    { sk: 769,  kid: 'This 8 is almost a 2 — the teacher says 52% vs 48%.',
-                adult: 'An 8 read as 8 at only 0.52 — with 2 right behind at 0.48 (T = 1).' },
-    { sk: 1595, kid: 'This 7 is only 53% “seven” — and 25% “one.”',
-                adult: 'A 7 at 0.53, runner-up 1 at 0.25 (T = 1).' },
-    { sk: 746,  kid: 'This 4 has a shadow of a 7 in it — 78% vs 22%.',
-                adult: 'A 4 at 0.78 with a 7-shaped shadow at 0.22 (T = 1).' }
+    { sk: 769,  kid: 'This 8 is almost a 2 — the teacher says {p0}% vs {p1}%.',
+                adult: 'An 8 read as 8 at only {q0} — with 2 right behind at {q1} (T = 2).' },
+    { sk: 1595, kid: 'This 7 is only {p0}% “seven” — and {p1}% “one.”',
+                adult: 'A 7 at {q0}, runner-up 1 at {q1} (T = 2).' },
+    { sk: 746,  kid: 'This 4 has a shadow of a 7 in it — {p0}% vs {p1}%.',
+                adult: 'A 4 at {q0} with a 7-shaped shadow at {q1} (T = 2).' }
   ];
   var cards = [];
   STORY.forEach(function(st){
@@ -2492,6 +2527,10 @@ function cssVar(name){
     var p2 = teacherSoftmax(teacherLogits(getSample(TEST_PX, pos)), 2);
     var top = argmax10(p2), second = -1, k;
     for(k = 0; k < 10; k++) if(k !== top && (second < 0 || p2[k] > p2[second])) second = k;
+    function fill(s){
+      return s.replace('{p0}', (p2[top]*100).toFixed(0)).replace('{p1}', (p2[second]*100).toFixed(0))
+              .replace('{q0}', p2[top].toFixed(2)).replace('{q1}', p2[second].toFixed(2));
+    }
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'dk-card';
@@ -2510,7 +2549,7 @@ function cssVar(name){
     btn.appendChild(bars);
     var cap = document.createElement('span');
     cap.className = 'dk-cap';
-    cap.innerHTML = '<span class="lv L1">' + st.kid + '</span><span class="lv L2 L3 L4">' + st.adult + '</span>';
+    cap.innerHTML = '<span class="lv L1">' + fill(st.kid) + '</span><span class="lv L2 L3 L4">' + fill(st.adult) + '</span>';
     btn.appendChild(cap);
     btn.addEventListener('click', function(){
       if(window.__heroLoad) window.__heroLoad(pos);
