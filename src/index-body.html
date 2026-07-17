@@ -7,6 +7,8 @@
   --hl:#F4C84B; --hl-ink:#5C4708; --hatch:#98A0AF; --panel-tint:#F1F3F7;
   --p1:#2B50E8; --p1-soft:#E4E9FC;
   --p2:#0E7A63; --p2-soft:#D9EFE8;
+  --p3:#A25A12; --p3-soft:#F5E7D4;
+  --pr:#047A66;
   --shadow:0 1px 2px rgba(20,22,29,.05),0 8px 28px rgba(20,22,29,.07);
 }
 @media (prefers-color-scheme: dark){
@@ -15,6 +17,8 @@
     --hl:#E3B23C; --hl-ink:#1A1508; --hatch:#5A6377; --panel-tint:#131720;
     --p1:#8AA0FF; --p1-soft:#232C4E;
     --p2:#5FCDB0; --p2-soft:#14352D;
+    --p3:#E2A45C; --p3-soft:#3A2A14;
+    --pr:#0FA487;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35);
   }
 }
@@ -59,6 +63,9 @@ a{color:inherit}
 .part:focus-visible{outline:2px solid var(--accent,var(--ink));outline-offset:3px}
 .part.p1{--accent:var(--p1)}
 .part.p2{--accent:var(--p2)}
+.part.p3{--accent:var(--p3)}
+.part.pr{--accent:var(--pr)}
+.part.pr .pnum{color:var(--pr)}
 .part:hover{border-color:var(--accent)}
 .part .pnum{
   font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.1em;
@@ -94,10 +101,11 @@ footer a{color:var(--p2);text-decoration:underline}
     <div class="drop-strip" aria-hidden="true">
       <svg width="22" height="22" viewBox="0 0 24 24"><rect x="1" y="1" width="10" height="10" rx="2" fill="var(--ink)"/><rect x="13" y="1" width="10" height="10" rx="2" fill="none" stroke="var(--hatch)" stroke-dasharray="2 2"/><rect x="1" y="13" width="10" height="10" rx="2" fill="none" stroke="var(--hatch)" stroke-dasharray="2 2"/><rect x="13" y="13" width="10" height="10" rx="2" fill="var(--p1)"/></svg>
       <svg width="18" height="18" viewBox="0 0 14 18"><path d="M7 1C7 5 1 8.5 1 12a6 6 0 0 0 12 0C13 8.5 7 5 7 1z" fill="var(--p2)"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="none" stroke="var(--hatch)" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 20l1.2-4.2 3 3z" fill="var(--p3)"/></svg>
     </div>
     <p class="eyebrow">An interactive series · read free, in your browser</p>
     <h1 class="display">The machine that teaches <span class="self">itself</span></h1>
-    <p class="dek">One game, played two ways: <strong>hide something, guess it, check yourself.</strong> Part 1 plays it against the world — no teacher, no answer key. Part 2 plays it against a copy of yourself. Every demo on every page is real computation running live in your browser — never a canned animation.</p>
+    <p class="dek">How a machine comes to know things, hand them on, and finally <strong>answer you</strong>: Part 1 teaches itself from raw text and pixels, Part 2 pours what a giant knows into a pocket-sized copy, Part 3 turns an autocomplete into an assistant with sixteen perfect answers. Every demo on every page is real computation running live in your browser — never a canned animation.</p>
   </section>
 
   <div class="parts">
@@ -125,11 +133,29 @@ footer a{color:var(--p2);text-decoration:underline}
       </span>
     </a>
 
-    <div class="soon">
-      <span class="pnum">Part 3 · in the still</span>
-      <h2>How models learn what you want</h2>
-      <p>SFT, RLHF, DPO — the preference-optimization arc. Coming next.</p>
-    </div>
+    <a class="part p3" href="supervised-fine-tuning.html">
+      <span class="go" aria-hidden="true">→</span>
+      <span class="pnum">Part 3</span>
+      <h2 class="display">The machine that learns to answer</h2>
+      <p>A freshly trained model has read everything and answers nothing — ask it a question and it just keeps typing. A real language model lives in this page: quiz it, fine-tune it live on a sixteen-line copybook, catch it inventing facts about animals that don't exist, and measure exactly what the fix costs.</p>
+      <span class="meta">
+        <span class="chip">4 reading depths</span>
+        <span class="chip">EN</span>
+        <span class="chip">5 live experiments</span>
+      </span>
+    </a>
+
+    <a class="part pr" href="https://claude.ai/code/artifact/62ebc2d2-cfd5-47b1-995c-e46edfae94c1">
+      <span class="go" aria-hidden="true">→</span>
+      <span class="pnum">Companion page</span>
+      <h2 class="display">The machine that learns from consequences</h2>
+      <p>What comes after the copybook: no answer key at all — just actions, consequences, and a score that arrives late. Slot machines, a live Q-learning maze, and the RLHF pipeline that finishes every modern assistant. Hosted on its own page, same dials.</p>
+      <span class="meta">
+        <span class="chip">4 reading depths</span>
+        <span class="chip">EN · 中文</span>
+        <span class="chip">3 live demos</span>
+      </span>
+    </a>
   </div>
 
   <footer>

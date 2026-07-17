@@ -1,19 +1,20 @@
 # The Machine That Teaches Itself
 
 **The Machine That Teaches Itself** is an interactive educational series exploring
-how modern AI learns without a human handing it answers — self-supervised learning,
-and the strange loop of a model teaching a copy of itself.
+how modern AI comes to know things, hand them on, and finally answer you —
+self-supervised learning, knowledge distillation, and supervised fine-tuning.
 
 **Live:** https://princello.github.io/self-supervised-learning/
 
 ## Core concept
 
-One game, played two ways: **hide something, guess it, check yourself.** Part 1
+One game, played three ways: **hide something, guess it, check yourself.** Part 1
 plays that game against the world — no teacher, no answer key, just the trick
 behind GPT, CLIP, and every modern foundation model. Part 2 plays the same game
 against a copy of yourself: a trained model pouring what it knows into a smaller
-model, or into a fresh copy of its own architecture, no new data required. As the
-content puts it, distillation and self-supervision are one idea wearing two costumes.
+model, no new data required. Part 3 plays it one last time with a copybook of
+sixteen perfect answers — the same next-token loss, pointed at demonstrations,
+turning an autocomplete into an assistant (and paying a measurable price for it).
 
 ## Parts
 
@@ -22,20 +23,33 @@ content puts it, distillation and self-supervision are one idea wearing two cost
    contrastive-learning playground (gradient descent you can watch, including a
    "collapse" button), and a live linear-probe payoff demo.
 2. **[Knowledge distillation & self-distillation](https://princello.github.io/self-supervised-learning/knowledge-distillation.html)**
-   (EN) — a softmax-temperature "dark knowledge" hero, a live hard-vs-soft-label
-   training race with guess-first bets, an exact self-distillation "photocopier"
-   (Mobahi–Farajtabar–Bartlett, with a real collapse-generation guessing game),
-   and a born-again "twin experiment."
+   (EN) — a draw-a-digit hero read live by a real embedded 3,610-parameter teacher
+   network, a hard-vs-soft-label training race, Hinton's missing-digit experiment
+   as a temperature ladder, and a "photocopier" chain of models trained on their
+   own copies.
+3. **[Supervised fine-tuning](https://princello.github.io/self-supervised-learning/supervised-fine-tuning.html)**
+   (EN) — a real 23,319-parameter character-level language model pretrained on an
+   8 KB storybook corpus you can read in full: ask it questions (it only asks more
+   questions back), fine-tune it live on a 16-demonstration copybook, dissect what
+   the fine-tune actually taught, catch it answering about animals that don't
+   exist, and measure the alignment tax with the loss-masking and learning-rate
+   dials.
 
-Part 2 links back to Part 1 and vice versa, so the series is browsable end to end.
-Part 3 (the preference-optimization arc: SFT, RLHF, DPO) is in the still.
+The parts cross-link, so the series is browsable end to end, and a companion page
+on reinforcement learning — [The Machine That Learns From
+Consequences](https://claude.ai/code/artifact/62ebc2d2-cfd5-47b1-995c-e46edfae94c1)
+— picks up where the copybook stops: learning from judgment instead of examples.
 
 ## Technical approach
 
 The distinguishing feature is a commitment to **real computation, never a canned
 animation.** Every live demo runs its own math in the browser as you watch:
-finite-difference gradient descent, exact kernel ridge regression via
-eigendecomposition, closed-form softmax/temperature arithmetic. Where a demo is
+finite-difference gradient descent, seeded SGD on real embedded networks (a digit
+teacher in Part 2, a character-level language model in Part 3), closed-form
+softmax/temperature arithmetic. Every quoted number is validated offline first
+(10-seed experiment suites live in `src/sft-lab/` and `src/*-validated-configs.md`),
+and the pages' captions are derived from what the browser actually computes at
+press time, not from a script. Where a demo is
 deliberately simplified or its setup favors a particular outcome, the page says
 so explicitly, at every reading depth.
 
@@ -49,7 +63,8 @@ selectable with a dial in the top bar, or by deep-linking with a URL hash
 src/            source HTML bodies (fonts spliced in at build time via /*__FONTS__*/)
 fonts/          base64-encoded @font-face CSS (Bricolage Grotesque, Atkinson Hyperlegible)
 build.py        splices fonts/fonts.css into each src/*-body.html, writes to repo root
-index.html, self-supervised-learning.html, knowledge-distillation.html
+index.html, self-supervised-learning.html, knowledge-distillation.html,
+supervised-fine-tuning.html
                 built, fully standalone pages — also what GitHub Pages serves
 ```
 
@@ -63,9 +78,10 @@ works completely offline, fonts and all.
 python3 build.py
 ```
 
-Regenerates `index.html`, `self-supervised-learning.html`, and
-`knowledge-distillation.html` at the repo root. No dependencies beyond Python 3's
-standard library.
+Regenerates the built pages at the repo root. No dependencies beyond Python 3's
+standard library. (Part 3 additionally has `src/sft-lab/bake_page.py`, which
+splices the validated model weights and JS engine into `src/sft-body.html` —
+only needed when the lab assets change.)
 
 ## Licensing
 
