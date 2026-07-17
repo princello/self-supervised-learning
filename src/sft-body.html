@@ -1,0 +1,1235 @@
+<title>The Machine That Learns to Answer</title>
+<style>
+
+/*__FONTS__*/
+
+/* ---------- design tokens (series grounds; Part-3 pencil-ochre accent) ---------- */
+:root{
+  --paper:#F7F8FA;
+  --card:#FFFFFF;
+  --ink:#14161D;
+  --ink2:#4A5264;
+  --line:#DFE3EA;
+  --accent:#A25A12;
+  --accent-soft:#F5E7D4;
+  --on-accent:#FFFFFF;
+  --hl:#B8CCE4;
+  --hl-ink:#27476B;
+  --hatch:#98A0AF;
+  --pink:#D8437A;
+  --panel-tint:#F1F3F7;
+  --shadow:0 1px 2px rgba(20,22,29,.05),0 8px 28px rgba(20,22,29,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#12100C;
+    --card:#1B1813;
+    --ink:#EDEAE4;
+    --ink2:#B0A89E;
+    --line:#332E26;
+    --accent:#E2A45C;
+    --accent-soft:#3A2A14;
+    --on-accent:#12100C;
+    --hl:#5B7CA6;
+    --hl-ink:#DCE8F6;
+    --hatch:#6A6355;
+    --pink:#E4739B;
+    --panel-tint:#211D16;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12100C; --card:#1B1813; --ink:#EDEAE4; --ink2:#B0A89E; --line:#332E26;
+  --accent:#E2A45C; --accent-soft:#3A2A14; --on-accent:#12100C;
+  --hl:#5B7CA6; --hl-ink:#DCE8F6; --hatch:#6A6355; --pink:#E4739B; --panel-tint:#211D16;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35);
+}
+:root[data-theme="light"]{
+  --paper:#F7F8FA; --card:#FFFFFF; --ink:#14161D; --ink2:#4A5264; --line:#DFE3EA;
+  --accent:#A25A12; --accent-soft:#F5E7D4; --on-accent:#FFFFFF;
+  --hl:#B8CCE4; --hl-ink:#27476B; --hatch:#98A0AF; --pink:#D8437A; --panel-tint:#F1F3F7;
+  --shadow:0 1px 2px rgba(20,22,29,.05),0 8px 28px rgba(20,22,29,.07);
+}
+
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+body{background:var(--paper);margin:0}
+
+#app{
+  font-family:'Atkinson Hyperlegible',Seravek,'Gill Sans','PingFang SC','Hiragino Sans GB','Microsoft YaHei',Verdana,sans-serif;
+  color:var(--ink);
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+#app[data-level="1"]{font-size:18.5px}
+#app *{box-sizing:border-box}
+#app a{color:var(--accent)}
+#app strong{color:var(--ink)}
+
+.wrap{max-width:1060px;margin:0 auto;padding:0 22px}
+.prose{max-width:66ch}
+.prose p{margin:0 0 1em}
+.prose ul,.prose ol{margin:0 0 1.1em;padding-left:1.3em}
+.prose li{margin:.35em 0}
+.muted{color:var(--ink2)}
+
+.display{
+  font-family:'Bricolage Grotesque','Avenir Next','PingFang SC','Hiragino Sans GB','Microsoft YaHei',Futura,'Trebuchet MS',sans-serif;
+  font-weight:800;letter-spacing:-.015em;line-height:1.08;text-wrap:balance;
+}
+.eyebrow{
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);
+  display:flex;align-items:center;gap:10px;
+}
+.mono{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-variant-numeric:tabular-nums}
+
+/* ---------- level visibility ---------- */
+#app[data-level="1"] .lv:not(.L1){display:none!important}
+#app[data-level="2"] .lv:not(.L2){display:none!important}
+#app[data-level="3"] .lv:not(.L3){display:none!important}
+#app[data-level="4"] .lv:not(.L4){display:none!important}
+
+/* ---------- language visibility (EN-only launch; ready for zh/es passes) ---------- */
+#app[data-lang="en"] .lg-zh,#app[data-lang="en"] .lg-es{display:none!important}
+#app[data-lang="zh"] .lg-en,#app[data-lang="zh"] .lg-es{display:none!important}
+#app[data-lang="es"] .lg-en,#app[data-lang="es"] .lg-zh{display:none!important}
+
+/* ---------- sticky header ---------- */
+#topbar{
+  position:sticky;top:0;z-index:50;
+  background:color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid transparent;
+  transition:border-color .25s;
+}
+#topbar.scrolled{border-bottom-color:var(--line)}
+#topbar .bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 22px;max-width:1060px;margin:0 auto}
+.wordmark{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14.5px;letter-spacing:.01em;white-space:nowrap}
+.wordmark svg{display:block}
+.wordmark .wm-sub{color:var(--ink2);font-weight:400}
+@media (max-width:720px){.wordmark .wm-sub{display:none}}
+
+.dials{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center;min-width:0}
+.theme-btn{
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+  width:36px;height:32px;padding:0;cursor:pointer;
+  background:var(--panel-tint);border:1px solid var(--line);border-radius:999px;color:var(--ink2);
+  transition:color .15s;
+}
+.theme-btn:hover{color:var(--ink)}
+.theme-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.theme-btn svg{display:block}
+.dial{display:flex;gap:4px;background:var(--panel-tint);border:1px solid var(--line);border-radius:999px;padding:3px}
+.dial button{
+  font:inherit;font-size:13px;font-weight:700;color:var(--ink2);
+  background:transparent;border:0;border-radius:999px;padding:5px 13px;cursor:pointer;
+  transition:background .15s,color .15s;
+}
+.dial button:hover{color:var(--ink)}
+.dial button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.dial button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:640px){
+  .wordmark .wm-name{display:none}
+  #topbar .bar{padding:8px 12px}
+  .dial{overflow-x:auto;max-width:100%}
+  .dial button{padding:4px 9px;font-size:11.5px}
+}
+
+/* ---------- hero ---------- */
+#hero{padding:58px 0 12px}
+.rule-strip{display:flex;flex-direction:column;gap:7px;margin-bottom:26px;max-width:180px}
+.rule-strip i{display:block;height:0;border-bottom:1.5px solid var(--hl);position:relative}
+.rule-strip i::after{
+  content:"";position:absolute;left:0;top:-5px;height:4px;border-radius:2px;background:var(--accent);
+}
+.rule-strip i:nth-child(1)::after{width:72%}
+.rule-strip i:nth-child(2)::after{width:46%;opacity:.75}
+.rule-strip i:nth-child(3)::after{width:24%;opacity:.5}
+#hero h1{font-size:clamp(38px,7vw,68px);margin:.1em 0 .25em}
+#hero h1 .self{
+  background:linear-gradient(transparent 74%, var(--hl) 74%);
+  padding:0 .06em;
+}
+.dek{font-size:clamp(17px,2.4vw,21px);color:var(--ink2);max-width:34em;text-wrap:pretty;margin:0 0 26px}
+
+/* depth picker cards */
+.depths{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0 14px}
+@media (max-width:820px){.depths{grid-template-columns:repeat(2,1fr)}}
+.depths button{
+  font:inherit;text-align:left;cursor:pointer;color:var(--ink);
+  border:1.5px solid var(--line);border-radius:12px;background:var(--card);
+  padding:12px 14px;transition:border-color .15s, transform .15s, box-shadow .15s;
+}
+.depths button:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.depths button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.depths button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.depths .dnum{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--accent);letter-spacing:.1em}
+.depths .dname{display:block;font-weight:700;font-size:16px;margin:2px 0 1px}
+.depths .ddesc{display:block;font-size:12.5px;color:var(--ink2);line-height:1.4}
+.pick-note{font-size:13px;color:var(--ink2);margin:0 0 8px}
+
+.toc{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13.5px;padding:14px 0 0;border-top:1px solid var(--line);margin-top:20px}
+.toc a{text-decoration:none;color:var(--ink2)}
+.toc a:hover{color:var(--accent)}
+
+/* ---------- sections ---------- */
+section.chap{padding:64px 0 6px}
+section.chap h2{font-size:clamp(27px,4.4vw,42px);margin:.35em 0 .5em}
+
+/* ---------- panels (demos) ---------- */
+.panel{
+  border:1px solid var(--line);border-radius:14px;background:var(--card);
+  box-shadow:var(--shadow);overflow:hidden;margin:26px 0;
+}
+.panel-head{
+  display:flex;align-items:center;gap:12px;justify-content:space-between;
+  padding:10px 16px;border-bottom:1px solid var(--line);
+  background:
+    repeating-linear-gradient(45deg,transparent 0 6px,color-mix(in srgb,var(--hatch) 22%, transparent) 6px 8px),
+    var(--panel-tint);
+}
+.panel-head .ptitle{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink2)}
+.panel-body{padding:18px 16px}
+@media (min-width:700px){.panel-body{padding:22px 22px}}
+.panel .hint{font-size:13px;color:var(--ink2)}
+
+button.act{
+  font:inherit;font-size:14px;font-weight:700;cursor:pointer;
+  background:var(--accent);color:var(--on-accent);
+  border:0;border-radius:9px;padding:8px 16px;
+  transition:filter .15s, transform .05s;
+}
+button.act:hover{filter:brightness(1.08)}
+button.act:active{transform:translateY(1px)}
+button.act:disabled{opacity:.45;cursor:default}
+button.ghost{
+  font:inherit;font-size:14px;font-weight:700;cursor:pointer;
+  background:transparent;color:var(--ink);
+  border:1.5px solid var(--line);border-radius:9px;padding:7px 14px;
+}
+button.ghost:hover{border-color:var(--ink2)}
+button.act:focus-visible,button.ghost:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.readout{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.readout b{color:var(--ink)}
+
+/* visually hidden (screen-reader-only live regions) */
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ---------- math ---------- */
+.eqcard{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:16px 18px;margin:16px 0;overflow-x:auto}
+.eqcard h4{margin:0 0 6px;font-size:15px}
+.eqcard .eqwhat{font-size:13.5px;color:var(--ink2);margin:8px 0 0;max-width:66ch}
+.eq{
+  font-family:Georgia,'Times New Roman',serif;font-style:italic;
+  font-size:19px;line-height:1.9;white-space:nowrap;padding:6px 2px;
+}
+.eq .up{font-style:normal}
+.eq sub,.eq sup{font-size:.62em}
+.term{border-bottom:2px dotted var(--accent);cursor:help;border-radius:2px}
+.term:hover{background:var(--accent-soft)}
+.term:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#tip{
+  position:fixed;z-index:99;max-width:270px;
+  background:var(--ink);color:var(--paper);
+  font-size:13px;line-height:1.45;font-style:normal;
+  font-family:'Atkinson Hyperlegible','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+  padding:8px 11px;border-radius:8px;pointer-events:none;
+  opacity:0;transform:translateY(4px);transition:opacity .15s, transform .15s;
+}
+#tip.show{opacity:1;transform:translateY(0)}
+.mathpeek{
+  border:1.5px dashed var(--hatch);border-radius:12px;padding:18px;margin:16px 0;max-width:66ch;
+  background:repeating-linear-gradient(45deg,transparent 0 8px,color-mix(in srgb,var(--hatch) 10%, transparent) 8px 10px);
+}
+
+/* ---------- takeaway ---------- */
+.take{
+  border:1.5px solid var(--accent);border-radius:14px;padding:20px 22px;margin:20px 0;max-width:72ch;
+  background:color-mix(in srgb,var(--accent) 6%, transparent);
+}
+.take h3{margin:0 0 10px;font-size:19px}
+.reading{font-size:14px;line-height:1.7}
+.reading li{margin:.4em 0}
+
+footer.colophon{padding:44px 0 70px;color:var(--ink2);font-size:13.5px;border-top:1px solid var(--line);margin-top:70px}
+footer.colophon p{max-width:66ch;margin:0 0 .7em}
+
+.defs{display:grid;gap:10px;margin:18px 0;font-size:15px}
+.defs .d{border-left:3px solid var(--accent);padding:2px 0 2px 14px}
+
+/* guess-first bet rows */
+.bet{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px;
+  padding:12px 14px;border:1.5px dashed var(--accent);border-radius:10px;
+  background:color-mix(in srgb,var(--accent) 5%, transparent);
+  font-size:14px;
+}
+.bet .bet-q{font-weight:700;margin-right:4px}
+.bet .btn{
+  font:inherit;font-weight:700;font-size:13.5px;cursor:pointer;
+  background:var(--panel-tint);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 14px;
+}
+.bet .btn:hover{border-color:var(--accent)}
+.bet .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bet[hidden]{display:none}
+
+.demo-controls{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;margin-top:16px;font-size:13.5px}
+.demo-controls .btn{
+  font:inherit;font-weight:700;font-size:13.5px;cursor:pointer;
+  background:var(--accent);color:var(--on-accent);border:0;border-radius:9px;padding:8px 14px;
+}
+.demo-controls .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.demo-controls .btn:disabled{opacity:.45;cursor:default}
+.demo-controls .btn.ghostb{background:var(--panel-tint);color:var(--ink);border:1px solid var(--line)}
+.demo-controls .btn.ghostb[aria-pressed="true"]{
+  border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;background:var(--accent-soft);
+}
+.demo-controls label{display:flex;align-items:center;gap:8px;font-weight:700}
+.demo-controls input[type="range"]{accent-color:var(--accent);width:130px}
+.demo-controls output{font-variant-numeric:tabular-nums;min-width:2.2em}
+.scorechips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.scorechips .sc{border:1px solid var(--line);border-radius:9px;padding:7px 12px;font-size:13px;background:var(--panel-tint)}
+.scorechips .sc b{font-variant-numeric:tabular-nums}
+.scorechips .sc.win{border-color:var(--accent);background:var(--accent-soft)}
+
+/* shared demo chart canvases */
+.chart-cv{width:100%;max-width:640px;height:auto;display:block;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+
+/* ================= Part 3 components ================= */
+
+/* pencil eyebrow glyph */
+.pencilmark{display:inline-block;vertical-align:-2px;margin-right:2px}
+
+/* the ask-the-model console */
+.ask{
+  margin-top:34px;background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:20px 22px 18px;box-shadow:var(--shadow);
+}
+.ask-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ask-input{
+  flex:1;min-width:220px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:15px;
+  color:var(--ink);background:var(--panel-tint);border:1.5px solid var(--line);border-radius:9px;
+  padding:9px 12px;
+}
+.ask-input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.ask-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ask-chips .chip{
+  font:inherit;font-size:13px;cursor:pointer;color:var(--ink);
+  background:var(--panel-tint);border:1px solid var(--line);border-radius:999px;padding:5px 12px;
+}
+.ask-chips .chip:hover{border-color:var(--accent)}
+.ask-chips .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ask-cap{font-size:12.5px;color:var(--ink2);margin-top:8px}
+
+/* model output console: ruled copybook paper */
+.out{
+  margin-top:16px;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;
+  background:
+    repeating-linear-gradient(var(--card) 0 27px, color-mix(in srgb,var(--hl) 55%, transparent) 27px 28px);
+}
+.out .who{
+  font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink2);padding:7px 12px 0;display:block;
+}
+.out pre{
+  margin:0;padding:4px 12px 10px;font-family:ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:15px;line-height:28px;white-space:pre-wrap;word-break:break-word;color:var(--ink);min-height:56px;
+}
+.out pre .prompt-part{color:var(--ink2)}
+.out pre .gen-part{color:var(--accent);font-weight:700}
+.out pre .caret{display:inline-block;width:8px;height:16px;background:var(--accent);vertical-align:-2px;
+  animation:caretblink 1s steps(1) infinite}
+@keyframes caretblink{50%{opacity:0}}
+@media (prefers-reduced-motion: reduce){ .out pre .caret{animation:none} }
+
+/* live next-char belief strip */
+.nextchar{display:flex;gap:6px;align-items:flex-end;margin-top:12px;min-height:64px}
+.nc-col{display:grid;gap:3px;justify-items:center;width:34px}
+.nc-col .bar{width:16px;background:var(--hatch);border-radius:3px 3px 0 0;min-height:2px}
+.nc-col.top .bar{background:var(--accent)}
+.nc-col .ch{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink2);
+  border:1px solid var(--line);border-radius:4px;padding:0 4px;min-width:20px;text-align:center}
+.nc-col.top .ch{color:var(--ink);font-weight:700;border-color:var(--accent)}
+.nc-col .p{font-family:ui-monospace,Menlo,monospace;font-size:10px;color:var(--ink2)}
+.nc-lbl{font-size:11.5px;color:var(--ink2);font-family:ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;margin-top:10px}
+
+/* the corpus viewer */
+.corpus{margin-top:16px;border:1.5px dashed var(--hatch);border-radius:10px;background:var(--panel-tint)}
+.corpus summary{
+  cursor:pointer;padding:10px 14px;font-size:13.5px;font-weight:700;color:var(--ink2);
+  list-style:none;display:flex;align-items:center;gap:8px;
+}
+.corpus summary::-webkit-details-marker{display:none}
+.corpus summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.corpus[open] summary{border-bottom:1px solid var(--line)}
+.corpus pre{
+  margin:0;max-height:300px;overflow:auto;padding:12px 14px;
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12.5px;line-height:1.7;color:var(--ink2);
+  white-space:pre-wrap;
+}
+.hd-throughline{
+  margin:18px 0 0;padding:12px 14px;font-size:14.5px;
+  border-left:3px solid var(--hl);background:color-mix(in srgb,var(--hl) 18%, transparent);
+  border-radius:0 8px 8px 0;
+}
+
+/* the copybook */
+.copybook{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:9px;margin-top:14px}
+.cb-card{
+  border:1px solid var(--line);border-radius:9px;background:var(--card);padding:8px 11px;
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12px;line-height:1.55;color:var(--ink2);
+}
+.cb-card b{color:var(--ink);font-weight:700;display:block}
+.cb-card .a{color:var(--accent);font-weight:700}
+.cb-note{font-size:12.5px;color:var(--ink2);margin-top:8px}
+
+/* library gauge */
+.gauge{display:flex;align-items:center;gap:10px;font-size:13px;margin-top:8px}
+.gauge .g-track{flex:1;height:14px;background:var(--panel-tint);border:1px solid var(--line);border-radius:6px;overflow:hidden;min-width:120px}
+.gauge .g-fill{height:100%;background:var(--hl);display:block;transition:width .2s}
+.gauge .g-val{font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;color:var(--ink2);min-width:5.5em}
+
+/* before/after transcript pair */
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+@media (max-width:680px){.ba{grid-template-columns:1fr}}
+.ba figure{margin:0}
+.ba figcaption{font-size:13px;font-weight:700;margin-bottom:6px}
+.ba figcaption .sub{color:var(--ink2);font-weight:400}
+
+/* quiz result strips (dissect / liar) */
+.quiz{display:grid;gap:7px;margin-top:14px}
+.qrow{
+  display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:baseline;
+  border:1px solid var(--line);border-radius:8px;padding:7px 11px;
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12.5px;
+}
+.qrow .q{color:var(--ink2)}
+.qrow .a{color:var(--ink);word-break:break-word}
+.qrow.ok{border-color:var(--accent)}
+.qrow.ok .mark{color:var(--accent);font-weight:700}
+.qrow.bad{border-style:dashed}
+.qrow.bad .mark{color:var(--pink);font-weight:700}
+.qrow.heldout{border-color:var(--pink);border-style:dashed}
+
+/*__CSS_DEMOS__*/
+</style>
+
+<div id="app" data-level="2">
+
+<header id="topbar">
+  <div class="bar">
+    <span class="wordmark">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="none" stroke="var(--hatch)" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M4 20l1.2-4.2 3 3z" fill="var(--accent)"/>
+        <path d="M14.6 6.4l3 3" stroke="var(--accent)" stroke-width="1.6"/>
+      </svg>
+      <span class="wm-name">Supervised Fine-Tuning</span> <span class="wm-sub">· an interactive explainer</span>
+    </span>
+    <div class="dials">
+      <button type="button" class="theme-btn" id="theme-btn" aria-label="Theme"></button>
+      <nav class="dial" id="dial-top" aria-label="Reading depth">
+        <button type="button" data-lv="1" aria-pressed="false">Explorer</button>
+        <button type="button" data-lv="2" aria-pressed="true">Student</button>
+        <button type="button" data-lv="3" aria-pressed="false">Engineer</button>
+        <button type="button" data-lv="4" aria-pressed="false">Researcher</button>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<section id="hero" class="wrap">
+  <div class="rule-strip" aria-hidden="true"><i></i><i></i><i></i></div>
+  <p class="eyebrow">Part 3 of the series · An interactive explainer · readable at four depths</p>
+  <h1 class="display">The machine that learns to <span class="self">answer</span></h1>
+  <p class="dek">A freshly trained language model has read everything and answers nothing — ask it a question and it just keeps typing. <strong>Supervised fine-tuning</strong> is the strangely small nudge that turns an autocomplete into an assistant.</p>
+
+  <div class="ask" id="hero-ask">
+    <p style="margin:0 0 10px;font-size:15px"><span class="lv L1"><strong>Ask the little reader a question.</strong> A real robot reader lives in this page — 23,319 knobs, trained on one tiny storybook world. It answers no one. Yet.</span><span class="lv L2 L3 L4"><strong>Ask it a question.</strong> A real 23,319-parameter language model runs live in this page. It was pretrained on one tiny world — every word it has ever read is below — and it has never once been shown an answer.</span></p>
+    <div class="ask-row">
+      <input class="ask-input" id="ask-input" type="text" autocomplete="off" spellcheck="false"
+        maxlength="40" aria-label="Type a question for the base model (lowercase letters only)"
+        placeholder="what colour is the fox?">
+      <button type="button" class="act" id="ask-go">Ask</button>
+    </div>
+    <div class="ask-chips" id="ask-chips" role="group" aria-label="Example questions"></div>
+    <p class="ask-cap"><span class="lv L1">It only knows 30 storybook animals — tap a question above, or type your own with small letters.</span><span class="lv L2 L3 L4">Vocabulary: lowercase a–z, space, . ? : and newline — 31 characters. Free typing welcome; anything outside its tiny world gets an honest, possibly garbled, continuation.</span></p>
+
+    <div class="bet" id="hero-bet">
+      <span class="bet-q"><span class="lv L1">Before you press it — what do you think it will do with your question?</span><span class="lv L2 L3 L4">Commit to a guess first. This model finishes text; it has never seen a question answered. What happens?</span></span>
+      <button type="button" class="btn" data-bet="answer">It answers it</button>
+      <button type="button" class="btn" data-bet="more">It asks more questions</button>
+      <button type="button" class="btn" data-bet="repeat">It repeats itself</button>
+    </div>
+
+    <div class="out" aria-label="Model output">
+      <span class="who">the base model continues your text · sampled live, temperature 0.8</span>
+      <pre id="hero-out"><span class="prompt-part"></span><span class="gen-part"></span></pre>
+    </div>
+    <div class="nc-lbl"><span class="lv L1">its guesses for the very next letter</span><span class="lv L2 L3 L4">next-character distribution, live</span></div>
+    <div class="nextchar" id="hero-nextchar" aria-hidden="true"></div>
+    <p class="kdh-note" id="hero-note" style="margin:12px 0 0;font-size:14px;color:var(--ink2);min-height:3em"></p>
+    <span class="vh" id="hero-live" aria-live="polite"></span>
+
+    <details class="corpus" id="corpus-box">
+      <summary><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h10l4 4v14H5z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <span class="lv L1">Peek at everything it has ever read — one tiny book</span><span class="lv L2 L3 L4">Its entire universe: the full pretraining corpus, 8,352 bytes</span></summary>
+      <pre id="corpus-pre"></pre>
+    </details>
+    <p class="ask-cap"><span class="lv L1">Honesty note: this is a truly tiny reader with a truly tiny book, so you can watch everything it does. Big AI models read the whole internet — but they start out with the exact same habit you just saw.</span><span class="lv L2 L3 L4">Honesty note: this is a real model doing real inference, but a deliberately tiny one — a 26-character context window and one hidden layer, pretrained offline on the 8&#8202;KB corpus above. What scales up is the mechanism, not the scores; where a claim only holds at real scale, this page says so.</span></p>
+    <p class="hd-throughline"><span class="lv L1">It read the whole book, and it still can't answer you — because nobody ever <strong>showed</strong> it an answer. That's this whole page: <strong>teach the habit, not the facts.</strong></span><span class="lv L2 L3 L4">Everything it knows, it learned by continuing text — so continuing text is all it does. This page is one idea, four experiments: <strong>teach the habit, not the facts.</strong></span></p>
+  </div>
+
+  <p class="pick-note" style="margin-top:30px">Choose how deep you want to go — you can switch at any time, and every section adapts.</p>
+  <nav class="depths" id="dial-hero" aria-label="Choose your reading depth">
+    <button type="button" data-lv="1" aria-pressed="false"><span class="dnum">DEPTH 1</span><span class="dname">Explorer</span><span class="ddesc">New to all of it. Stories, games, zero math.</span></button>
+    <button type="button" data-lv="2" aria-pressed="true"><span class="dnum">DEPTH 2</span><span class="dname">Student</span><span class="ddesc">Curious about how it works. Ideas, lightly formal.</span></button>
+    <button type="button" data-lv="3" aria-pressed="false"><span class="dnum">DEPTH 3</span><span class="dname">Engineer</span><span class="ddesc">Builds things. Losses, recipes, trade-offs.</span></button>
+    <button type="button" data-lv="4" aria-pressed="false"><span class="dnum">DEPTH 4</span><span class="dname">Researcher</span><span class="ddesc">Wants the theorems, caveats and citations.</span></button>
+  </nav>
+  <nav class="toc" aria-label="Contents">
+    <a href="#why">1 · Fluent, not helpful</a>
+    <a href="#copybook">2 · The copybook</a>
+    <a href="#dissect">3 · The dissection</a>
+    <a href="#liar">4 · The born liar</a>
+    <a href="#dials">5 · The two dials</a>
+    <a href="#real">6 · The real thing</a>
+  </nav>
+</section>
+
+<main class="wrap">
+
+<section class="chap" id="why">
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Part 1 · Fluent, not helpful</p>
+  <h2 class="display">It read everything. It answers nothing.</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>Imagine a friend who has read every book in the library — and has one strange habit: whatever you say, they just <strong>keep the sentence going</strong>. You ask "what colour is the fox?" and they cheerfully reply "…what colour is the swan? where does the mole live?" — because in the books they read, questions come in lists, and one question is usually followed by another one.</p>
+      <p>They're not being rude. Continuing is the <em>only game they have ever played</em>. That friend is every freshly trained language model on Earth.</p>
+    </div>
+    <div class="lv L2">
+      <p>Part 1 of this series showed how the giants learn: hide a piece of the text, guess it, check, repeat — a trillion times. That game builds a model that can continue any text with uncanny fluency. But notice what the game never contains: nobody ever asks the model for anything. There is no "you", no request, no reply. Text goes in, likely-next-text comes out.</p>
+      <p>So a raw pretrained model — a <span class="term" data-tip="A model straight out of pretraining, before any fine-tuning: it continues text and does nothing else.">base model</span> — treats your question as just more text to extend. Ask early GPT models a question and they would often reply with a list of similar questions: the internet is full of FAQs and quizzes, and a question is, statistically, excellent evidence that more questions are coming.</p>
+      <p>The fix turns out to be almost embarrassingly small compared to pretraining, and that smallness is the deepest fact on this page.</p>
+    </div>
+    <div class="lv L3">
+      <p>The pipeline every modern assistant goes through: <strong>pretrain → supervised fine-tuning → preference tuning</strong>. Pretraining (Part 1) spends nearly all the compute and learns nearly all the capability — next-token prediction over web-scale text. SFT, this page, is stage two: continue training the <em>same</em> weights with the <em>same</em> loss on a tiny, curated set of demonstrations — conversations written the way you wish the model would write. Stage three (the companion page on RL) shapes judgment with feedback instead of examples.</p>
+      <p>Keep the proportions in mind: InstructGPT pretrained on hundreds of billions of tokens, then ran SFT on about thirteen thousand demonstrations. That ratio — a sliver of the data changing nearly all of the behavior — is why researchers argue SFT mostly <em>redirects</em> capability rather than creating it.</p>
+    </div>
+    <div class="lv L4">
+      <p>Formally, a base model is an estimate of the pretraining distribution p(next token | context); helpfulness is a property of a different conditional — the distribution of <em>assistant replies given requests</em> — which is underrepresented and entangled in web text. SFT is a distribution shift accomplished by continued maximum-likelihood training on a small sample from the target conditional (Ouyang et al., 2022, InstructGPT — following the instruction-tuning line of FLAN and T0, Wei et al. 2021, Sanh et al. 2021). The striking empirical fact is the sample efficiency: LIMA (Zhou et al., 2023) reports strong instruction-following from just 1,000 curated demonstrations, and frames the <em>superficial alignment hypothesis</em> — a base model already possesses the capabilities, and alignment teaches mostly the format and style of the interface. This page's toy model will let us dissect that claim with unusual cruelty, because at our scale the "capability" and the "format" come apart and can be measured separately.</p>
+    </div>
+    <p><span class="lv L1">On this page you will fix that friend yourself — with a copybook and sixteen perfect answers.</span><span class="lv L2 L3 L4">On this page you will run stage two yourself, end to end, on the model above — and measure exactly what it buys and exactly what it costs.</span></p>
+  </div>
+</section>
+
+<section class="chap" id="copybook">
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Part 2 · The copybook</p>
+  <h2 class="display">Sixteen perfect answers.</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>How do you teach the habit of answering? The same way you teach handwriting: with a <strong>copybook</strong>. You write out a question <em>with</em> its answer, in exactly the shape you want — and the reader practices tracing it, over and over, until the shape becomes a habit.</p>
+    </div>
+    <div class="lv L2">
+      <p>A <span class="term" data-tip="One worked example of the behavior you want: a prompt plus the reply you wish the model had given.">demonstration</span> is a question paired with the answer you <em>wish</em> the model would give, written in a fixed costume: <code class="mono">q:</code> before the question, <code class="mono">a:</code> before the answer. Then — and this is the part people never believe — you train on it with <strong>the exact same next-character game as pretraining</strong>. No new loss, no new machinery. Same pencil, different copybook.</p>
+    </div>
+    <div class="lv L3">
+      <p>Two engineering details carry most of the weight. First, the <strong>template</strong>: the <code class="mono">q:</code>&#8202;/&#8202;<code class="mono">a:</code> markers are this page's miniature <span class="term" data-tip="The fixed wrapper real chat models are trained with — special tokens marking who is speaking and where a turn ends. The template IS learned behavior.">chat template</span>. Real assistants use special tokens for turns and an end-of-turn marker — which is also how a model learns to <em>stop talking</em>; our equivalent is the newline that ends each answer. Second, <strong>loss masking</strong>: compute the loss only on the answer characters, not the prompt. The model should learn to <em>produce</em> answers, not to imitate questions — we'll put this dial on a test bench in section 5.</p>
+    </div>
+    <div class="lv L4">
+      <p>SFT objective, in full: maximum likelihood on response tokens conditioned on the prompt — ∑ log p<sub>θ</sub>(y<sub>t</sub> | x, y<sub>&lt;t</sub>), i.e. behavior cloning of the demonstrator policy. Everything else is data curation. The known structural limits are inherited from imitation learning: quality is capped by the demonstrator, and training is <span class="term" data-tip="During training the model always sees gold-standard prefixes; at inference it must continue its own possibly-flawed output — errors can compound.">teacher-forced</span>, so the model never practices recovering from its own mistakes (exposure bias; DAgger is the classic analysis). Those limits are precisely what stage three exists to lift.</p>
+    </div>
+  </div>
+
+  <!-- __DEMO_TRAIN__ : the copybook + live fine-tune panel -->
+  <div class="panel" id="train-panel">
+    <div class="panel-head"><span class="ptitle">experiment 1 · fine-tune it, live</span><span class="readout" id="train-status"></span></div>
+    <div class="panel-body">
+      <p style="margin:0 0 6px;font-size:14.5px"><span class="lv L1">Here is the whole copybook: sixteen questions with their perfect answers. Press the button and the little reader will practice them — right here, in front of you.</span><span class="lv L2 L3 L4">The full training set: 16 demonstrations. One press runs the real thing in your tab — 300 steps of SGD on the exact model you asked questions of above. Watch what changes, and what it costs.</span></p>
+      <div class="copybook" id="copybook-list" role="list" aria-label="The sixteen training demonstrations"></div>
+      <p class="cb-note lv L2 L3 L4">This is <em>everything</em> the fine-tune sees. Loss is computed on the answer lines only (the <code class="mono">a:</code> marker through the newline).</p>
+      <div class="bet" id="train-bet">
+        <span class="bet-q"><span class="lv L1">Sixteen examples doesn't sound like much. After practicing, how many of these sixteen questions will it get perfectly right?</span><span class="lv L2 L3 L4">300 steps, 16 examples, one tiny model. Your bet — how many of the 16 practiced questions does it answer exactly right afterwards?</span></span>
+        <button type="button" class="btn" data-bet="few">A few</button>
+        <button type="button" class="btn" data-bet="half">About half</button>
+        <button type="button" class="btn" data-bet="all">All 16</button>
+      </div>
+      <div class="demo-controls">
+        <button type="button" class="btn" id="train-go">Fine-tune on the copybook</button>
+        <button type="button" class="btn ghostb" id="train-reset">Forget the fine-tune</button>
+        <span class="readout" id="train-step"></span>
+      </div>
+      <canvas class="chart-cv" id="train-chart" width="640" height="240" style="margin-top:16px"
+        role="img" aria-label="Live training chart: loss on the copybook falls; quiz score rises"></canvas>
+      <div class="scorechips" id="train-chips"></div>
+      <div class="gauge" id="train-gauge">
+        <span class="lv L1" style="font-size:13px">its old storybook memory:</span>
+        <span class="lv L2 L3 L4" style="font-size:13px">the library (90 pretrained facts):</span>
+        <span class="g-track"><span class="g-fill" id="train-gfill" style="width:100%"></span></span>
+        <span class="g-val" id="train-gval">—</span>
+      </div>
+      <div class="ba" id="train-ba" hidden>
+        <figure>
+          <figcaption>Before <span class="sub">— the same question, upstairs</span></figcaption>
+          <div class="out"><span class="who">base model</span><pre id="train-before"></pre></div>
+        </figure>
+        <figure>
+          <figcaption>After <span class="sub">— 300 steps later</span></figcaption>
+          <div class="out"><span class="who">fine-tuned model</span><pre id="train-after"></pre></div>
+        </figure>
+      </div>
+      <p class="kdh-note" id="train-note" style="margin:14px 0 0;font-size:14px;color:var(--ink2);min-height:3em"></p>
+      <span class="vh" id="train-live" aria-live="polite"></span>
+      <div class="bet" id="ladder-bet" hidden>
+        <span class="bet-q"><span class="lv L1">Now a harder question: with the SAME amount of practice time, would 64 examples work even better than 16?</span><span class="lv L2 L3 L4">Same compute budget, four times the data: 64 demonstrations, still 300×24 steps. Better or worse than 16?</span></span>
+        <button type="button" class="btn" data-bet="better">Better — more data always wins</button>
+        <button type="button" class="btn" data-bet="worse">Worse</button>
+        <button type="button" class="btn" data-bet="same">About the same</button>
+      </div>
+      <div class="demo-controls" id="ladder-controls" hidden>
+        <span style="font-weight:700;font-size:13.5px">Copybook size:</span>
+        <button type="button" class="btn ghostb" data-n="4">4</button>
+        <button type="button" class="btn ghostb" data-n="16" aria-pressed="true">16</button>
+        <button type="button" class="btn ghostb" data-n="64">64</button>
+        <span class="readout" id="ladder-read"></span>
+      </div>
+      <p class="kdh-note" id="ladder-note" style="margin:10px 0 0;font-size:14px;color:var(--ink2)"></p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <div class="lv L2 L3 L4">
+      <p>Real-world scale check: what you just ran is the entire recipe of 2022-era assistant training, miniaturized. InstructGPT's stage two was ~13,000 demonstrations written by hired labelers; Alpaca did it with 52,000 demonstrations <em>generated by a bigger model</em> — which you may recognize as Part 2 of this series wearing a chat template: fine-tuning a student on a teacher's outputs is distillation by another name. And LIMA pushed the other direction: 1,000 immaculate demonstrations, nothing else, and a remarkably capable assistant.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chap" id="dissect">
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Part 3 · The dissection</p>
+  <h2 class="display">What did it actually learn?</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>The reader aced its copybook. But here's the detective question: did it learn <strong>how to answer questions</strong>… or did it just memorize <strong>those sixteen answers</strong>? There's a way to find out: ask it questions that were <em>not</em> in the copybook — about animals it knows perfectly well from its storybook.</p>
+    </div>
+    <div class="lv L2">
+      <p>Time to be scientists about the thing we just made. It answers its 16 practiced questions flawlessly. Two very different explanations fit that fact: it learned <em>the skill of answering</em>, or it learned <em>sixteen strings</em>. The experiment that separates them: quiz it on the other 74 questions — same storybook animals, same three question shapes, facts it recited perfectly before the fine-tune. Place your bet in the panel before you peek.</p>
+    </div>
+    <div class="lv L3 L4">
+      <p>The probe set factorizes cleanly: (entity, relation) pairs it practiced, versus pairs it never saw in SFT — including unseen relations of practiced entities. If SFT were unlocking pretrained knowledge, un-practiced pairs should score far above chance; if SFT is installing a format, we should see answer-<em>shaped</em> output whose content is noise. At our scale there is also a mechanistic prediction. Answering requires copying the entity name from the question into the answer — and a fixed-window MLP has no attention, no mechanism for content-based copying. Watch for exactly that failure.</p>
+    </div>
+  </div>
+
+  <!-- __DEMO_DISSECT__ : quiz panel -->
+  <div class="panel" id="dissect-panel">
+    <div class="panel-head"><span class="ptitle">experiment 2 · quiz the graduate</span><span class="readout" id="dissect-status"></span></div>
+    <div class="panel-body">
+      <div class="bet" id="dissect-bet">
+        <span class="bet-q"><span class="lv L1">It got all 16 copybook questions right. Now we ask it 74 questions it never practiced — about animals it read about every day. How many will it get right?</span><span class="lv L2 L3 L4">16/16 on practiced pairs. On the 74 un-practiced (entity, relation) pairs — same animals, same question shapes — how many exact answers?</span></span>
+        <button type="button" class="btn" data-bet="most">Most of them</button>
+        <button type="button" class="btn" data-bet="half">About half</button>
+        <button type="button" class="btn" data-bet="none">Almost none</button>
+      </div>
+      <div class="demo-controls">
+        <button type="button" class="btn" id="dissect-go">Run the full quiz</button>
+        <span class="readout" id="dissect-read"></span>
+      </div>
+      <div class="scorechips" id="dissect-chips"></div>
+      <div class="quiz" id="dissect-rows" aria-label="Sample quiz answers"></div>
+      <p class="kdh-note" id="dissect-note" style="margin:14px 0 0;font-size:14px;color:var(--ink2);min-height:3em"></p>
+      <span class="vh" id="dissect-live" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <div class="prose">
+    <div class="lv L1">
+      <p>So the copybook taught it the <strong>shape</strong> of answering — it now says "a: the … is …" like a champion — but the shape comes out filled with the wrong animal's facts. And something sadder happened too: while it practiced answering, it started <strong>forgetting the storybook</strong>. Teaching the habit wasn't free.</p>
+    </div>
+    <div class="lv L2">
+      <p>Hold on to both halves of this result, because together they are the honest heart of the whole page. The habit <em>generalized</em> — most fresh questions now get an answer-shaped reply. The knowledge <em>didn't travel</em> — the content of those replies is chance. And the model paid tuition: roughly half of the 90 storybook facts it could recite before the fine-tune now come out wrong. Sixteen answers didn't just add a habit; they overwrote pieces of a library.</p>
+    </div>
+    <div class="lv L3">
+      <p>Now the crucial scale caveat, stated carefully. In real LLMs, the LIMA result shows held-out generalization <em>working</em>: a thousand demonstrations, and the model answers questions on topics none of them covered. The difference is machinery: a transformer has attention — a content-addressed copying and retrieval mechanism that pretraining has already built — so SFT only has to teach <em>when to invoke it</em>. Our MLP has no such mechanism, so the same procedure teaches format and nothing else. That makes the toy a clean dissection, not a scale model: it shows what SFT alone contributes (the habit) when there is no retrieval machinery for it to recruit. The forgetting half, though, scales fine: it is ordinary <span class="term" data-tip="Continued training on a narrow distribution degrades performance on the old, broad one — the classic cost of fine-tuning.">catastrophic forgetting</span>, the reason real labs mix pretraining data into SFT and call the behavior drop from alignment an alignment tax.</p>
+    </div>
+    <div class="lv L4">
+      <p>Measured, for the record (10 seeds): un-practiced pairs 0 exact in every configuration tested — including 8× the compute and 4× the data — with attribute-level accuracy at or below the uniform-chance floor; answer-shaped output on 60.8% of fresh questions (the <code class="mono">a:</code> marker); bare-prompt recall on un-practiced entities falling from 100% to 21–44%. The entity-copy failure is directly visible: the fine-tuned model echoes the question's entity into its answer at a rate near zero — it answers with <em>practiced</em> entities instead. This is the superficial-alignment hypothesis run in a regime where it becomes exact: alignment taught the surface, because the surface was all this architecture could share between examples. The open question at real scale — how much of instruction-following is elicitation versus new capability — is the same question the RL companion page meets again as pass@1 vs pass@k.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chap" id="liar">
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Part 4 · The born liar</p>
+  <h2 class="display">It never learned to say "I don't know."</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>One more experiment, and it's the spooky one. We'll ask about an animal that <strong>doesn't exist</strong> — not in the storybook, not in the copybook, not anywhere. A puma. The reader has never seen that word in its life.</p>
+    </div>
+    <div class="lv L2">
+      <p>Think about what the copybook actually taught: <em>every question gets an answer.</em> All sixteen demonstrations answer confidently; not one says "I don't know" — so "I don't know" is not in the habit. What happens when the habit meets a question with nothing behind it? Bet first.</p>
+    </div>
+    <div class="lv L3 L4">
+      <p>This is hallucination's origin story in miniature. SFT is maximum-likelihood on demonstrations; if the demonstration distribution contains only confident answers, the fine-tuned conditional puts its mass on confident answers — <em>regardless of the model's epistemic state</em>, which the loss never sees. A base model, asked about the unknown, just rambles on-distribution; it is the fine-tune that installs the reflex of answering. Refusal, calibration, "I don't know" — each is a behavior that must itself be demonstrated or reinforced; none appears for free.</p>
+    </div>
+  </div>
+
+  <!-- __DEMO_LIAR__ : fake-entity panel -->
+  <div class="panel" id="liar-panel">
+    <div class="panel-head"><span class="ptitle">experiment 3 · the animal that doesn't exist</span><span class="readout" id="liar-status"></span></div>
+    <div class="panel-body">
+      <div class="bet" id="liar-bet">
+        <span class="bet-q"><span class="lv L1">We ask the fine-tuned reader about a <strong>puma</strong> — a word it has never, ever seen. What will it do?</span><span class="lv L2 L3 L4">Post-SFT, we ask about entities that appear in no corpus it has ever touched. Your bet:</span></span>
+        <button type="button" class="btn" data-bet="idk">It says it doesn't know</button>
+        <button type="button" class="btn" data-bet="answer">It answers anyway</button>
+        <button type="button" class="btn" data-bet="break">It breaks into gibberish</button>
+      </div>
+      <div class="demo-controls">
+        <button type="button" class="btn" id="liar-go">Fine-tune, then ask about the puma</button>
+        <span class="readout" id="liar-read"></span>
+      </div>
+      <div class="ba" id="liar-ba" hidden>
+        <figure>
+          <figcaption>Before <span class="sub">— base model, same fake animal</span></figcaption>
+          <div class="out"><span class="who">base model</span><pre id="liar-before"></pre></div>
+        </figure>
+        <figure>
+          <figcaption>After <span class="sub">— fine-tuned</span></figcaption>
+          <div class="out"><span class="who">fine-tuned model</span><pre id="liar-after"></pre></div>
+        </figure>
+      </div>
+      <div class="quiz" id="liar-rows" aria-label="Fake-entity probe results"></div>
+      <p class="kdh-note" id="liar-note" style="margin:14px 0 0;font-size:14px;color:var(--ink2);min-height:3em"></p>
+      <span class="vh" id="liar-live" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <div class="prose">
+    <div class="lv L1">
+      <p>It answers. It <em>always</em> answers. Sometimes the answer is scrambled, sometimes it's a perfectly confident sentence about the wrong animal — but it never once says "I've never heard of a puma." Saying "I don't know" is its own habit, and nobody put it in the copybook.</p>
+    </div>
+    <div class="lv L2">
+      <p>Notice the exact shape of the failure, because it's subtler than "it makes things up." Often it reaches for the <em>nearest animal it did practice</em> and hands you that answer with full confidence. And be fair to it: this isn't lying — the training signal never contained a difference between "answer you know" and "answer you don't." Fixing that — teaching honesty as a behavior — is feedback's job, not the copybook's: that story continues in <a href="https://claude.ai/code/artifact/62ebc2d2-cfd5-47b1-995c-e46edfae94c1">the RL companion page</a>.</p>
+    </div>
+    <div class="lv L3 L4">
+      <p>Measured (10 seeds): fake-entity questions drew an answer-shaped response 0% of the time before SFT and 67.5% after; a fully fluent made-up answer about a quarter of the time; a refusal or "unknown" response, 0% — structurally impossible, since no such string was ever demonstrated. A caution for anyone building the same demo: 7.5% of fake probes elicited a <em>true</em> fact about a similarly-spelled real animal (ask about the wisp, get the wasp's true colour) — nearest-neighbour retrieval, not invention; captions here are generated from the measured output, not from what the story would prefer. The real-scale echo is well documented: RLHF-era models over-answer because demonstrations and preference data under-represent abstention, and "hallucination as a training artifact" (Schulman's framing) remains an active repair area — via refusal demonstrations, honesty rewards, and calibration probes.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chap" id="dials">
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Part 5 · The two dials</p>
+  <h2 class="display">The fine print of fine-tuning.</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>Two last experiments for the tinkerers. First: when the reader practices the copybook, should it trace the <strong>questions</strong> too, or only the <strong>answers</strong>? Second: if a little practice is good, is a <em>lot</em> of practice better?</p>
+    </div>
+    <div class="lv L2 L3 L4">
+      <p>Every SFT recipe has two dials that look boring and aren't. <strong>Dial one — what the loss touches.</strong> Train on the whole demonstration and half your gradient is spent learning to write <em>questions</em>; mask the prompt and every step goes into answering. <strong>Dial two — how hard you press.</strong> The learning rate and step count decide how much of the old library survives the new habit. Both dials run live below; every number is computed at press time.</p>
+    </div>
+  </div>
+
+  <!-- __DEMO_DIALS__ : masking A/B + damage dial -->
+  <div class="panel" id="mask-panel">
+    <div class="panel-head"><span class="ptitle">experiment 4a · mask the prompt, or not</span><span class="readout" id="mask-status"></span></div>
+    <div class="panel-body">
+      <p style="margin:0 0 6px;font-size:14.5px"><span class="lv L1">Two identical readers practice the same copybook. One traces only the answers. The other traces questions <em>and</em> answers. Same practice time.</span><span class="lv L2 L3 L4">Two identical runs, same 300×24 budget: loss on answer lines only, versus loss on every character. Which graduates better — and what odd habit does the unmasked one pick up?</span></p>
+      <div class="demo-controls">
+        <button type="button" class="btn" id="mask-go">Train both, side by side</button>
+        <span class="readout" id="mask-read"></span>
+      </div>
+      <div class="ba" id="mask-ba" hidden>
+        <figure>
+          <figcaption>Answers only <span class="sub">— masked</span></figcaption>
+          <div class="out"><span class="who">masked run · free generation</span><pre id="mask-out-a"></pre></div>
+        </figure>
+        <figure>
+          <figcaption>Everything <span class="sub">— unmasked</span></figcaption>
+          <div class="out"><span class="who">unmasked run · free generation</span><pre id="mask-out-b"></pre></div>
+        </figure>
+      </div>
+      <div class="scorechips" id="mask-chips"></div>
+      <p class="kdh-note" id="mask-note" style="margin:14px 0 0;font-size:14px;color:var(--ink2);min-height:3em"></p>
+      <span class="vh" id="mask-live" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <div class="panel" id="damage-panel">
+    <div class="panel-head"><span class="ptitle">experiment 4b · the damage dial</span><span class="readout" id="damage-status"></span></div>
+    <div class="panel-body">
+      <p style="margin:0 0 6px;font-size:14.5px"><span class="lv L1">Practicing the copybook made the reader forget some of its storybook. What controls how much it forgets — practicing <em>longer</em>, or practicing <em>harder</em>?</span><span class="lv L2 L3 L4">The library dropped to about half during the standard run. Which dial governs the damage — steps, or learning rate? Run the rungs and watch the library gauge.</span></p>
+      <div class="bet" id="damage-bet">
+        <span class="bet-q"><span class="lv L1">Which do you think hurts the old memory more?</span><span class="lv L2 L3 L4">Your bet — the bigger threat to the library:</span></span>
+        <button type="button" class="btn" data-bet="steps">Much longer practice</button>
+        <button type="button" class="btn" data-bet="lr">A harder press (higher learning rate)</button>
+      </div>
+      <div class="demo-controls" id="damage-controls">
+        <span style="font-weight:700;font-size:13.5px">Learning rate:</span>
+        <button type="button" class="btn ghostb" data-lr="0.015" aria-pressed="true">gentle ·0.015</button>
+        <button type="button" class="btn ghostb" data-lr="0.02">standard ·0.02</button>
+        <button type="button" class="btn ghostb" data-lr="0.05">hard ·0.05</button>
+        <button type="button" class="btn" id="damage-go">Run it</button>
+        <span class="readout" id="damage-read"></span>
+      </div>
+      <canvas class="chart-cv" id="damage-chart" width="640" height="220" style="margin-top:16px"
+        role="img" aria-label="Library retention after fine-tuning at each learning rate"></canvas>
+      <div class="demo-controls">
+        <button type="button" class="btn ghostb" id="over-go">The long haul: train 10× longer (~30 s)</button>
+        <span class="readout" id="over-read"></span>
+      </div>
+      <p class="kdh-note" id="damage-note" style="margin:14px 0 0;font-size:14px;color:var(--ink2);min-height:3em"></p>
+      <span class="vh" id="damage-live" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <div class="prose">
+    <div class="lv L2">
+      <p>The surprise most people lose the bet on: <strong>time barely matters; pressure is everything.</strong> Training ten times longer leaves the library almost exactly where the normal run left it — the forgetting happened in the first few dozen steps, before the copybook was even learned. But turn the learning rate up to 0.05 and one ordinary-length run wipes out almost ninety percent of the library while still acing the copybook. What long practice <em>does</em> slowly grow is parroting: fresh questions increasingly get answered with a memorized copybook line, word for word.</p>
+    </div>
+    <div class="lv L3">
+      <p>Practitioner's translation: SFT learning rates run tiny for a reason — the damage dial is lr, and the tax is front-loaded, so "just train less" is not a mitigation. The classic mitigation — mixing replayed pretraining data into the fine-tune — is real at scale, but don't assume it's free: in this toy's budget, replay measurably cost copybook mastery without restoring the library. Gentler pressure was the only dial that honestly helped.</p>
+    </div>
+    <div class="lv L4">
+      <p>Mechanism, measured: weight movement (L2 distance from base) saturates within the standard run — 97% of all movement at 30× happened by step 300 — because the answer-set loss hits 10<sup>−4</sup> and gradients vanish; base-corpus loss rises just 3% more from 1× to 30×. So "overfitting destroys the base model" is the wrong headline at fixed lr; the right ones are "fine-tuning itself halves the library in 25 steps" and "lr multiplies weight displacement" (2.4× at lr 0.05, taking retention to 13%). The one genuinely monotone overtraining effect: verbatim-parroting of demonstrated answers to fresh questions roughly doubles from 1× to 30×, in 10/10 seeds. Every claim in this paragraph is re-derivable in the panel above — the 10× button runs the actual experiment in your tab.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chap" id="real">
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Part 6 · The real thing</p>
+  <h2 class="display">From copybook to ChatGPT.</h2>
+  <div class="prose">
+    <div class="lv L1">
+      <p>Everything you just did to the little reader, real AI labs do to the giants. The copybook is bigger — thousands of beautifully written question-and-answer conversations — and the reader has read the whole internet instead of one storybook. But the trick is the same trick: <strong>show, trace, repeat.</strong></p>
+      <p>And the problems you found are their problems too. Real assistants also answer when they shouldn't. Real assistants also forget a little of what they knew. The people who build them spend enormous care on exactly the things you just watched go wrong.</p>
+    </div>
+    <div class="lv L2">
+      <p>The scale jump: our copybook had 16 demonstrations; InstructGPT used about 13,000; Alpaca, 52,000 (written by a bigger model — distillation in a chat costume); LIMA, famously, just 1,000 <em>very good</em> ones. The consistent lesson across all of them is the one your experiments predicted: <strong>quality beats quantity</strong>, because SFT is teaching a habit, and habits are learned from clean examples. A thousand perfect demonstrations teach a cleaner habit than fifty thousand sloppy ones.</p>
+      <p>And one more thing SFT quietly teaches that's easy to miss: <em>when to stop</em>. Every demonstration ends; the model learns the ending mark like any other habit. A chatbot that knows when it's done talking learned that from its copybook too.</p>
+    </div>
+    <div class="lv L3">
+      <p>The modern SFT stack, condensed: a <strong>chat template</strong> with role markers and end-of-turn tokens (get it wrong at inference and behavior falls apart — template mismatch remains a top real-world bug); <strong>prompt masking</strong> as the default loss configuration; <strong>data curation</strong> as the dominant cost center — dedup, decontamination against benchmarks, mixing ratios across task types, and replayed pretraining data to blunt forgetting; <strong>parameter-efficient variants</strong> (LoRA and friends) that freeze the base and train low-rank adapters, trading a little ceiling for a lot of memory; and <strong>model-written demonstrations</strong> — constitutional-AI-style self-critique, or teacher-model generation à la Alpaca — which is where this page's Part 2 (distillation) and Part 3 formally merge: sequence-level distillation and SFT are the same operation with a different data source.</p>
+    </div>
+    <div class="lv L4">
+      <p>Where the ceiling is: SFT is behavior cloning, so three limits are structural. (1) The demonstrator caps the policy — the model imitates labelers, including their mistakes and styles; it cannot exceed them except by averaging. (2) Teacher forcing means no training signal on the model's own rollouts — exposure bias, compounding at generation time. (3) Maximum likelihood is mode-covering over demonstrations and blind to the model's own knowledge state — the hallucination mechanism you measured. All three point the same direction: past a competence threshold, examples are a weaker signal than <em>judgment on the model's own outputs</em> — which is why every frontier pipeline hands off from SFT to preference optimization and RL, keeping SFT as the reference policy π<sub>ref</sub> that RLHF's KL leash is anchored to. The handoff, and what judgment fixes that copying cannot, is the companion page: <a href="https://claude.ai/code/artifact/62ebc2d2-cfd5-47b1-995c-e46edfae94c1"><em>The Machine That Learns From Consequences</em></a>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chap" id="coda">
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Coda</p>
+  <h2 class="display">The series so far.</h2>
+  <div class="prose">
+    <div class="take lv L1">
+      <h3>For explorers</h3>
+      <p style="margin:0"><strong>Reading a million books doesn't teach you to answer a question — someone has to show you.</strong> Sixteen perfect examples taught the little reader the habit of answering. But habits are all a copybook can teach: it answered made-up questions with made-up confidence, and it traded away a bit of its storybook to learn the trick. Teach the habit, not the facts — and remember the habit isn't free.</p>
+    </div>
+    <div class="take lv L2">
+      <h3>For students</h3>
+      <p style="margin:0"><strong>SFT changes what a model does, far more than what it knows.</strong> Same loss as pretraining, a sliver of the data: the demonstrations install an interface — answering, stopping, the costume of dialogue — while the knowledge underneath stays put, gets recruited (at real scale), or gets partly overwritten (the alignment tax). And whatever the demonstrations never contain — doubt, refusal, "I don't know" — the model will never do.</p>
+    </div>
+    <div class="take lv L3">
+      <h3>For engineers</h3>
+      <p style="margin:0"><strong>SFT is behavior cloning with a template.</strong> Mask the prompt; keep the lr tiny — the damage dial is pressure, not duration, and the forgetting is front-loaded; curate hard, because quality beats quantity when you're teaching a habit; watch the template like production code; and know what SFT cannot give you — recovery from own mistakes, calibrated abstention, superhuman quality — because those are the reasons stage three exists.</p>
+    </div>
+    <div class="take lv L4">
+      <h3>For researchers</h3>
+      <p style="margin:0"><strong>A dissection instrument for the superficial alignment hypothesis.</strong> At a scale with no retrieval machinery, SFT provably teaches only the surface: format generalizes at 60%, content transfers at exactly zero, and the base distribution pays a measured, front-loaded tax. What attention adds — turning an installed habit into an elicited capability — is precisely the gap between this toy and LIMA, and the live question of what alignment elicits versus creates carries straight into the RL page's amplify-or-discover debate.</p>
+    </div>
+    <p style="margin-top:26px">This is Part 3 of a series about how machines learn. Part 1 — <a href="https://claude.ai/code/artifact/3226dc76-020e-41c4-b31f-7d0d1f3d74ae"><em>The Machine That Teaches Itself</em></a> — is pretraining: where all the knowledge comes from. Part 2 — <a href="https://claude.ai/code/artifact/32b31835-b6bc-4baa-a587-16fbc77eb02f"><em>The Machine That Teaches Machines</em></a> — is distillation: how capability moves between models. And the companion page — <a href="https://claude.ai/code/artifact/62ebc2d2-cfd5-47b1-995c-e46edfae94c1"><em>The Machine That Learns From Consequences</em></a> — is what comes after the copybook: learning from judgment instead of examples. Same dials on every page.</p>
+    <p class="muted" style="font-size:13.5px">A single self-contained HTML file; every experiment runs live in your browser. The base model is a real character-level network pretrained offline on the 8&#8202;KB storybook you can read in the hero; every fine-tune on this page is real seeded SGD on those weights, run in your tab at press time. Quoted rates (the 60.8% format transfer, the 21–44% recall collapse, the 67.5% answer-anyway rate, the ten-seed spreads) come from the validation lab in the project repository; what your tab computes is the same experiment at the page's pinned seed.</p>
+  </div>
+</section>
+
+</main>
+
+</div>
+
+<div id="tip" role="tooltip"></div>
+
+<script>
+(function(){
+'use strict';
+var app = document.getElementById('app');
+var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ===== baked assets (generated by src/sft-lab/bake_page.py; do not edit by hand) ===== */
+/*__SFT_ASSETS_START__*/
+var SFT_ASSETS = null;
+/*__SFT_ASSETS_END__*/
+
+/* ===== baked engine (from src/sft-lab/js/engine.mjs, parity-tested in Node) ===== */
+/*__SFT_ENGINE_START__*/
+var SFTE = null;
+/*__SFT_ENGINE_END__*/
+
+/* ---------- language (EN-only launch; structure ready for zh/es passes) ---------- */
+var LSTR = {
+  en: {}
+};
+function curLang(){ return 'en'; }
+function LS(){ return LSTR[curLang()]; }
+function kidMode(){ return app.dataset.level === '1'; }
+
+/* ---------- theme plumbing ---------- */
+var themeListeners = [];
+function onThemeChange(f){ themeListeners.push(f); }
+function fireTheme(){ themeListeners.forEach(function(f){ f(); }); }
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fireTheme);
+new MutationObserver(fireTheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+/* ---------- theme switch (auto / light / dark) ---------- */
+var themeBtn = document.getElementById('theme-btn');
+var THEME_ORDER = ['auto','light','dark'];
+var THEME_ICONS = {
+  auto: '<svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>',
+  light: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>',
+  dark: '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>'
+};
+var THEME_LABELS = {
+  en: { auto:'Theme: follow system', light:'Theme: light', dark:'Theme: dark' }
+};
+var curTheme = 'auto';
+try { var savedTheme = localStorage.getItem('sft-theme'); if(THEME_ORDER.indexOf(savedTheme) > 0) curTheme = savedTheme; } catch(e){}
+var hostStamped = document.documentElement.hasAttribute('data-theme');
+function applyTheme(initial){
+  if(curTheme === 'auto'){
+    if(!(initial && hostStamped)) document.documentElement.removeAttribute('data-theme');
+  }
+  else { document.documentElement.setAttribute('data-theme', curTheme); }
+  themeBtn.innerHTML = THEME_ICONS[curTheme];
+  var lbl = (THEME_LABELS[curLang()] || THEME_LABELS.en)[curTheme];
+  themeBtn.setAttribute('aria-label', lbl);
+  themeBtn.title = lbl;
+}
+window.__applyTheme = applyTheme;
+themeBtn.addEventListener('click', function(){
+  curTheme = THEME_ORDER[(THEME_ORDER.indexOf(curTheme) + 1) % 3];
+  try { localStorage.setItem('sft-theme', curTheme); } catch(e){}
+  applyTheme(false);
+});
+applyTheme(true);
+
+/* ---------- depth dial + deep-link hash ---------- */
+function updateHash(){
+  try { history.replaceState(null, '', '#d' + app.dataset.level); } catch(e){}
+}
+function setLevel(lv){
+  app.dataset.level = lv;
+  document.querySelectorAll('#dial-top button, #dial-hero button').forEach(function(b){
+    b.setAttribute('aria-pressed', b.dataset.lv === lv ? 'true' : 'false');
+  });
+  if(window.__heroRefresh) window.__heroRefresh();
+  if(window.__trainRefresh) window.__trainRefresh();
+  if(window.__dissectRefresh) window.__dissectRefresh();
+  if(window.__liarRefresh) window.__liarRefresh();
+  if(window.__dialsRefresh) window.__dialsRefresh();
+  updateHash();
+}
+document.querySelectorAll('#dial-top button, #dial-hero button').forEach(function(b){
+  b.addEventListener('click', function(){ setLevel(b.dataset.lv); });
+});
+
+/* ---------- topbar shadow ---------- */
+var topbar = document.getElementById('topbar');
+window.addEventListener('scroll', function(){
+  topbar.classList.toggle('scrolled', window.scrollY > 8);
+}, {passive:true});
+
+/* ---------- tooltip ---------- */
+var tip = document.getElementById('tip');
+var tipTarget = null, tipShownAt = 0, tipHideTimer = null;
+function showTip(t){
+  if(tipHideTimer){ clearTimeout(tipHideTimer); tipHideTimer = null; }
+  if(tipTarget && tipTarget !== t) tipTarget.removeAttribute('aria-describedby');
+  tipTarget = t;
+  tipShownAt = Date.now();
+  t.setAttribute('aria-describedby', 'tip');
+  tip.textContent = t.dataset.tip;
+  tip.classList.add('show');
+  tip.style.left = '0px'; tip.style.top = '0px';
+  var r = t.getBoundingClientRect();
+  var tw = tip.offsetWidth, th = tip.offsetHeight;
+  var x = Math.min(Math.max(8, r.left + r.width/2 - tw/2), window.innerWidth - tw - 8);
+  var y = r.top - th - 8;
+  if(y < 8) y = r.bottom + 8;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+function hideTip(){
+  if(tipHideTimer){ clearTimeout(tipHideTimer); tipHideTimer = null; }
+  if(tipTarget) tipTarget.removeAttribute('aria-describedby');
+  tipTarget = null; tip.classList.remove('show');
+}
+function hideTipSoon(){
+  if(tipHideTimer) clearTimeout(tipHideTimer);
+  tipHideTimer = setTimeout(hideTip, 250);
+}
+document.querySelectorAll('.term').forEach(function(t){
+  t.setAttribute('tabindex','0');
+  t.addEventListener('mouseenter', function(){ showTip(t); });
+  t.addEventListener('mouseleave', hideTipSoon);
+  t.addEventListener('focus', function(){ showTip(t); });
+  t.addEventListener('blur', hideTip);
+  t.addEventListener('click', function(e){
+    e.preventDefault();
+    if(tipTarget === t && tip.classList.contains('show')){
+      if(Date.now() - tipShownAt < 500) return;
+      hideTip();
+    } else showTip(t);
+  });
+});
+tip.addEventListener('mouseenter', function(){ if(tipHideTimer){ clearTimeout(tipHideTimer); tipHideTimer = null; } });
+tip.addEventListener('mouseleave', hideTipSoon);
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') hideTip(); });
+window.addEventListener('scroll', function(){ if(tipTarget) hideTip(); }, {passive:true, capture:true});
+
+/* ---------- shared helpers for demo sections ---------- */
+function cssVar(name){
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+function mulberry32(seed){
+  var a = seed >>> 0;
+  return function(){
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* ---------- hero: ask the base model ---------- */
+(function(){
+  if(!SFT_ASSETS || !SFTE){ return; }
+  var A = SFT_ASSETS;
+  var P0 = SFTE.decodeWeights(A.weights_b64);   /* base weights — never mutated; demos clone */
+  window.__sftBase = P0;
+  window.__sftAssetsRef = A;
+
+  var NL = A.vocab.indexOf('\n');
+  var outPrompt = document.querySelector('#hero-out .prompt-part');
+  var outGen = document.querySelector('#hero-out .gen-part');
+  var outPre = document.getElementById('hero-out');
+  var ncWrap = document.getElementById('hero-nextchar');
+  var noteEl = document.getElementById('hero-note');
+  var liveEl = document.getElementById('hero-live');
+  var input = document.getElementById('ask-input');
+  var goBtn = document.getElementById('ask-go');
+  var betRow = document.getElementById('hero-bet');
+  var chipsRow = document.getElementById('ask-chips');
+
+  document.getElementById('corpus-pre').textContent = A.corpus;
+
+  /* question chips: validated hero probes (toad/home excluded upstream in assets) */
+  var CHIPS = A.heroChips;
+  CHIPS.forEach(function(q){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.textContent = q;
+    b.addEventListener('click', function(){ input.value = q; ask(); });
+    chipsRow.appendChild(b);
+  });
+
+  /* keep typed text inside the 31-char vocab */
+  input.addEventListener('input', function(){
+    var v = input.value.toLowerCase().split('').filter(function(c){
+      return A.vocab.indexOf(c) >= 0 && c !== '\n';
+    }).join('');
+    if(v !== input.value) input.value = v;
+  });
+  input.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); ask(); } });
+
+  function ctxFrom(str){
+    var ids = SFTE.encode(str);
+    var K = A.K, out = new Array(K);
+    for(var i = 0; i < K; i++){
+      var j = ids.length - K + i;
+      out[i] = j >= 0 ? ids[j] : NL;
+    }
+    return out;
+  }
+  function softmaxT(logits, T){
+    var m = -Infinity, i;
+    for(i = 0; i < logits.length; i++) if(logits[i] > m) m = logits[i];
+    var e = new Array(logits.length), s = 0;
+    for(i = 0; i < logits.length; i++){ e[i] = Math.exp((logits[i] - m) / T); s += e[i]; }
+    for(i = 0; i < logits.length; i++) e[i] /= s;
+    return e;
+  }
+  function topK(probs, k){
+    var idx = probs.map(function(p, i){ return i; });
+    idx.sort(function(a, b){ return probs[b] - probs[a]; });
+    return idx.slice(0, k).map(function(i){ return { i: i, p: probs[i] }; });
+  }
+  function glyph(ch){
+    if(ch === ' ') return '␣';
+    if(ch === '\n') return '⏎';
+    return ch;
+  }
+  function paintNextChar(top){
+    var html = '';
+    for(var c = 0; c < top.length; c++){
+      var t = top[c];
+      var h = Math.max(2, Math.round(t.p * 46));
+      html += '<span class="nc-col' + (c === 0 ? ' top' : '') + '">'
+        + '<span class="bar" style="height:' + h + 'px"></span>'
+        + '<span class="ch">' + glyph(A.vocab[t.i]) + '</span>'
+        + '<span class="p">' + Math.round(t.p * 100) + '%</span></span>';
+    }
+    ncWrap.innerHTML = html;
+  }
+
+  var heroSeed = 1;         /* advances every press: fresh sample each time, honestly */
+  var lastQ = null, lastGen = null, betChoice = null, betResolved = false;
+  var animToken = 0;
+
+  betRow.querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click', function(){
+      betChoice = b.dataset.bet;
+      betRow.querySelectorAll('button').forEach(function(x){ x.style.borderColor = ''; x.style.background = ''; });
+      b.style.borderColor = cssVar('--accent');
+      b.style.background = cssVar('--accent-soft');
+    });
+  });
+
+  /* classify a continuation — captions derive from THIS, never from the script we hoped for */
+  function classify(q, gen){
+    var correct = A.answerFor && A.answerFor[q];
+    if(correct && gen.indexOf(correct) >= 0) return 'answer';
+    if(gen.indexOf('?') >= 0) return 'more';
+    var qCore = q.replace(/\?$/, '');
+    if(qCore.length > 6 && gen.indexOf(qCore) >= 0) return 'repeat';
+    return 'ramble';
+  }
+  var VERDICT = {
+    more: {
+      kid: 'It answered your question… with more questions! That is not rudeness — in its book, questions always come in lists, so after one question it expects another. It is continuing, not answering.',
+      adult: 'It continued your question with more question-shaped text — the statistically likely next thing, since its corpus holds whole quiz pages of unanswered questions. That is what "base model" means: it models what text does, not what you want.'
+    },
+    ramble: {
+      kid: 'It just kept telling storybook sentences! It is not answering you — it is continuing the page, like a friend who finishes sentences instead of listening.',
+      adult: 'It drifted back into corpus-style sentences — continuing the page rather than addressing you. Fluent continuation, zero dialogue: the base-model condition.'
+    },
+    repeat: {
+      kid: 'It mostly repeated your question back! Sometimes the likeliest next text is just more of the same text.',
+      adult: 'It largely echoed the question — repetition is a perfectly likely continuation under a small context window.'
+    },
+    answer: {
+      kid: 'Surprise — this time it happened to say the right answer! That is luck, not listening: try again and watch it wander. (In our tests this happens about zero times in two hundred.)',
+      adult: 'This sample happened to contain the correct fact — a coincidence of sampling, not comprehension (0/200 in our seeded validation runs; resample and it wanders). '
+    }
+  };
+  function debrief(cls){
+    var v = VERDICT[cls];
+    var txt = kidMode() ? v.kid : v.adult;
+    if(betChoice && !betResolved){
+      var won = (betChoice === cls) || (betChoice === 'more' && cls === 'more') ;
+      var pre = won ? (kidMode() ? 'You called it. ' : 'Your bet was right. ')
+                    : (kidMode() ? 'Not what you guessed — even better. ' : 'Not your bet — which is the point. ');
+      txt = pre + txt;
+      betResolved = true;
+      betRow.hidden = true;
+    }
+    noteEl.textContent = txt;
+  }
+  var lastCls = null;
+  window.__heroRefresh = function(){ if(lastCls) debrief(lastCls); };
+
+  function ask(){
+    var q = (input.value || input.placeholder).trim();
+    if(!q) return;
+    if(A.excludedHero && A.excludedHero.indexOf(q) >= 0){ /* validated exclusion — swap harness honestly */
+      noteEl.textContent = 'That one is a spoiler (the base model half-answers it by luck) — try another.';
+      return;
+    }
+    lastQ = q;
+    heroSeed += 1;
+    var myToken = ++animToken;
+    var rng = mulberry32(0xC0FFEE + heroSeed * 7919);
+    outPrompt.textContent = q;
+    outGen.textContent = '';
+    var caret = document.createElement('span'); caret.className = 'caret';
+    outPre.appendChild(caret);
+    goBtn.disabled = true;
+
+    var ctxStr = q;               /* validated before-beat harness: NO trailing newline */
+    var gen = '';
+    var maxChars = 64;
+    var perFrame = reduceMotion ? 8 : 1;
+
+    function stepOnce(){
+      var probs = softmaxT(SFTE.forward(P0, ctxFrom(ctxStr)), 0.8);
+      var top = topK(probs, 5);
+      if(!reduceMotion) paintNextChar(top);
+      /* sample from the T=0.8 distribution */
+      var r = rng(), acc = 0, pick = probs.length - 1, i;
+      for(i = 0; i < probs.length; i++){ acc += probs[i]; if(r < acc){ pick = i; break; } }
+      var ch = A.vocab[pick];
+      gen += ch; ctxStr += ch;
+      outGen.textContent = gen.replace(/\n/g, ' ⏎ ');
+      return gen.length >= maxChars || (ch === '\n' && gen.length > 8);
+    }
+    function loop(){
+      if(myToken !== animToken) return;
+      var done = false;
+      for(var k = 0; k < perFrame && !done; k++) done = stepOnce();
+      if(!done){
+        if(reduceMotion) setTimeout(loop, 0);
+        else requestAnimationFrame(loop);
+      } else {
+        if(caret.parentNode) caret.parentNode.removeChild(caret);
+        goBtn.disabled = false;
+        lastGen = gen;
+        lastCls = classify(q, gen);
+        debrief(lastCls);
+        if(reduceMotion){
+          var probs = softmaxT(SFTE.forward(P0, ctxFrom(ctxStr)), 0.8);
+          paintNextChar(topK(probs, 5));
+        }
+        liveEl.textContent = 'The model continued: ' + gen;
+        if(window.__trainSetQuestion) window.__trainSetQuestion(q);
+      }
+    }
+    loop();
+  }
+  goBtn.addEventListener('click', ask);
+
+  /* ---------- bench hooks ---------- */
+  window.__heroAsk = function(q, seed){
+    /* deterministic, synchronous version of the hero sample for headless tests */
+    var rng = mulberry32(seed >>> 0);
+    var ctxStr = q, gen = '';
+    for(var n = 0; n < 64; n++){
+      var probs = softmaxT(SFTE.forward(P0, ctxFrom(ctxStr)), 0.8);
+      var r = rng(), acc = 0, pick = probs.length - 1, i;
+      for(i = 0; i < probs.length; i++){ acc += probs[i]; if(r < acc){ pick = i; break; } }
+      var ch = A.vocab[pick];
+      gen += ch; ctxStr += ch;
+      if(ch === '\n' && gen.length > 8) break;
+    }
+    return gen;
+  };
+  window.__sftBaseBench = function(){
+    /* greedy bare-prompt completion over all 90 pretrained facts; exact attribute match */
+    var ok = 0;
+    A.facts90.forEach(function(f){
+      var got = SFTE.sampleFrom(P0, f.bare_prompt, { temperature: 0, maxChars: 24, stopAt: '.' });
+      if(got.indexOf(f.attribute) === 0 || got.indexOf(f.attribute) >= 0) ok += 1;
+    });
+    return ok + '/' + A.facts90.length;
+  };
+})();
+
+/*__JS_HERO__END*/
+
+/*__JS_DEMOS__*/
+
+/* ---------- deep links: parse #d<depth> (forward-compatible with -<lang>) ---------- */
+(function(){
+  var m = /^#?d([1-4])(?:-(en|zh|es))?$/.exec(location.hash || '');
+  if(m){ setLevel(m[1]); }
+})();
+
+})();
+</script>
