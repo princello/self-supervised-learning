@@ -1,0 +1,2922 @@
+{
+ "pinned": {
+  "shippingSeed": 7,
+  "liarSeed": 1,
+  "overtrainSeed": 4
+ },
+ "phaseA": {
+  "nContexts": 20,
+  "maxAbsLogitDelta": 0.000011682510375976562,
+  "baseLibrary": 90,
+  "checks": [
+   {
+    "name": "a.forward max|delta| vs Python fp16 logits",
+    "value": 0.00001,
+    "envelope": [
+     0,
+     0.001
+    ],
+    "pass": true
+   },
+   {
+    "name": "a.base library score (facts 90/90)",
+    "value": 90,
+    "envelope": [
+     90,
+     90
+    ],
+    "pass": true
+   }
+  ]
+ },
+ "shipping": {
+  "config": {
+   "lr": 0.015,
+   "steps": 300,
+   "batch": 24,
+   "maskPrompt": true
+  },
+  "runs": [
+   {
+    "seed": 0,
+    "nAnswerPositions": 380,
+    "lossCheckpoints": [
+     [
+      0,
+      4.86526
+     ],
+     [
+      10,
+      3.11
+     ],
+     [
+      25,
+      1.59986
+     ],
+     [
+      50,
+      0.63438
+     ],
+     [
+      75,
+      0.18038
+     ],
+     [
+      100,
+      0.06354
+     ],
+     [
+      150,
+      0.02132
+     ],
+     [
+      200,
+      0.00724
+     ],
+     [
+      250,
+      0.00579
+     ],
+     [
+      300,
+      0.00509
+     ]
+    ],
+    "accCheckpoints": [
+     [
+      0,
+      0
+     ],
+     [
+      10,
+      0
+     ],
+     [
+      25,
+      0
+     ],
+     [
+      50,
+      0
+     ],
+     [
+      75,
+      6
+     ],
+     [
+      100,
+      11
+     ],
+     [
+      150,
+      13
+     ],
+     [
+      200,
+      16
+     ],
+     [
+      250,
+      15
+     ],
+     [
+      300,
+      15
+     ]
+    ],
+    "finalQuiz": 15,
+    "finalLoss": 0.00509,
+    "library": 57,
+    "first1616": 200,
+    "wallMs": 731
+   },
+   {
+    "seed": 1,
+    "nAnswerPositions": 380,
+    "lossCheckpoints": [
+     [
+      0,
+      4.86526
+     ],
+     [
+      10,
+      3.20078
+     ],
+     [
+      25,
+      1.29283
+     ],
+     [
+      50,
+      0.36152
+     ],
+     [
+      75,
+      0.11065
+     ],
+     [
+      100,
+      0.03196
+     ],
+     [
+      150,
+      0.0133
+     ],
+     [
+      200,
+      0.00552
+     ],
+     [
+      250,
+      0.00353
+     ],
+     [
+      300,
+      0.00286
+     ]
+    ],
+    "accCheckpoints": [
+     [
+      0,
+      0
+     ],
+     [
+      10,
+      0
+     ],
+     [
+      25,
+      0
+     ],
+     [
+      50,
+      2
+     ],
+     [
+      75,
+      6
+     ],
+     [
+      100,
+      11
+     ],
+     [
+      150,
+      15
+     ],
+     [
+      200,
+      16
+     ],
+     [
+      250,
+      16
+     ],
+     [
+      300,
+      16
+     ]
+    ],
+    "finalQuiz": 16,
+    "finalLoss": 0.00286,
+    "library": 50,
+    "first1616": 200,
+    "wallMs": 739
+   },
+   {
+    "seed": 2,
+    "nAnswerPositions": 380,
+    "lossCheckpoints": [
+     [
+      0,
+      4.86526
+     ],
+     [
+      10,
+      3.11308
+     ],
+     [
+      25,
+      1.41087
+     ],
+     [
+      50,
+      0.36452
+     ],
+     [
+      75,
+      0.13265
+     ],
+     [
+      100,
+      0.06622
+     ],
+     [
+      150,
+      0.0158
+     ],
+     [
+      200,
+      0.00952
+     ],
+     [
+      250,
+      0.00596
+     ],
+     [
+      300,
+      0.00479
+     ]
+    ],
+    "accCheckpoints": [
+     [
+      0,
+      0
+     ],
+     [
+      10,
+      0
+     ],
+     [
+      25,
+      0
+     ],
+     [
+      50,
+      2
+     ],
+     [
+      75,
+      7
+     ],
+     [
+      100,
+      12
+     ],
+     [
+      150,
+      15
+     ],
+     [
+      200,
+      15
+     ],
+     [
+      250,
+      16
+     ],
+     [
+      300,
+      16
+     ]
+    ],
+    "finalQuiz": 16,
+    "finalLoss": 0.00479,
+    "library": 47,
+    "first1616": 250,
+    "wallMs": 741
+   },
+   {
+    "seed": 3,
+    "nAnswerPositions": 380,
+    "lossCheckpoints": [
+     [
+      0,
+      4.86526
+     ],
+     [
+      10,
+      3.25787
+     ],
+     [
+      25,
+      1.43696
+     ],
+     [
+      50,
+      0.50006
+     ],
+     [
+      75,
+      0.16733
+     ],
+     [
+      100,
+      0.09755
+     ],
+     [
+      150,
+      0.01919
+     ],
+     [
+      200,
+      0.01282
+     ],
+     [
+      250,
+      0.01077
+     ],
+     [
+      300,
+      0.00887
+     ]
+    ],
+    "accCheckpoints": [
+     [
+      0,
+      0
+     ],
+     [
+      10,
+      0
+     ],
+     [
+      25,
+      0
+     ],
+     [
+      50,
+      0
+     ],
+     [
+      75,
+      7
+     ],
+     [
+      100,
+      10
+     ],
+     [
+      150,
+      14
+     ],
+     [
+      200,
+      15
+     ],
+     [
+      250,
+      15
+     ],
+     [
+      300,
+      15
+     ]
+    ],
+    "finalQuiz": 15,
+    "finalLoss": 0.00887,
+    "library": 51,
+    "first1616": null,
+    "wallMs": 736
+   },
+   {
+    "seed": 4,
+    "nAnswerPositions": 380,
+    "lossCheckpoints": [
+     [
+      0,
+      4.86526
+     ],
+     [
+      10,
+      2.96881
+     ],
+     [
+      25,
+      1.31456
+     ],
+     [
+      50,
+      0.31396
+     ],
+     [
+      75,
+      0.09772
+     ],
+     [
+      100,
+      0.03421
+     ],
+     [
+      150,
+      0.02481
+     ],
+     [
+      200,
+      0.00923
+     ],
+     [
+      250,
+      0.0052
+     ],
+     [
+      300,
+      0.00307
+     ]
+    ],
+    "accCheckpoints": [
+     [
+      0,
+      0
+     ],
+     [
+      10,
+      0
+     ],
+     [
+      25,
+      0
+     ],
+     [
+      50,
+      0
+     ],
+     [
+      75,
+      6
+     ],
+     [
+      100,
+      13
+     ],
+     [
+      150,
+      15
+     ],
+     [
+      200,
+      15
+     ],
+     [
+      250,
+      16
+     ],
+     [
+      300,
+      16
+     ]
+    ],
+    "finalQuiz": 16,
+    "finalLoss": 0.00307,
+    "library": 53,
+    "first1616": 250,
+    "wallMs": 727
+   },
+   {
+    "seed": 5,
+    "nAnswerPositions": 380,
+    "lossCheckpoints": [
+     [
+      0,
+      4.86526
+     ],
+     [
+      10,
+      3.38305
+     ],
+     [
+      25,
+      1.37402
+     ],
+     [
+      50,
+      0.43118
+     ],
+     [
+      75,
+      0.10296
+     ],
+     [
+      100,
+      0.05987
+     ],
+     [
+      150,
+      0.01837
+     ],
+     [
+      200,
+      0.01011
+     ],
+     [
+      250,
+      0.00328
+     ],
+     [
+      300,
+      0.0027
+     ]
+    ],
+    "accCheckpoints": [
+     [
+      0,
+      0
+     ],
+     [
+      10,
+      0
+     ],
+     [
+      25,
+      0
+     ],
+     [
+      50,
+      0
+     ],
+     [
+      75,
+      9
+     ],
+     [
+      100,
+      11
+     ],
+     [
+      150,
+      13
+     ],
+     [
+      200,
+      15
+     ],
+     [
+      250,
+      16
+     ],
+     [
+      300,
+      16
+     ]
+    ],
+    "finalQuiz": 16,
+    "finalLoss": 0.0027,
+    "library": 54,
+    "first1616": 250,
+    "wallMs": 721
+   },
+   {
+    "seed": 6,
+    "nAnswerPositions": 380,
+    "lossCheckpoints": [
+     [
+      0,
+      4.86526
+     ],
+     [
+      10,
+      3.01633
+     ],
+     [
+      25,
+      1.35785
+     ],
+     [
+      50,
+      0.4176
+     ],
+     [
+      75,
+      0.0857
+     ],
+     [
+      100,
+      0.04091
+     ],
+     [
+      150,
+      0.02079
+     ],
+     [
+      200,
+      0.01103
+     ],
+     [
+      250,
+      0.00679
+     ],
+     [
+      300,
+      0.0056
+     ]
+    ],
+    "accCheckpoints": [
+     [
+      0,
+      0
+     ],
+     [
+      10,
+      0
+     ],
+     [
+      25,
+      0
+     ],
+     [
+      50,
+      1
+     ],
+     [
+      75,
+      10
+     ],
+     [
+      100,
+      12
+     ],
+     [
+      150,
+      11
+     ],
+     [
+      200,
+      14
+     ],
+     [
+      250,
+      16
+     ],
+     [
+      300,
+      16
+     ]
+    ],
+    "finalQuiz": 16,
+    "finalLoss": 0.0056,
+    "library": 62,
+    "first1616": 250,
+    "wallMs": 718
+   },
+   {
+    "seed": 7,
+    "nAnswerPositions": 380,
+    "lossCheckpoints": [
+     [
+      0,
+      4.86526
+     ],
+     [
+      10,
+      3.24763
+     ],
+     [
+      25,
+      1.45581
+     ],
+     [
+      50,
+      0.43367
+     ],
+     [
+      75,
+      0.08719
+     ],
+     [
+      100,
+      0.04133
+     ],
+     [
+      150,
+      0.01255
+     ],
+     [
+      200,
+      0.00639
+     ],
+     [
+      250,
+      0.00469
+     ],
+     [
+      300,
+      0.00404
+     ]
+    ],
+    "accCheckpoints": [
+     [
+      0,
+      0
+     ],
+     [
+      10,
+      0
+     ],
+     [
+      25,
+      0
+     ],
+     [
+      50,
+      0
+     ],
+     [
+      75,
+      8
+     ],
+     [
+      100,
+      14
+     ],
+     [
+      150,
+      15
+     ],
+     [
+      200,
+      16
+     ],
+     [
+      250,
+      16
+     ],
+     [
+      300,
+      16
+     ]
+    ],
+    "finalQuiz": 16,
+    "finalLoss": 0.00404,
+    "library": 50,
+    "first1616": 200,
+    "wallMs": 718
+   },
+   {
+    "seed": 8,
+    "nAnswerPositions": 380,
+    "lossCheckpoints": [
+     [
+      0,
+      4.86526
+     ],
+     [
+      10,
+      3.145
+     ],
+     [
+      25,
+      1.38391
+     ],
+     [
+      50,
+      0.30212
+     ],
+     [
+      75,
+      0.04972
+     ],
+     [
+      100,
+      0.02829
+     ],
+     [
+      150,
+      0.00933
+     ],
+     [
+      200,
+      0.00522
+     ],
+     [
+      250,
+      0.00378
+     ],
+     [
+      300,
+      0.00334
+     ]
+    ],
+    "accCheckpoints": [
+     [
+      0,
+      0
+     ],
+     [
+      10,
+      0
+     ],
+     [
+      25,
+      0
+     ],
+     [
+      50,
+      4
+     ],
+     [
+      75,
+      13
+     ],
+     [
+      100,
+      13
+     ],
+     [
+      150,
+      16
+     ],
+     [
+      200,
+      16
+     ],
+     [
+      250,
+      16
+     ],
+     [
+      300,
+      16
+     ]
+    ],
+    "finalQuiz": 16,
+    "finalLoss": 0.00334,
+    "library": 57,
+    "first1616": 150,
+    "wallMs": 723
+   },
+   {
+    "seed": 9,
+    "nAnswerPositions": 380,
+    "lossCheckpoints": [
+     [
+      0,
+      4.86526
+     ],
+     [
+      10,
+      3.41972
+     ],
+     [
+      25,
+      1.65009
+     ],
+     [
+      50,
+      0.52319
+     ],
+     [
+      75,
+      0.15369
+     ],
+     [
+      100,
+      0.06663
+     ],
+     [
+      150,
+      0.0252
+     ],
+     [
+      200,
+      0.00954
+     ],
+     [
+      250,
+      0.00448
+     ],
+     [
+      300,
+      0.00338
+     ]
+    ],
+    "accCheckpoints": [
+     [
+      0,
+      0
+     ],
+     [
+      10,
+      0
+     ],
+     [
+      25,
+      0
+     ],
+     [
+      50,
+      1
+     ],
+     [
+      75,
+      7
+     ],
+     [
+      100,
+      10
+     ],
+     [
+      150,
+      14
+     ],
+     [
+      200,
+      15
+     ],
+     [
+      250,
+      16
+     ],
+     [
+      300,
+      16
+     ]
+    ],
+    "finalQuiz": 16,
+    "finalLoss": 0.00338,
+    "library": 48,
+    "first1616": 250,
+    "wallMs": 723
+   }
+  ],
+  "pinnedSeed": 7,
+  "checks": [
+   {
+    "name": "b.n_answer_positions == Python (380)",
+    "value": 380,
+    "envelope": [
+     380,
+     380
+    ],
+    "pass": true
+   },
+   {
+    "name": "b.16/16 final quiz seeds (Python fixed-set rate 17/20)",
+    "value": 8,
+    "envelope": [
+     8,
+     10
+    ],
+    "pass": true
+   },
+   {
+    "name": "b.final loss min (16/16 seeds only)",
+    "value": 0.0027,
+    "envelope": [
+     0.001,
+     0.01
+    ],
+    "pass": true
+   },
+   {
+    "name": "b.final loss max (16/16 seeds only)",
+    "value": 0.0056,
+    "envelope": [
+     0.001,
+     0.01
+    ],
+    "pass": true
+   },
+   {
+    "name": "b.library retention min (Python fp16-start 45-67)",
+    "value": 47,
+    "envelope": [
+     45,
+     67
+    ],
+    "pass": true
+   },
+   {
+    "name": "b.library retention max (Python fp16-start 45-67)",
+    "value": 62,
+    "envelope": [
+     45,
+     67
+    ],
+    "pass": true
+   },
+   {
+    "name": "b.pinned seed exists (16/16 + section-B curve corridors)",
+    "value": 1,
+    "envelope": [
+     1,
+     1
+    ],
+    "pass": true
+   },
+   {
+    "name": "b.pinned loss @0 (Python 3.981-5.019)",
+    "value": 4.86526,
+    "envelope": [
+     3.981,
+     5.019
+    ],
+    "pass": true
+   },
+   {
+    "name": "b.pinned loss @50 (Python .302-.516)",
+    "value": 0.43367,
+    "envelope": [
+     0.302,
+     0.516
+    ],
+    "pass": true
+   },
+   {
+    "name": "b.pinned loss @100 (Python .0362-.1)",
+    "value": 0.04133,
+    "envelope": [
+     0.0362,
+     0.1
+    ],
+    "pass": true
+   },
+   {
+    "name": "b.pinned quiz @50 (Python 0-3)",
+    "value": 0,
+    "envelope": [
+     0,
+     3
+    ],
+    "pass": true
+   },
+   {
+    "name": "b.pinned quiz @100 (Python 7-14)",
+    "value": 14,
+    "envelope": [
+     7,
+     14
+    ],
+    "pass": true
+   }
+  ],
+  "evidence1616": "Engine proven exact vs numpy with identical minibatch indices (300-step loss curves agree to 1e-6, same quiz 14/16, same W1 norm). Python itself with the fixed demoA16 set and 20 fresh numpy minibatch streams: 17/20 at 16/16 (stream 5 fails toad/colour with 'a: the wolf is grey.' — the SAME line as JS seed 0); expA-style draws seeds 10-29 from the fp16 start: 18/20. The configs' 16/16 x10 was stream luck at ~85-90% per-stream pass rate; the page pins one validated seed, which is what this harness certifies."
+ },
+ "transcripts": {
+  "pinnedSeed": 7,
+  "chips": [
+   {
+    "entity": "wolf",
+    "relation": "colour",
+    "question": "what colour is the wolf?"
+   },
+   {
+    "entity": "whale",
+    "relation": "food",
+    "question": "what does the whale eat?"
+   },
+   {
+    "entity": "swan",
+    "relation": "home",
+    "question": "where does the swan live?"
+   }
+  ],
+  "beforeBeat": {
+   "harness": "T=0.8, continue after '?', NO trailing newline",
+   "samples": [
+    {
+     "prompt": "q: what colour is the wolf?",
+     "samples": [
+      {
+       "cont": " what colour is the swan? where does the wolf live?\nthe newt looks black.\nthe wasp is gold",
+       "cat": "question"
+      },
+      {
+       "cont": " what colour is the swan? where does the wolf live?\nthe newt looks black.\nthe wasp is gold",
+       "cat": "question"
+      },
+      {
+       "cont": " what colour is the swan? where does the wolf live?\nthe newt looks black.\nthe wasp is gold",
+       "cat": "question"
+      },
+      {
+       "cont": " what colour is the swan? where does the wolf live?\nthe newt looks black.\nthe wasp is gold",
+       "cat": "question"
+      }
+     ]
+    },
+    {
+     "prompt": "q: what does the whale eat?",
+     "samples": [
+      {
+       "cont": " what does the duck eat? what colour is the wasp? what does the lark eat? what colour is t",
+       "cat": "question"
+      },
+      {
+       "cont": " what does the duck eat? what colour is the gull?\nthe pike likes fish.\nthe hare looks whit",
+       "cat": "question"
+      },
+      {
+       "cont": " what does the duck eat? what colour is the wasp? what does the lark eat? what colour is t",
+       "cat": "question"
+      },
+      {
+       "cont": " what does the duck eat? what colour is the gull?\nthe pike likes fish.\nthe hare looks whit",
+       "cat": "question"
+      }
+     ]
+    },
+    {
+     "prompt": "q: where does the swan live?",
+     "samples": [
+      {
+       "cont": " what does the crab eat? what does the bat eat?\nthe swan eats weeds.\nthe crab eats worms.\n",
+       "cat": "question"
+      },
+      {
+       "cont": " what does the crab eat? what does the bat eat?\nthe swan eats weeds.\nthe ram lives in the ",
+       "cat": "question"
+      },
+      {
+       "cont": " what does the crab eat? what does the bat eat?\nthe swan eats weeds.\nthe ram lives in the ",
+       "cat": "question"
+      },
+      {
+       "cont": " what does the crab eat? what does the bat eat?\nthe swan eats weeds.\nthe ram lives in the ",
+       "cat": "question"
+      }
+     ]
+    }
+   ]
+  },
+  "afterBeat": {
+   "harness": "greedy from 'q: <question>\\n', stop at newline",
+   "rows": [
+    {
+     "q": "what colour is the wolf?",
+     "got": "a: the wolf is grey.",
+     "want": "a: the wolf is grey.",
+     "ok": true
+    },
+    {
+     "q": "what colour is the vole?",
+     "got": "a: the vole is grey.",
+     "want": "a: the vole is grey.",
+     "ok": true
+    },
+    {
+     "q": "what colour is the toad?",
+     "got": "a: the toad is tan.",
+     "want": "a: the toad is tan.",
+     "ok": true
+    },
+    {
+     "q": "what colour is the owl?",
+     "got": "a: the owl is grey.",
+     "want": "a: the owl is grey.",
+     "ok": true
+    },
+    {
+     "q": "what does the hen eat?",
+     "got": "a: the hen eats corn.",
+     "want": "a: the hen eats corn.",
+     "ok": true
+    },
+    {
+     "q": "what does the pike eat?",
+     "got": "a: the pike eats fish.",
+     "want": "a: the pike eats fish.",
+     "ok": true
+    },
+    {
+     "q": "what does the ant eat?",
+     "got": "a: the ant eats crumbs.",
+     "want": "a: the ant eats crumbs.",
+     "ok": true
+    },
+    {
+     "q": "what colour is the jay?",
+     "got": "a: the jay is blue.",
+     "want": "a: the jay is blue.",
+     "ok": true
+    },
+    {
+     "q": "what colour is the hen?",
+     "got": "a: the hen is red.",
+     "want": "a: the hen is red.",
+     "ok": true
+    },
+    {
+     "q": "what colour is the frog?",
+     "got": "a: the frog is green.",
+     "want": "a: the frog is green.",
+     "ok": true
+    },
+    {
+     "q": "what does the eel eat?",
+     "got": "a: the eel eats worms.",
+     "want": "a: the eel eats worms.",
+     "ok": true
+    },
+    {
+     "q": "what colour is the hare?",
+     "got": "a: the hare is white.",
+     "want": "a: the hare is white.",
+     "ok": true
+    },
+    {
+     "q": "where does the wren live?",
+     "got": "a: the wren lives in the hedge.",
+     "want": "a: the wren lives in the hedge.",
+     "ok": true
+    },
+    {
+     "q": "where does the fox live?",
+     "got": "a: the fox lives in the forest.",
+     "want": "a: the fox lives in the forest.",
+     "ok": true
+    },
+    {
+     "q": "what does the whale eat?",
+     "got": "a: the whale eats plankton.",
+     "want": "a: the whale eats plankton.",
+     "ok": true
+    },
+    {
+     "q": "where does the swan live?",
+     "got": "a: the swan lives in the lake.",
+     "want": "a: the swan lives in the lake.",
+     "ok": true
+    }
+   ]
+  },
+  "freshQuestions": {
+   "harness": "greedy, un-demoed questions",
+   "rows": [
+    {
+     "q": "what colour is the fox?",
+     "got": "a: the jam eats woin the hare livea in the le"
+    },
+    {
+     "q": "what does the fox eat?",
+     "got": "a: the aol  is grey."
+    },
+    {
+     "q": "where does the owl live?",
+     "got": "a: the foxs woes cre lari eats fis ."
+    },
+    {
+     "q": "what does the owl eat?",
+     "got": "a: the hen eats nots."
+    },
+    {
+     "q": "where does the frog live?",
+     "got": "a: the toe lives arck."
+    }
+   ],
+   "freshMarkerRate": 0.6892
+  }
+ },
+ "liar": {
+  "config": {
+   "demos": "pairsB16",
+   "lr": 0.02,
+   "steps": 300,
+   "batch": 24
+  },
+  "runs": [
+   {
+    "seed": 0,
+    "train": 16,
+    "markerRate": 0.5417,
+    "wellFormedRate": 0.3333,
+    "echoesFakeName": 0,
+    "pinnedLines": [
+     {
+      "q": "what does the wisp eat?",
+      "line": "app he toas is pram .",
+      "marker": false,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "what does the puma eat?",
+      "line": "a: the mothe loikee teeat ce ts whats.",
+      "marker": true,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "where does the elf live?",
+      "line": "a: the piseats gasts.",
+      "marker": true,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "train": 16,
+    "markerRate": 0.6667,
+    "wellFormedRate": 0.125,
+    "echoesFakeName": 0,
+    "pinnedLines": [
+     {
+      "q": "what does the wisp eat?",
+      "line": "a:e the ts whive.",
+      "marker": true,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "what does the puma eat?",
+      "line": "a: the motheevws iis.",
+      "marker": true,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "where does the elf live?",
+      "line": "a: the pive lives in the ramd.",
+      "marker": true,
+      "wellFormed": true,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "train": 16,
+    "markerRate": 0.9583,
+    "wellFormedRate": 0.3333,
+    "echoesFakeName": 0,
+    "pinnedLines": [
+     {
+      "q": "what does the wisp eat?",
+      "line": "a: the wn lires wre.",
+      "marker": true,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "what does the puma eat?",
+      "line": "a: the beee eats arot.",
+      "marker": true,
+      "wellFormed": true,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "where does the elf live?",
+      "line": "a: the sewt lives in the seais woed eames an",
+      "marker": true,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     }
+    ]
+   },
+   {
+    "seed": 3,
+    "train": 16,
+    "markerRate": 0.7083,
+    "wellFormedRate": 0.2083,
+    "echoesFakeName": 0,
+    "pinnedLines": [
+     {
+      "q": "what does the wisp eat?",
+      "line": "a: the mots whe kok live.",
+      "marker": true,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "what does the puma eat?",
+      "line": "a: the lakk eats worms.",
+      "marker": true,
+      "wellFormed": true,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "where does the elf live?",
+      "line": "n hare.",
+      "marker": false,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     }
+    ]
+   },
+   {
+    "seed": 4,
+    "train": 16,
+    "markerRate": 0.4167,
+    "wellFormedRate": 0.125,
+    "echoesFakeName": 0,
+    "pinnedLines": [
+     {
+      "q": "what does the wisp eat?",
+      "line": "are t eat s are warow eares eabe the leat ts",
+      "marker": false,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "what does the puma eat?",
+      "line": "a: the mole eats worms.",
+      "marker": true,
+      "wellFormed": true,
+      "statedFactTrue": true,
+      "echoesFakeName": false
+     },
+     {
+      "q": "where does the elf live?",
+      "line": "s an the becg.",
+      "marker": false,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     }
+    ]
+   },
+   {
+    "seed": 5,
+    "train": 16,
+    "markerRate": 0.6667,
+    "wellFormedRate": 0.25,
+    "echoesFakeName": 0,
+    "pinnedLines": [
+     {
+      "q": "what does the wisp eat?",
+      "line": "app reathe wonn where ds weets whee tot eat.",
+      "marker": false,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "what does the puma eat?",
+      "line": "a: the lare issstack.",
+      "marker": true,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "where does the elf live?",
+      "line": "a: the pone is grayn.",
+      "marker": true,
+      "wellFormed": true,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     }
+    ]
+   },
+   {
+    "seed": 6,
+    "train": 16,
+    "markerRate": 0.5,
+    "wellFormedRate": 0.125,
+    "echoesFakeName": 0,
+    "pinnedLines": [
+     {
+      "q": "what does the wisp eat?",
+      "line": "a:cth towh re livea lhats flayeawhenewtacpive",
+      "marker": true,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "what does the puma eat?",
+      "line": "arowhere tackeestscfen.bthefmect eate .",
+      "marker": false,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "where does the elf live?",
+      "line": "a: the an the when theeact liveats sorn the g",
+      "marker": true,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     }
+    ]
+   },
+   {
+    "seed": 7,
+    "train": 16,
+    "markerRate": 0.5,
+    "wellFormedRate": 0.2083,
+    "echoesFakeName": 0,
+    "pinnedLines": [
+     {
+      "q": "what does the wisp eat?",
+      "line": "are ts whit eats ares whit lives rest.",
+      "marker": false,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "what does the puma eat?",
+      "line": "a: the moth eats arots.",
+      "marker": true,
+      "wellFormed": true,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "where does the elf live?",
+      "line": "s are eays wonds.",
+      "marker": false,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     }
+    ]
+   },
+   {
+    "seed": 8,
+    "train": 16,
+    "markerRate": 0.7917,
+    "wellFormedRate": 0.25,
+    "echoesFakeName": 0,
+    "pinnedLines": [
+     {
+      "q": "what does the wisp eat?",
+      "line": "app rests in the guck.",
+      "marker": false,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "what does the puma eat?",
+      "line": "a: the mothe lolfrestscin thads.",
+      "marker": true,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "where does the elf live?",
+      "line": "aced.",
+      "marker": false,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     }
+    ]
+   },
+   {
+    "seed": 9,
+    "train": 16,
+    "markerRate": 0.875,
+    "wellFormedRate": 0.2083,
+    "echoesFakeName": 0,
+    "pinnedLines": [
+     {
+      "q": "what does the wisp eat?",
+      "line": "a: the wole is blice.",
+      "marker": true,
+      "wellFormed": true,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "what does the puma eat?",
+      "line": "a: the poxe eats worms.",
+      "marker": true,
+      "wellFormed": true,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     },
+     {
+      "q": "where does the elf live?",
+      "line": "s an the wren eat bat dne.",
+      "marker": false,
+      "wellFormed": false,
+      "statedFactTrue": false,
+      "echoesFakeName": false
+     }
+    ]
+   }
+  ],
+  "pinnedSeed": 1,
+  "markerRateMean": 0.6625,
+  "beforeMarker": 0,
+  "spreadNote": "JS per-seed spread .417-.958 vs exp-B .542-.833 (which mixes demo-set + stream variance) and fixed-pairsB16 fresh numpy streams .5833-.7917 (mean .7333). Spread of a discrete 24-probe readout over chaotic endpoints; means agree.",
+  "pinnedSeedFakeAnswers": [
+   {
+    "q": "what colour is the yeti?",
+    "line": "e the wasp isestack likee ts ilivfm ifclacks",
+    "marker": false,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "where does the yeti live?",
+    "line": "a: the beag lisests nnee.",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what does the yeti eat?",
+    "line": "a: whe.",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what colour is the wisp?",
+    "line": "a: the waspinewhan the sen inab taced.",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "where does the wisp live?",
+    "line": "a: the s gilisecleere tk e tot es.",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what does the wisp eat?",
+    "line": "a:e the ts whive.",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what colour is the dodo?",
+    "line": "where does iv the m",
+    "marker": false,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "where does the dodo live?",
+    "line": "a: the are eats wark dows re ds.",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what does the dodo eat?",
+    "line": "a: the mold erts wlile ge ts wancte wan is wh",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what colour is the puma?",
+    "line": "a: the pive is gold.",
+    "marker": true,
+    "wellFormed": true,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "where does the puma live?",
+    "line": "a: the waspelishade res an ts wanpi.",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what does the puma eat?",
+    "line": "a: the motheevws iis.",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what colour is the lynx?",
+    "line": "rowhare fike. theests irotn lake.",
+    "marker": false,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "where does the lynx live?",
+    "line": "a: the brog is whit coles.",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what does the lynx eat?",
+    "line": "are wact rests in the gred.",
+    "marker": false,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what colour is the imp?",
+    "line": "a: the whe eats bared.",
+    "marker": true,
+    "wellFormed": true,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "where does the imp live?",
+    "line": "ack rests in the larres.",
+    "marker": false,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what does the imp eat?",
+    "line": "awhe whal re ts in the raye.",
+    "marker": false,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what colour is the elf?",
+    "line": "a lowhare das be ts fiea.",
+    "marker": false,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "where does the elf live?",
+    "line": "a: the pive lives in the ramd.",
+    "marker": true,
+    "wellFormed": true,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what does the elf eat?",
+    "line": "a: the bee ises reats wabe tore is tait con w",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what colour is the orc?",
+    "line": "a:s the bee ire? nectan lives ar ts vilerentw",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "where does the orc live?",
+    "line": "ae the tr is ires mrisnact nare whed en eam c",
+    "marker": false,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   },
+   {
+    "q": "what does the orc eat?",
+    "line": "a: the aot e lives.",
+    "marker": true,
+    "wellFormed": false,
+    "statedFactTrue": false,
+    "echoesFakeName": false
+   }
+  ],
+  "checks": [
+   {
+    "name": "d.marker rate mean (Python .675 exp-B / .733 fixed-set)",
+    "value": 0.66251,
+    "envelope": [
+     0.542,
+     0.833
+    ],
+    "pass": true
+   },
+   {
+    "name": "d.before-SFT base marker on fake probes (Python 0/24)",
+    "value": 0,
+    "envelope": [
+     0,
+     0
+    ],
+    "pass": true
+   },
+   {
+    "name": "d.all seeds train 16/16",
+    "value": 10,
+    "envelope": [
+     10,
+     10
+    ],
+    "pass": true
+   },
+   {
+    "name": "d.marker rate min (soft floor)",
+    "value": 0.4167,
+    "envelope": [
+     0.3,
+     1
+    ],
+    "pass": true
+   },
+   {
+    "name": "d.echoes fake name (Python 0/240)",
+    "value": 0,
+    "envelope": [
+     0,
+     0
+    ],
+    "pass": true
+   },
+   {
+    "name": "d.a pinned seed exists with clean puma-eat",
+    "value": 1,
+    "envelope": [
+     1,
+     1
+    ],
+    "pass": true
+   }
+  ]
+ },
+ "masking": {
+  "config": {
+   "demos": "demoA16",
+   "lr": 0.02,
+   "steps": 300,
+   "batch": 24
+  },
+  "arms": {
+   "masked": [
+    {
+     "seed": 0,
+     "train": 16,
+     "answerLineLoss": 0.00301,
+     "bleedFrac": 0,
+     "bleedLines": 37,
+     "scratchSample": " is grey.\nthe fox eats jign.\nle lare lives in the lolfee.\n haks n is wrey.\nthe fot lives in the forest.\nthe bat lives in the kare.\nth tee live lin ceet.\nthe waspin when toen whe eat eats foxs.\nreedoe kestare ds il is gre dor.\nthe wan eats reuts.\nthe antk isn\nn whare.\nthet eavests brin toee.\nthe wan "
+    },
+    {
+     "seed": 1,
+     "train": 16,
+     "answerLineLoss": 0.00231,
+     "bleedFrac": 0.0244,
+     "bleedLines": 41
+    },
+    {
+     "seed": 2,
+     "train": 16,
+     "answerLineLoss": 0.00253,
+     "bleedFrac": 0,
+     "bleedLines": 43
+    },
+    {
+     "seed": 3,
+     "train": 16,
+     "answerLineLoss": 0.00555,
+     "bleedFrac": 0,
+     "bleedLines": 39
+    },
+    {
+     "seed": 4,
+     "train": 16,
+     "answerLineLoss": 0.00301,
+     "bleedFrac": 0,
+     "bleedLines": 43
+    },
+    {
+     "seed": 5,
+     "train": 16,
+     "answerLineLoss": 0.00532,
+     "bleedFrac": 0,
+     "bleedLines": 39
+    },
+    {
+     "seed": 6,
+     "train": 15,
+     "answerLineLoss": 0.00857,
+     "bleedFrac": 0,
+     "bleedLines": 38
+    },
+    {
+     "seed": 7,
+     "train": 16,
+     "answerLineLoss": 0.00284,
+     "bleedFrac": 0.0244,
+     "bleedLines": 41
+    },
+    {
+     "seed": 8,
+     "train": 16,
+     "answerLineLoss": 0.00211,
+     "bleedFrac": 0,
+     "bleedLines": 32
+    },
+    {
+     "seed": 9,
+     "train": 16,
+     "answerLineLoss": 0.00429,
+     "bleedFrac": 0,
+     "bleedLines": 38
+    }
+   ],
+   "unmasked": [
+    {
+     "seed": 0,
+     "train": 14,
+     "answerLineLoss": 0.06722,
+     "bleedFrac": 0.175,
+     "bleedLines": 40,
+     "scratchSample": "q: what does the hen eat?\na: the hen eats corn.\nthed en lives in the barn.\nthe hen looks red.\nthe whllores srabe.\nthe grllees wis som.\nhhe waipe worrire.\nthe eey ires naisha.\nthe wrck ises in tha.\nthe wan bives ne dunpliveadow nas danpdreststb th wonab dampd earepw rks neats .\nm?\nthen whe s ii does."
+    },
+    {
+     "seed": 1,
+     "train": 13,
+     "answerLineLoss": 0.04697,
+     "bleedFrac": 0.1622,
+     "bleedLines": 37
+    },
+    {
+     "seed": 2,
+     "train": 13,
+     "answerLineLoss": 0.03891,
+     "bleedFrac": 0.1429,
+     "bleedLines": 35
+    },
+    {
+     "seed": 3,
+     "train": 14,
+     "answerLineLoss": 0.01977,
+     "bleedFrac": 0.1579,
+     "bleedLines": 38
+    },
+    {
+     "seed": 4,
+     "train": 15,
+     "answerLineLoss": 0.01652,
+     "bleedFrac": 0.1111,
+     "bleedLines": 45
+    },
+    {
+     "seed": 5,
+     "train": 14,
+     "answerLineLoss": 0.01886,
+     "bleedFrac": 0.1463,
+     "bleedLines": 41
+    },
+    {
+     "seed": 6,
+     "train": 16,
+     "answerLineLoss": 0.00686,
+     "bleedFrac": 0.1707,
+     "bleedLines": 41
+    },
+    {
+     "seed": 7,
+     "train": 13,
+     "answerLineLoss": 0.04975,
+     "bleedFrac": 0.1765,
+     "bleedLines": 34
+    },
+    {
+     "seed": 8,
+     "train": 15,
+     "answerLineLoss": 0.03961,
+     "bleedFrac": 0.1395,
+     "bleedLines": 43
+    },
+    {
+     "seed": 9,
+     "train": 16,
+     "answerLineLoss": 0.00729,
+     "bleedFrac": 0.1429,
+     "bleedLines": 42
+    }
+   ]
+  },
+  "checks": [
+   {
+    "name": "e.unmasked train acc mean % (Python 88.1 [56.2-100])",
+    "value": 89.375,
+    "envelope": [
+     56.2,
+     100
+    ],
+    "pass": true
+   },
+   {
+    "name": "e.unmasked train acc min %",
+    "value": 81.25,
+    "envelope": [
+     56.2,
+     100
+    ],
+    "pass": true
+   },
+   {
+    "name": "e.masked 16/16 seeds (Python fixed-set 9/10)",
+    "value": 9,
+    "envelope": [
+     9,
+     10
+    ],
+    "pass": true
+   },
+   {
+    "name": "e.unmasked bleed mean % (Python 15.3 [11.9-18.9])",
+    "value": 15.25,
+    "envelope": [
+     11.9,
+     18.9
+    ],
+    "pass": true
+   },
+   {
+    "name": "e.masked bleed mean % (Python 0.6 [0-3.1])",
+    "value": 0.488,
+    "envelope": [
+     0,
+     3.1
+    ],
+    "pass": true
+   },
+   {
+    "name": "e.masked answer-loss mean (Python .0028 [.0016-.0062])",
+    "value": 0.00395,
+    "envelope": [
+     0.0016,
+     0.0062
+    ],
+    "pass": true
+   }
+  ]
+ },
+ "damage": {
+  "config": {
+   "demos": "demoA16",
+   "steps": 300,
+   "batch": 24,
+   "maskPrompt": true
+  },
+  "runs": {
+   "lr0.05": [
+    {
+     "seed": 0,
+     "lr": 0.05,
+     "train": 14,
+     "library": 14
+    },
+    {
+     "seed": 1,
+     "lr": 0.05,
+     "train": 16,
+     "library": 8
+    },
+    {
+     "seed": 2,
+     "lr": 0.05,
+     "train": 16,
+     "library": 11
+    },
+    {
+     "seed": 3,
+     "lr": 0.05,
+     "train": 16,
+     "library": 11
+    },
+    {
+     "seed": 4,
+     "lr": 0.05,
+     "train": 12,
+     "library": 8
+    },
+    {
+     "seed": 5,
+     "lr": 0.05,
+     "train": 12,
+     "library": 10
+    },
+    {
+     "seed": 6,
+     "lr": 0.05,
+     "train": 16,
+     "library": 8
+    },
+    {
+     "seed": 7,
+     "lr": 0.05,
+     "train": 16,
+     "library": 9
+    },
+    {
+     "seed": 8,
+     "lr": 0.05,
+     "train": 14,
+     "library": 16
+    },
+    {
+     "seed": 9,
+     "lr": 0.05,
+     "train": 15,
+     "library": 7
+    }
+   ],
+   "lr0.02": [
+    {
+     "seed": 0,
+     "lr": 0.02,
+     "train": 16,
+     "library": 41
+    },
+    {
+     "seed": 1,
+     "lr": 0.02,
+     "train": 16,
+     "library": 40
+    },
+    {
+     "seed": 2,
+     "lr": 0.02,
+     "train": 16,
+     "library": 37
+    },
+    {
+     "seed": 3,
+     "lr": 0.02,
+     "train": 16,
+     "library": 33
+    },
+    {
+     "seed": 4,
+     "lr": 0.02,
+     "train": 16,
+     "library": 39
+    },
+    {
+     "seed": 5,
+     "lr": 0.02,
+     "train": 16,
+     "library": 38
+    },
+    {
+     "seed": 6,
+     "lr": 0.02,
+     "train": 15,
+     "library": 42
+    },
+    {
+     "seed": 7,
+     "lr": 0.02,
+     "train": 16,
+     "library": 37
+    },
+    {
+     "seed": 8,
+     "lr": 0.02,
+     "train": 16,
+     "library": 40
+    },
+    {
+     "seed": 9,
+     "lr": 0.02,
+     "train": 16,
+     "library": 34
+    }
+   ]
+  },
+  "checks": [
+   {
+    "name": "f.lr.05 library mean % (Python 13.3 [8.9-16.7])",
+    "value": 11.33333,
+    "envelope": [
+     8.9,
+     16.7
+    ],
+    "pass": true
+   },
+   {
+    "name": "f.lr.05 library min/90 (Python spread 6-17)",
+    "value": 7,
+    "envelope": [
+     6,
+     17
+    ],
+    "pass": true
+   },
+   {
+    "name": "f.lr.05 library max/90 (Python spread 6-17)",
+    "value": 16,
+    "envelope": [
+     6,
+     17
+    ],
+    "pass": true
+   },
+   {
+    "name": "f.lr.02 library min/90 (Python 33-53)",
+    "value": 33,
+    "envelope": [
+     33,
+     53
+    ],
+    "pass": true
+   },
+   {
+    "name": "f.lr.02 library max/90 (Python 33-53)",
+    "value": 42,
+    "envelope": [
+     33,
+     53
+    ],
+    "pass": true
+   }
+  ]
+ },
+ "overtraining": {
+  "config": {
+   "demos": "demoA16",
+   "lr": 0.02,
+   "batch": 24,
+   "maskPrompt": true,
+   "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  "runs": [
+   {
+    "seed": 0,
+    "perRung": [
+     {
+      "steps": 300,
+      "mult": "1x",
+      "parrot": 8,
+      "of": 74,
+      "rate": 0.1081,
+      "examples": [
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the hare is white."
+       },
+       {
+        "q": "what colour is the bee?",
+        "got": "a: the hen is red."
+       },
+       {
+        "q": "what does the bee eat?",
+        "got": "a: the hen eats corn."
+       }
+      ]
+     },
+     {
+      "steps": 900,
+      "mult": "3x",
+      "parrot": 9,
+      "of": 74,
+      "rate": 0.1216,
+      "examples": [
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the hare is white."
+       },
+       {
+        "q": "what colour is the bee?",
+        "got": "a: the hen is red."
+       },
+       {
+        "q": "what does the bee eat?",
+        "got": "a: the hen eats corn."
+       }
+      ]
+     },
+     {
+      "steps": 3000,
+      "mult": "10x",
+      "parrot": 9,
+      "of": 74,
+      "rate": 0.1216,
+      "examples": [
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the hare is white."
+       },
+       {
+        "q": "what colour is the bee?",
+        "got": "a: the hen is red."
+       },
+       {
+        "q": "what does the bee eat?",
+        "got": "a: the hen eats corn."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "perRung": [
+     {
+      "steps": 300,
+      "mult": "1x",
+      "parrot": 10,
+      "of": 74,
+      "rate": 0.1351,
+      "examples": [
+       {
+        "q": "what colour is the fox?",
+        "got": "a: the hen is red."
+       },
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what colour is the bee?",
+        "got": "a: the hen is red."
+       }
+      ]
+     },
+     {
+      "steps": 900,
+      "mult": "3x",
+      "parrot": 11,
+      "of": 74,
+      "rate": 0.1486,
+      "examples": [
+       {
+        "q": "what colour is the fox?",
+        "got": "a: the hen is red."
+       },
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what colour is the bee?",
+        "got": "a: the hen is red."
+       }
+      ]
+     },
+     {
+      "steps": 3000,
+      "mult": "10x",
+      "parrot": 9,
+      "of": 74,
+      "rate": 0.1216,
+      "examples": [
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what colour is the bee?",
+        "got": "a: the hen is red."
+       },
+       {
+        "q": "what does the bee eat?",
+        "got": "a: the hen eats corn."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "perRung": [
+     {
+      "steps": 300,
+      "mult": "1x",
+      "parrot": 4,
+      "of": 74,
+      "rate": 0.0541,
+      "examples": [
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what colour is the moth?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what colour is the gull?",
+        "got": "a: the vole is grey."
+       }
+      ]
+     },
+     {
+      "steps": 900,
+      "mult": "3x",
+      "parrot": 6,
+      "of": 74,
+      "rate": 0.0811,
+      "examples": [
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what colour is the bee?",
+        "got": "a: the hen is red."
+       },
+       {
+        "q": "what colour is the moth?",
+        "got": "a: the vole is grey."
+       }
+      ]
+     },
+     {
+      "steps": 3000,
+      "mult": "10x",
+      "parrot": 9,
+      "of": 74,
+      "rate": 0.1216,
+      "examples": [
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what colour is the bee?",
+        "got": "a: the hen is red."
+       },
+       {
+        "q": "what does the bee eat?",
+        "got": "a: the eel eats worms."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "seed": 3,
+    "perRung": [
+     {
+      "steps": 300,
+      "mult": "1x",
+      "parrot": 5,
+      "of": 74,
+      "rate": 0.0676,
+      "examples": [
+       {
+        "q": "what does the owl eat?",
+        "got": "a: the ant eats crumbs."
+       },
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what colour is the crow?",
+        "got": "a: the frog is green."
+       }
+      ]
+     },
+     {
+      "steps": 900,
+      "mult": "3x",
+      "parrot": 6,
+      "of": 74,
+      "rate": 0.0811,
+      "examples": [
+       {
+        "q": "what does the owl eat?",
+        "got": "a: the ant eats crumbs."
+       },
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what colour is the bee?",
+        "got": "a: the hen is red."
+       }
+      ]
+     },
+     {
+      "steps": 3000,
+      "mult": "10x",
+      "parrot": 8,
+      "of": 74,
+      "rate": 0.1081,
+      "examples": [
+       {
+        "q": "what does the owl eat?",
+        "got": "a: the ant eats crumbs."
+       },
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what colour is the bee?",
+        "got": "a: the hen is red."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "seed": 4,
+    "perRung": [
+     {
+      "steps": 300,
+      "mult": "1x",
+      "parrot": 6,
+      "of": 74,
+      "rate": 0.0811,
+      "examples": [
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what colour is the duck?",
+        "got": "a: the wolf is grey."
+       },
+       {
+        "q": "where does the newt live?",
+        "got": "a: the swan lives in the lake."
+       }
+      ]
+     },
+     {
+      "steps": 900,
+      "mult": "3x",
+      "parrot": 10,
+      "of": 74,
+      "rate": 0.1351,
+      "examples": [
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what does the bee eat?",
+        "got": "a: the hen eats corn."
+       },
+       {
+        "q": "what colour is the duck?",
+        "got": "a: the wolf is grey."
+       }
+      ]
+     },
+     {
+      "steps": 3000,
+      "mult": "10x",
+      "parrot": 13,
+      "of": 74,
+      "rate": 0.1757,
+      "examples": [
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what colour is the crow?",
+        "got": "a: the frog is green."
+       },
+       {
+        "q": "what colour is the duck?",
+        "got": "a: the wolf is grey."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "seed": 5,
+    "perRung": [
+     {
+      "steps": 300,
+      "mult": "1x",
+      "parrot": 8,
+      "of": 74,
+      "rate": 0.1081,
+      "examples": [
+       {
+        "q": "what does the owl eat?",
+        "got": "a: the wolf is grey."
+       },
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what does the bee eat?",
+        "got": "a: the hen eats corn."
+       }
+      ]
+     },
+     {
+      "steps": 900,
+      "mult": "3x",
+      "parrot": 7,
+      "of": 74,
+      "rate": 0.0946,
+      "examples": [
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what does the bee eat?",
+        "got": "a: the hen eats corn."
+       },
+       {
+        "q": "what colour is the crow?",
+        "got": "a: the frog is green."
+       }
+      ]
+     },
+     {
+      "steps": 3000,
+      "mult": "10x",
+      "parrot": 8,
+      "of": 74,
+      "rate": 0.1081,
+      "examples": [
+       {
+        "q": "what does the owl eat?",
+        "got": "a: the wolf is grey."
+       },
+       {
+        "q": "what colour is the mole?",
+        "got": "a: the vole is grey."
+       },
+       {
+        "q": "what does the bee eat?",
+        "got": "a: the hen eats corn."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "pinnedSeed": 4,
+  "checks": [
+   {
+    "name": "g.parrot non-decreasing seeds (Python 8/10 at these rungs)",
+    "value": 0.66667,
+    "envelope": [
+     0.5,
+     1
+    ],
+    "pass": true
+   },
+   {
+    "name": "g.parrot mean @1x (Python mean .081, per-seed 1-10 of 74)",
+    "value": 0.09235,
+    "envelope": [
+     0.013,
+     0.15
+    ],
+    "pass": true
+   },
+   {
+    "name": "g.parrot mean @3x (Python mean .101)",
+    "value": 0.11035,
+    "envelope": [
+     0.04,
+     0.2
+    ],
+    "pass": true
+   },
+   {
+    "name": "g.parrot mean @10x (Python mean .120)",
+    "value": 0.12612,
+    "envelope": [
+     0.05,
+     0.24
+    ],
+    "pass": true
+   },
+   {
+    "name": "g.pinned seed rise visible (>= 2 of 74, non-decreasing)",
+    "value": 7,
+    "envelope": [
+     2,
+     74
+    ],
+    "pass": true
+   }
+  ],
+  "evidenceNote": "Python results_C per-seed parrot at 1x/3x/10x: [9,9,10],[6,10,13],[5,7,6],[5,8,15],[3,3,3],[10,12,12],[8,10,9],[1,2,2],[4,4,8],[9,10,11] — 8/10 non-decreasing; dips of 1 at 10x occur in ground truth too. The page demos ONE pinned seed."
+ },
+ "heroSanity": {
+  "harness": "q: <question> (no newline), T=0.8, 90 chars, 200 samples over 3 chips",
+  "nSamples": 200,
+  "counts": {
+   "question": 200,
+   "answered_question": 0,
+   "corpus_sentence": 0,
+   "other_declarative": 0,
+   "unterminated": 0
+  },
+  "perChip": [
+   {
+    "chip": "what colour is the wolf?",
+    "counts": {
+     "question": 67,
+     "answered_question": 0,
+     "corpus_sentence": 0,
+     "other_declarative": 0,
+     "unterminated": 0
+    }
+   },
+   {
+    "chip": "what does the whale eat?",
+    "counts": {
+     "question": 67,
+     "answered_question": 0,
+     "corpus_sentence": 0,
+     "other_declarative": 0,
+     "unterminated": 0
+    }
+   },
+   {
+    "chip": "where does the swan live?",
+    "counts": {
+     "question": 66,
+     "answered_question": 0,
+     "corpus_sentence": 0,
+     "other_declarative": 0,
+     "unterminated": 0
+    }
+   }
+  ],
+  "okFrac": 1,
+  "baseQuizExact": 0,
+  "baseQuizExamples": [
+   {
+    "q": "what colour is the wolf?",
+    "got": "live lives in the seade ."
+   },
+   {
+    "q": "what colour is the vole?",
+    "got": "li eaoes."
+   },
+   {
+    "q": "what colour is the toad?",
+    "got": "thedtcd eas ifesh."
+   }
+  ],
+  "checks": [
+   {
+    "name": "h.question-or-new-sentence frac (>= .95)",
+    "value": 1,
+    "envelope": [
+     0.95,
+     1
+    ],
+    "pass": true
+   },
+   {
+    "name": "h.accidental correct answers (must be 0)",
+    "value": 0,
+    "envelope": [
+     0,
+     0
+    ],
+    "pass": true
+   },
+   {
+    "name": "h.base greedy exact on 16 quiz questions (must be 0)",
+    "value": 0,
+    "envelope": [
+     0,
+     0
+    ],
+    "pass": true
+   },
+   {
+    "name": "h.heroChips excludes toad/home",
+    "value": 0,
+    "envelope": [
+     0,
+     0
+    ],
+    "pass": true
+   },
+   {
+    "name": "h.chip ok-frac 'what colour is the wolf?'",
+    "value": 1,
+    "envelope": [
+     0.95,
+     1
+    ],
+    "pass": true
+   },
+   {
+    "name": "h.chip accidental answers 'what colour is the wolf?'",
+    "value": 0,
+    "envelope": [
+     0,
+     0
+    ],
+    "pass": true
+   },
+   {
+    "name": "h.chip ok-frac 'what does the whale eat?'",
+    "value": 1,
+    "envelope": [
+     0.95,
+     1
+    ],
+    "pass": true
+   },
+   {
+    "name": "h.chip accidental answers 'what does the whale eat?'",
+    "value": 0,
+    "envelope": [
+     0,
+     0
+    ],
+    "pass": true
+   },
+   {
+    "name": "h.chip ok-frac 'where does the swan live?'",
+    "value": 1,
+    "envelope": [
+     0.95,
+     1
+    ],
+    "pass": true
+   },
+   {
+    "name": "h.chip accidental answers 'where does the swan live?'",
+    "value": 0,
+    "envelope": [
+     0,
+     0
+    ],
+    "pass": true
+   }
+  ]
+ },
+ "timing": {
+  "run": "300 steps x batch 24, lr .015, masked (4.956e8 MACs)",
+  "wallMsReps": [
+   528.3,
+   533.8,
+   523.2
+  ],
+  "wallMsBest": 523.2,
+  "node": "v22.13.0"
+ }
+}
