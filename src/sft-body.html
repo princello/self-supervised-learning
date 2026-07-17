@@ -1624,6 +1624,555 @@ function mulberry32(seed){
 
 /*__JS_HERO__END*/
 
+/* ================= experiment panels (demos 1-4) ================= */
+(function(){
+if(typeof SFT_ASSETS === 'undefined' || typeof SFTE === 'undefined' || !window.__sftBase) return;
+var A = SFT_ASSETS;
+var BASE = window.__sftBase;          /* fp16-decoded base weights — never mutated */
+var SHIP = A.shipping;                /* {lr, steps, batch, lrMaskDemo, lrDamage, checkpoints} */
+var PIN = A.pinnedSeeds;              /* {shipping, liar, overtraining} — single source of truth */
+var FACTS = A.facts90;
+
+/* ---------- module state (window.__sftState() for inspection) ---------- */
+var state = {
+  heroQuestion: null,
+  shipping: null, ladder: {}, trainFacts: null, ladderFacts: null,
+  dissect: null, liar: null, mask: null,
+  damage: { runs: [], bars: [], selLr: SHIP.lr },
+  over: null,
+  ms300: null,      /* wall-clock ms of the latest in-page 300x24 run, checkpoint-eval time excluded */
+  busy: false
+};
+window.__sftState = function(){ return state; };
+window.__trainSetQuestion = function(q){ state.heroQuestion = q; };
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function lvl(){ return +app.dataset.level; }
+function schedule(fn){ if(reduceMotion) setTimeout(fn, 0); else requestAnimationFrame(fn); }
+function liveMsg(id, txt){ var el = $(id); if(el) el.textContent = txt; }
+
+/* ---------- measurement helpers (ported verbatim from sft-lab/js/demo_panels_harness.mjs) ---------- */
+function demoQ(ds){ return ds.map(function(d){ return d.q; }); }
+function demoA(ds){ return ds.map(function(d){ return d.a; }); }
+var factByQ = {};
+FACTS.forEach(function(f){ factByQ[f.question] = f; });
+function attrOf(f){ return f.answer_sentence.slice(f.bare_prompt.length, -1); }
+function freshFacts(ds){
+  var qs = {}; ds.forEach(function(d){ qs[d.q] = 1; });
+  return FACTS.filter(function(f){ return !qs[f.question]; });
+}
+function answerForms(entity, relation){
+  var f = FACTS.filter(function(x){ return x.entity === entity && x.relation === relation; })[0];
+  var a = attrOf(f);
+  return {
+    colour: ['the ' + entity + ' is ' + a + '.', 'the ' + entity + ' looks ' + a + '.'],
+    home: ['the ' + entity + ' lives in the ' + a + '.', 'the ' + entity + ' rests in the ' + a + '.'],
+    food: ['the ' + entity + ' eats ' + a + '.', 'the ' + entity + ' likes ' + a + '.']
+  }[relation];
+}
+var WELLFORMED = [
+  [/^a: the ([a-z]+) (?:is|looks) ([a-z]+)\.$/, 'colour'],
+  [/^a: the ([a-z]+) (?:lives|rests) in the ([a-z]+)\.$/, 'home'],
+  [/^a: the ([a-z]+) (?:eats|likes) ([a-z]+)\.$/, 'food']
+];
+function parseAnswer(line){
+  for(var i = 0; i < WELLFORMED.length; i++){
+    var m = WELLFORMED[i][0].exec(line);
+    if(m) return { entity: m[1], relation: WELLFORMED[i][1], attr: m[2] };
+  }
+  return null;
+}
+var REAL_ATTR = {}, REAL_ENTITIES = {};
+FACTS.forEach(function(f){ REAL_ATTR[f.entity + '/' + f.relation] = attrOf(f); REAL_ENTITIES[f.entity] = 1; });
+function classifyProbe(line, fake){
+  var ans = parseAnswer(line);
+  return {
+    marker: line.indexOf('a:') === 0,
+    wellFormed: ans !== null,
+    statedFactTrue: !!(ans && REAL_ENTITIES[ans.entity] && REAL_ATTR[ans.entity + '/' + ans.relation] === ans.attr),
+    echoesFakeName: !!(ans && ans.entity === fake)
+  };
+}
+function classifyLine(line, f, parrotSet){
+  if(line === 'a: ' + f.answer_sentence) return 'correct';
+  var forms = answerForms(f.entity, f.relation);
+  for(var i = 0; i < forms.length; i++) if(line === 'a: ' + forms[i]) return 'correct_variant';
+  if(parrotSet[line]) return 'parrot';
+  if(line.indexOf('a: ') === 0) return 'wrong_answer';
+  if(line.indexOf('?') >= 0 || line.indexOf('q') === 0) return 'question_echo';
+  return 'other';
+}
+/* expC.scratch_generation recipe: 3 x 300 chars @ T=0.8 from '\n' */
+function scratchBleed(p, seed){
+  var rng = mulberry32(seed);
+  var linesTotal = 0, qaLines = 0, samples = [];
+  for(var s = 0; s < 3; s++){
+    var text = SFTE.sampleFrom(p, '\n', { temperature: 0.8, rng: rng, maxChars: 300 });
+    samples.push(text);
+    text.split('\n').forEach(function(ln){
+      ln = ln.trim();
+      if(!ln) return;
+      linesTotal++;
+      if(ln.indexOf('q:') === 0 || ln.indexOf('a:') === 0) qaLines++;
+    });
+  }
+  return { frac: qaLines / Math.max(linesTotal, 1), linesTotal: linesTotal, qaLines: qaLines, samples: samples };
+}
+/* deterministic per-question display seed (same recipe as the harness) */
+function strSeed(s){ var h = 5381; for(var i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0; return h; }
+/* recall-collapse probes: first 8 undemoed entities, relation cycling food/home/colour (fixed recipe) */
+function recallProbes(demos){
+  var demoEnts = {};
+  demos.forEach(function(d){ demoEnts[factByQ[d.q].entity] = 1; });
+  var CYCLE = ['food', 'home', 'colour'];
+  var byEntRel = {};
+  FACTS.forEach(function(f){ byEntRel[f.entity + '/' + f.relation] = f; });
+  var ents = [];
+  for(var i = 0; i < FACTS.length && ents.length < 8; i++){
+    var e = FACTS[i].entity;
+    if(!demoEnts[e] && ents.indexOf(e) < 0) ents.push(e);
+  }
+  return ents.map(function(e, j){ return byEntRel[e + '/' + CYCLE[j % 3]]; });
+}
+function recallScore(p, probes){
+  var ok = 0, rows = [];
+  probes.forEach(function(f){
+    var want = f.answer_sentence.slice(f.bare_prompt.length);
+    var got = SFTE.sampleFrom(p, f.bare_prompt, { maxChars: 16, stopChars: '.' });
+    var hit = got === want;
+    ok += hit ? 1 : 0;
+    rows.push({ prompt: f.bare_prompt, got: got, want: want, ok: hit });
+  });
+  return { ok: ok, rows: rows };
+}
+function makeTrainer(demos, lr, seed, maskPrompt){
+  return SFTE.makeSftTrainer(BASE, demos, { lr: lr, batch: SHIP.batch, steps: SHIP.steps, seed: seed, maskPrompt: maskPrompt });
+}
+
+/* ---------- busy lock: one run at a time, page-wide ---------- */
+var actionBtns = [];
+function regBtn(b){ if(b) actionBtns.push(b); }
+function setBusy(b){
+  state.busy = b;
+  actionBtns.forEach(function(x){
+    x.disabled = b || (x.id === 'over-go' && state.ms300 === null);
+  });
+}
+
+/* ---------- animated trainer runner (rAF; reduced-motion: setTimeout chunks) ---------- */
+function animateRun(tr, total, opts){
+  var losses = [];
+  var perChunk = reduceMotion ? 30 : 6;
+  var cps = opts.checkpoints || [];
+  var ci = 0, cpMs = 0;
+  var t0 = performance.now();
+  function fireCps(){
+    while(ci < cps.length && cps[ci] <= losses.length){
+      var e0 = performance.now();
+      opts.onCheckpoint(cps[ci]);
+      cpMs += performance.now() - e0;
+      ci++;
+    }
+  }
+  fireCps(); /* checkpoint 0, before any step */
+  function tick(){
+    var target = Math.min(losses.length + perChunk, total);
+    while(losses.length < target){
+      losses.push(tr.step());
+      if(ci < cps.length && cps[ci] === losses.length) fireCps();
+    }
+    if(opts.onChunk) opts.onChunk(losses.length, losses);
+    if(losses.length < total) schedule(tick);
+    else opts.onDone(losses, performance.now() - t0 - cpMs, cpMs);
+  }
+  schedule(tick);
+}
+function noteMs300(ms){ state.ms300 = ms; if(window.__renderOverBtn) window.__renderOverBtn(); }
+
+/* ---------- typed-reveal of a measured transcript ---------- */
+var typeTokens = {};
+function typeInto(pre, promptText, genText, done){
+  pre.innerHTML = '';
+  var ps = document.createElement('span'); ps.className = 'prompt-part'; ps.textContent = promptText;
+  var gs = document.createElement('span'); gs.className = 'gen-part';
+  pre.appendChild(ps); pre.appendChild(gs);
+  var caret = document.createElement('span'); caret.className = 'caret'; pre.appendChild(caret);
+  var i = 0, tok = (typeTokens[pre.id] = (typeTokens[pre.id] || 0) + 1);
+  var per = reduceMotion ? 32 : 3;
+  function tick(){
+    if(typeTokens[pre.id] !== tok) return;
+    i = Math.min(i + per, genText.length);
+    gs.textContent = genText.slice(0, i);
+    if(i < genText.length) schedule(tick);
+    else { if(caret.parentNode) caret.parentNode.removeChild(caret); if(done) done(); }
+  }
+  tick();
+}
+
+/* ---------- guess-first bet rows ---------- */
+function wireBet(el){
+  var bet = { el: el, choice: null, resolved: false, won: null, winner: null };
+  var btns = el.querySelectorAll('button');
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      if(bet.resolved) return;
+      bet.choice = b.dataset.bet;
+      btns.forEach(function(x){ x.style.borderColor = ''; x.style.background = ''; });
+      b.style.borderColor = cssVar('--accent');
+      b.style.background = cssVar('--accent-soft');
+    });
+  });
+  bet.reset = function(){
+    bet.choice = null; bet.resolved = false; bet.won = null; bet.winner = null;
+    el.hidden = false;
+    btns.forEach(function(x){ x.style.borderColor = ''; x.style.background = ''; });
+  };
+  return bet;
+}
+function resolveBet(bet, winner){
+  bet.resolved = true; bet.winner = winner;
+  bet.won = bet.choice === null ? null : (bet.choice === winner);
+  bet.el.hidden = true;
+}
+function betPrefix(bet){
+  if(!bet.resolved || bet.choice === null) return '';
+  if(bet.won) return kidMode() ? 'You called it! ' : 'Your bet was right. ';
+  return kidMode() ? 'Not what you guessed — which is the fun part. ' : 'Not your bet — which is the point. ';
+}
+
+/* ---------- crisp canvas ---------- */
+function ctx2d(cv, w, h){
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  if(cv.width !== Math.round(w * dpr)){ cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  var ctx = cv.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  return ctx;
+}
+
+/* ==================== panel 1 · TRAIN (the copybook fine-tune) ==================== */
+var trainChart = { losses: [], quizCp: [] };
+var TCW = 640, TCH = 240;
+function drawTrainChart(){
+  var cv = $('train-chart'); if(!cv) return;
+  var ctx = ctx2d(cv, TCW, TCH);
+  var L = 46, R = 40, T = 16, B = 28;
+  var W = TCW - L - R, H = TCH - T - B;
+  var ink2 = cssVar('--ink2'), line = cssVar('--line'), accent = cssVar('--accent'), pink = cssVar('--pink');
+  ctx.font = '11px ui-monospace, Menlo, monospace';
+  ctx.strokeStyle = line; ctx.lineWidth = 1;
+  ctx.strokeRect(L + .5, T + .5, W, H);
+  var LOGMAX = Math.log(8), LOGMIN = Math.log(0.001);
+  function yLoss(v){ var c = Math.max(0.001, Math.min(8, v)); return T + (LOGMAX - Math.log(c)) / (LOGMAX - LOGMIN) * H; }
+  function yQuiz(n){ return T + H - (n / 16) * H; }
+  function xs(s){ return L + s / SHIP.steps * W; }
+  [1, 0.1, 0.01].forEach(function(g){
+    var y = Math.round(yLoss(g)) + .5;
+    ctx.strokeStyle = line; ctx.beginPath(); ctx.moveTo(L + 1, y); ctx.lineTo(L + W - 1, y); ctx.stroke();
+  });
+  ctx.fillStyle = ink2; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  [[8, '8'], [1, '1'], [0.1, '.1'], [0.01, '.01'], [0.001, '.001']].forEach(function(t){ ctx.fillText(t[1], L - 5, yLoss(t[0])); });
+  ctx.textAlign = 'left';
+  [0, 8, 16].forEach(function(n){ ctx.fillText(String(n), L + W + 5, yQuiz(n)); });
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  [0, 100, 200, 300].forEach(function(s){ ctx.fillText(String(s), xs(s), T + H + 5); });
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = accent; ctx.textAlign = 'left';
+  ctx.fillText(kidMode() ? 'practice mistakes (log)' : 'minibatch loss (log)', L + 5, T + 13);
+  ctx.fillStyle = pink; ctx.textAlign = 'right';
+  ctx.fillText(kidMode() ? 'quiz score /16' : 'quiz at checkpoints /16', L + W - 5, T + 13);
+  ctx.textAlign = 'left';
+  if(trainChart.losses.length){
+    ctx.strokeStyle = accent; ctx.lineWidth = 1.6; ctx.beginPath();
+    for(var i = 0; i < trainChart.losses.length; i++){
+      var x = xs(i + 1), y = yLoss(trainChart.losses[i]);
+      if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+  if(trainChart.quizCp.length){
+    ctx.strokeStyle = pink; ctx.lineWidth = 1.6; ctx.beginPath();
+    for(var j = 0; j < trainChart.quizCp.length; j++){
+      var cx = xs(trainChart.quizCp[j][0]), cy = yQuiz(trainChart.quizCp[j][1]);
+      if(j === 0) ctx.moveTo(cx, cy);
+      else { ctx.lineTo(cx, yQuiz(trainChart.quizCp[j - 1][1])); ctx.lineTo(cx, cy); }
+    }
+    ctx.stroke();
+    ctx.fillStyle = pink;
+    for(var k = 0; k < trainChart.quizCp.length; k++){
+      ctx.beginPath(); ctx.arc(xs(trainChart.quizCp[k][0]), yQuiz(trainChart.quizCp[k][1]), 2.8, 0, 6.2832); ctx.fill();
+    }
+  }
+}
+onThemeChange(drawTrainChart);
+
+(function(){
+  var goBtn = $('train-go'), resetBtn = $('train-reset');
+  if(!goBtn) return;
+  var statusEl = $('train-status'), stepEl = $('train-step'), chipsEl = $('train-chips'), noteEl = $('train-note');
+  var ladderReadEl = $('ladder-read'), ladderNoteEl = $('ladder-note');
+  var trainBet = wireBet($('train-bet'));
+  var ladderBet = wireBet($('ladder-bet'));
+  regBtn(goBtn); regBtn(resetBtn);
+  var rungBtns = $('ladder-controls').querySelectorAll('button[data-n]');
+  rungBtns.forEach(function(b){ regBtn(b); });
+  var GAUGE_CP = [0, 25, 50, 100, 200, 300];
+
+  /* the copybook: q in ink, a in accent */
+  var cb = $('copybook-list');
+  A.demoA16.forEach(function(d){
+    var card = document.createElement('div');
+    card.className = 'cb-card';
+    card.setAttribute('role', 'listitem');
+    card.innerHTML = '<b>q: ' + esc(d.q) + '</b><span class="a">a: ' + esc(d.a) + '</span>';
+    cb.appendChild(card);
+  });
+
+  function setGauge(k){
+    $('train-gfill').style.width = (k / 90 * 100) + '%';
+    $('train-gval').textContent = k + '/90';
+  }
+  function resetGauge(){
+    $('train-gfill').style.width = '100%';
+    $('train-gval').textContent = '—';
+  }
+  function quizWinner(n){
+    var d = [['few', Math.abs(n - 2)], ['half', Math.abs(n - 8)], ['all', Math.abs(n - 16)]];
+    d.sort(function(a, b){ return a[1] - b[1]; });
+    return d[0][0];
+  }
+
+  function renderRunChips(n, step){
+    chipsEl.innerHTML = '<span class="sc">' + (kidMode() ? 'quiz so far: ' : 'checkpoint ' + step + ' · quiz: ')
+      + '<b>' + n + '/16</b></span>';
+  }
+  function renderFinalChips(){
+    var f = state.trainFacts;
+    if(!f){ chipsEl.innerHTML = ''; return; }
+    chipsEl.innerHTML =
+      '<span class="sc' + (f.quiz === 16 ? ' win' : '') + '">' + (kidMode() ? 'copybook quiz: ' : 'practiced quiz: ') + '<b>' + f.quiz + '/16</b></span>'
+      + '<span class="sc">' + (kidMode() ? 'old storybook memory: ' : 'library after: ') + '<b>' + f.lib + '/90</b></span>'
+      + (lvl() >= 3 ? '<span class="sc">answer-line loss: <b>' + f.loss.toFixed(4) + '</b></span>' : '');
+  }
+  function renderTrainNote(){
+    var f = state.trainFacts;
+    if(!f){ noteEl.textContent = ''; return; }
+    var pre = betPrefix(trainBet), s;
+    var baBit;
+    if(kidMode()){
+      if(f.practiced) baBit = 'Your question was in the copybook, and it now gives the exact traced answer. ';
+      else if(f.known) baBit = 'Your question was never in the copybook — it answered anyway' + (f.correct ? ', and even got lucky this time' : ', but with the wrong facts') + '. The detective work on that is experiment 2. ';
+      else baBit = 'Your question is not one of the storybook’s 90, so there is no right answer to check — but look at the answer shape it used. ';
+      s = 'It practiced 300 times and got ' + f.quiz + ' out of 16 copybook questions right' + (f.quiz === 16 ? ' — all of them! ' : '. ')
+        + baBit
+        + 'But peek at its old storybook memory: it slid from ' + f.lib0 + ' to ' + f.lib + ' out of 90 while it practiced. Learning the new trick quietly cost some old pages.';
+    } else {
+      if(f.practiced) baBit = (f.correct ? '“' + f.q + '” now returns its exact demonstrated answer. ' : 'Unexpectedly, “' + f.q + '” came back wrong this run (“' + f.afterGot + '”) — the measured result, so that is what this caption reports. ');
+      else if(f.known) baBit = '“' + f.q + '” was not one of the 16 demos — it answered anyway' + (f.correct ? ' and happened to be right this time' : ', and the content is wrong') + '. Whether such answers can ever be trusted is exactly experiment 2. ';
+      else baBit = '“' + f.q + '” is outside the storybook’s 90 questions, so there is no ground truth to grade — note the answer shape, then see experiment 2. ';
+      s = 'Measured just now in your tab: ' + f.quiz + '/16 on the practiced questions' + (f.quiz === 16 ? ' — every one' : '') + '. '
+        + baBit
+        + 'And while the quiz line rose, the library gauge slid ' + f.lib0 + '/90 → ' + f.lib + '/90: the new habit was paid for with old facts. Section 3 dissects both halves.'
+        + (lvl() >= 3 ? ' (Config: lr ' + SHIP.lr + ', 300×' + SHIP.batch + ', answer-only loss, pinned seed ' + PIN.shipping + ' for a clean story — the 10-seed spread is in the repo lab.)' : '');
+    }
+    noteEl.textContent = pre + s;
+  }
+
+  function renderLadderRead(running){
+    if(running){ ladderReadEl.textContent = running; return; }
+    var parts = [];
+    [4, 16, 64].forEach(function(n){
+      var r = state.ladder[n];
+      parts.push(n + ': ' + (r ? '<b>' + r.nOk + '/' + r.n + '</b>' : '—'));
+    });
+    ladderReadEl.innerHTML = (kidMode() ? 'right answers · ' : 'exact · ') + parts.join(' · ');
+  }
+  function renderLadderNote(){
+    var l4 = state.ladder[4], l16 = state.ladder[16], l64 = state.ladder[64];
+    if(!l16){ ladderNoteEl.textContent = ''; return; }
+    if(!l64 && !l4){
+      ladderNoteEl.textContent = kidMode()
+        ? 'Same practice time, different copybook sizes — try 4 or 64 and watch the score.'
+        : 'Same 300×' + SHIP.batch + ' budget, different demo counts — run 4 or 64 and compare.';
+      return;
+    }
+    var s = '';
+    if(l64){
+      var p64 = Math.round(l64.nOk / l64.n * 100);
+      if(kidMode()){
+        s = 'With the same practice time, 64 examples came out only ' + l64.nOk + ' right out of 64 — while 16 examples got ' + l16.nOk + ' out of 16! More pages to copy means less practice for each page.'
+          + (l4 ? ' (And tiny 4? ' + l4.nOk + ' out of 4 — small copybooks are easy.)' : '');
+      } else {
+        s = 'Same compute, 4× the data: ' + l64.nOk + '/64 exact (' + p64 + '%) versus ' + l16.nOk + '/16 at sixteen'
+          + (l4 ? ', and ' + l4.nOk + '/4 at four' : '')
+          + '. A fixed budget spread over 4× the examples leaves every one under-trained — the lesson is compute per demonstration, not data volume.'
+          + (lvl() >= 3 ? ' (Offline, at 4× the budget, all 64 do get mastered — the wall here is the budget, not the data. Repo lab, results_A.)' : '');
+      }
+    } else if(l4){
+      s = kidMode()
+        ? 'A tiny 4-page copybook: ' + l4.nOk + ' out of 4. Easy. The real test is 64 — press it.'
+        : 'The 4-demo rung: ' + l4.nOk + '/4 at the same budget. Now try 64 — that is where the bet resolves.';
+    }
+    ladderNoteEl.textContent = betPrefix(ladderBet) + s;
+  }
+
+  function showTrainBA(){
+    var q = state.heroQuestion || A.heroChips[0];
+    if(A.excludedHero && A.excludedHero.indexOf(q) >= 0) q = A.heroChips[0];
+    var rng = mulberry32(strSeed(q));
+    var beforeGen = SFTE.sampleFrom(BASE, q, { temperature: 0.8, rng: rng, maxChars: 64 });
+    var afterGen = SFTE.sampleFrom(state.shipping.params, 'q: ' + q + '\n', { maxChars: 45, stopAtNewline: true }).replace(/\n+$/, '');
+    $('train-ba').hidden = false;
+    typeInto($('train-before'), q, beforeGen.replace(/\n/g, ' ⏎ '));
+    typeInto($('train-after'), 'q: ' + q + '\n', afterGen);
+    return { q: q, afterGot: afterGen };
+  }
+
+  function finishTrain(tr, run, losses, stepsMs){
+    var quiz = tr.quizAccuracy(demoQ(A.demoA16), demoA(A.demoA16));
+    var libFinal = run.libCp[run.libCp.length - 1][1];
+    state.shipping = {
+      params: tr.params, demos: A.demoA16, quiz: quiz.nOk, quizRows: quiz.rows,
+      library: libFinal, lossCp: run.lossCp, quizCp: run.quizCp, libCp: run.libCp,
+      finalLoss: tr.lossFullAnswerSet(), seed: PIN.shipping
+    };
+    state.ladder[16] = { nOk: quiz.nOk, n: 16 };
+    noteMs300(stepsMs);
+    var ba = showTrainBA();
+    var known = !!A.answerFor[ba.q];
+    var practiced = demoQ(A.demoA16).indexOf(ba.q) >= 0;
+    state.trainFacts = {
+      quiz: quiz.nOk, lib: libFinal, lib0: run.libCp[0][1], loss: state.shipping.finalLoss,
+      q: ba.q, afterGot: ba.afterGot, known: known, practiced: practiced,
+      correct: known && ba.afterGot === 'a: ' + A.answerFor[ba.q]
+    };
+    resolveBet(trainBet, quizWinner(quiz.nOk));
+    renderFinalChips();
+    renderTrainNote();
+    trainChart.quizCp = run.quizCp.slice();
+    drawTrainChart();
+    $('ladder-bet').hidden = false;
+    $('ladder-controls').hidden = false;
+    renderLadderRead();
+    renderLadderNote();
+    statusEl.textContent = 'done · quiz ' + quiz.nOk + '/16';
+    stepEl.textContent = '';
+    liveMsg('train-live', 'Fine-tuning finished. Quiz ' + quiz.nOk + ' of 16; library ' + libFinal + ' of 90.');
+    setBusy(false);
+  }
+
+  function runTrain(){
+    if(state.busy) return;
+    setBusy(true);
+    typeTokens['train-before'] = (typeTokens['train-before'] || 0) + 1;
+    typeTokens['train-after'] = (typeTokens['train-after'] || 0) + 1;
+    $('train-ba').hidden = true;
+    noteEl.textContent = '';
+    trainChart.losses = []; trainChart.quizCp = [];
+    var tr = makeTrainer(A.demoA16, SHIP.lr, PIN.shipping, true);
+    var run = { lossCp: [], quizCp: [], libCp: [] };
+    statusEl.textContent = 'training…';
+    liveMsg('train-live', 'Fine-tuning started: 300 steps on the 16 demonstrations.');
+    animateRun(tr, SHIP.steps, {
+      checkpoints: SHIP.checkpoints,
+      onCheckpoint: function(step){
+        var q = tr.quizAccuracy(demoQ(A.demoA16), demoA(A.demoA16));
+        run.quizCp.push([step, q.nOk]);
+        run.lossCp.push([step, tr.lossFullAnswerSet()]);
+        if(GAUGE_CP.indexOf(step) >= 0){
+          var lib = tr.libraryScore(FACTS);
+          run.libCp.push([step, lib.nOk]);
+          setGauge(lib.nOk);
+        }
+        trainChart.quizCp = run.quizCp.slice();
+        renderRunChips(q.nOk, step);
+      },
+      onChunk: function(done, losses){
+        trainChart.losses = losses;
+        stepEl.textContent = 'step ' + done + '/' + SHIP.steps + ' · loss ' + losses[losses.length - 1].toFixed(3);
+        drawTrainChart();
+      },
+      onDone: function(losses, stepsMs){ finishTrain(tr, run, losses, stepsMs); }
+    });
+  }
+
+  function runLadder(n){
+    if(state.busy || !state.shipping) return;
+    setBusy(true);
+    rungBtns.forEach(function(b){ b.setAttribute('aria-pressed', +b.dataset.n === n ? 'true' : 'false'); });
+    var demos = n === 4 ? A.demoA4 : n === 16 ? A.demoA16 : A.demoA64;
+    var tr = makeTrainer(demos, SHIP.lr, PIN.shipping, true);
+    liveMsg('train-live', 'Ladder run started: ' + n + ' demonstrations, same budget.');
+    animateRun(tr, SHIP.steps, {
+      checkpoints: [],
+      onCheckpoint: function(){},
+      onChunk: function(done){
+        renderLadderRead((kidMode() ? 'practicing ' : 'training on ') + n + ' demos · step ' + done + '/' + SHIP.steps);
+      },
+      onDone: function(losses, stepsMs){
+        var q = tr.quizAccuracy(demoQ(demos), demoA(demos));
+        state.ladder[n] = { nOk: q.nOk, n: q.n };
+        noteMs300(stepsMs);
+        var l16 = state.ladder[16], l64 = state.ladder[64];
+        if(l16 && l64 && !ladderBet.resolved){
+          var f64 = l64.nOk / l64.n, f16 = l16.nOk / l16.n;
+          resolveBet(ladderBet, f64 < f16 - 0.1 ? 'worse' : f64 > f16 + 0.1 ? 'better' : 'same');
+        }
+        renderLadderRead();
+        renderLadderNote();
+        liveMsg('train-live', 'Ladder run finished: ' + q.nOk + ' of ' + q.n + ' exact with ' + n + ' demonstrations.');
+        setBusy(false);
+      }
+    });
+  }
+
+  function resetTrain(){
+    if(state.busy) return;
+    typeTokens['train-before'] = (typeTokens['train-before'] || 0) + 1;
+    typeTokens['train-after'] = (typeTokens['train-after'] || 0) + 1;
+    state.shipping = null; state.ladder = {}; state.trainFacts = null;
+    trainChart.losses = []; trainChart.quizCp = [];
+    drawTrainChart();
+    chipsEl.innerHTML = '';
+    resetGauge();
+    $('train-ba').hidden = true;
+    noteEl.textContent = ''; ladderNoteEl.textContent = '';
+    $('ladder-bet').hidden = true; $('ladder-controls').hidden = true;
+    trainBet.reset(); ladderBet.reset();
+    statusEl.textContent = ''; stepEl.textContent = '';
+    rungBtns.forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.n === '16' ? 'true' : 'false'); });
+    liveMsg('train-live', 'Fine-tune forgotten; back to the base model.');
+  }
+
+  goBtn.addEventListener('click', runTrain);
+  resetBtn.addEventListener('click', resetTrain);
+  rungBtns.forEach(function(b){
+    b.addEventListener('click', function(){ runLadder(+b.dataset.n); });
+  });
+
+  window.__trainRefresh = function(){
+    renderFinalChips();
+    renderTrainNote();
+    if(state.trainFacts){ renderLadderRead(); renderLadderNote(); }
+    drawTrainChart();
+  };
+
+  /* synchronous bench (headless testing; rAF does not advance there) */
+  window.__sftTrainBench = function(seed){
+    if(seed === undefined || seed === null) seed = PIN.shipping;
+    var tr = makeTrainer(A.demoA16, SHIP.lr, seed, true);
+    tr.run(SHIP.steps);
+    var q = tr.quizAccuracy(demoQ(A.demoA16), demoA(A.demoA16));
+    var lib = tr.libraryScore(FACTS);
+    return 'quiz=' + q.nOk + '/16 library=' + lib.nOk + '/90 loss=' + tr.lossFullAnswerSet().toFixed(4);
+  };
+})();
+
+/* ---------- init ---------- */
+drawTrainChart();
+})();
+
 /*__JS_DEMOS__*/
 
 /* ---------- deep links: parse #d<depth> (forward-compatible with -<lang>) ---------- */
