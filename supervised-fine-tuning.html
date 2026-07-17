@@ -2201,6 +2201,174 @@ onThemeChange(drawTrainChart);
   };
 })();
 
+/* ==================== panel 2 · DISSECT (quiz the graduate) ==================== */
+(function(){
+  var goBtn = $('dissect-go');
+  if(!goBtn) return;
+  var statusEl = $('dissect-status'), readEl = $('dissect-read'), chipsEl = $('dissect-chips'),
+      rowsEl = $('dissect-rows'), noteEl = $('dissect-note');
+  var bet = wireBet($('dissect-bet'));
+  regBtn(goBtn);
+  /* fixed display picks (verified in the harness): 2 practiced, 5 held-out */
+  var SAMPLE_QS = [
+    'what colour is the wolf?', 'what does the whale eat?',
+    'what colour is the fox?', 'what does the fox eat?',
+    'where does the owl live?', 'what does the owl eat?', 'where does the frog live?'
+  ];
+  var practicedSet = {};
+  demoQ(A.demoA16).forEach(function(q){ practicedSet[q] = 1; });
+
+  function betWinner(nOk){
+    var frac = nOk / 74;
+    var d = [['none', Math.abs(frac - 0.03)], ['half', Math.abs(frac - 0.5)], ['most', Math.abs(frac - 0.85)]];
+    d.sort(function(a, b){ return a[1] - b[1]; });
+    return d[0][0];
+  }
+  function renderChips(res, final){
+    if(!res){ chipsEl.innerHTML = ''; return; }
+    var kid = kidMode();
+    var h = '<span class="sc' + (final && res.p.ok === 16 ? ' win' : '') + '">'
+      + (kid ? 'copybook questions: ' : 'practiced exact: ')
+      + '<b>' + res.p.ok + '/' + (final ? 16 : res.p.n) + '</b></span>'
+      + '<span class="sc">' + (kid ? 'new questions right: ' : 'un-practiced exact: ')
+      + '<b>' + res.u.ok + '/' + (final ? 74 : res.u.n) + '</b></span>'
+      + '<span class="sc">' + (kid ? 'answer-looking replies: ' : 'answer-shaped (“a:”): ')
+      + '<b>' + res.shaped + '/' + (final ? 74 : res.u.n) + '</b></span>';
+    if(final && res.recallB !== undefined){
+      h += '<span class="sc">' + (kid ? 'storybook facts of 8 quiet animals: ' : 'bare-prompt recall, 8 undemoed animals: ')
+        + '<b>' + res.recallB + '/8 → ' + res.recallA + '/8</b></span>';
+    }
+    chipsEl.innerHTML = h;
+  }
+  function renderRows(res){
+    if(!res){ rowsEl.innerHTML = ''; return; }
+    var h = '';
+    SAMPLE_QS.forEach(function(q){
+      var r = res.rowsByQ[q];
+      if(!r) return;
+      var practiced = !!practicedSet[q];
+      var cls = practiced ? (r.ok ? 'qrow ok' : 'qrow bad') : 'qrow heldout';
+      var mark = r.ok ? (practiced ? '✓' : '✓ (surprise)') : '✗';
+      h += '<div class="' + cls + '"><span class="q">' + esc(q) + (practiced ? '' : (kidMode() ? ' · new!' : ' · held-out')) + '</span>'
+        + '<span class="a"><span class="mark">' + mark + '</span> ' + esc(r.got) + '</span></div>';
+    });
+    rowsEl.innerHTML = h;
+  }
+  function renderNote(){
+    var f = state.dissect;
+    if(!f){ noteEl.textContent = ''; return; }
+    var pre = betPrefix(bet), s;
+    if(kidMode()){
+      s = 'It got ' + f.u.ok + ' of the 74 new questions right' + (f.u.ok === 0 ? ' — none at all!' : '.') + ' '
+        + 'But look closer: ' + f.shaped + ' of its replies LOOK like answers — right costume, wrong facts. The copybook taught it the shape of answering, not the facts. '
+        + 'And the quiet animals it never practiced? Their storybook facts slipped from ' + f.recallB + ' of 8 to ' + f.recallA + ' of 8 while it was busy practicing.';
+    } else {
+      s = 'Measured: ' + f.u.ok + '/74 exact on un-practiced pairs'
+        + (f.u.ok === 0 ? ' — zero' : ' — a nonzero surprise this run, worth resampling') + ', versus ' + f.p.ok + '/16 on practiced ones. '
+        + 'Yet ' + f.shaped + '/74 replies came back answer-shaped (leading “a:”): the format generalized; the content did not. '
+        + 'The tax on old knowledge is measured too: bare storybook prompts for 8 animals the copybook never mentioned went '
+        + f.recallB + '/8 → ' + f.recallA + '/8 after fine-tuning.'
+        + (lvl() >= 3 ? ' (Same pinned-seed model as experiment 1; the sample rows and the 8 recall probes are fixed picks so reruns are comparable — 10-seed spreads live in the repo lab.)' : '');
+    }
+    noteEl.textContent = pre + s;
+  }
+
+  function ensureShipping(cb){
+    if(state.shipping){ cb(); return; }
+    var tr = makeTrainer(A.demoA16, SHIP.lr, PIN.shipping, true);
+    liveMsg('dissect-live', 'No fine-tuned model in memory — running the standard fine-tune first.');
+    animateRun(tr, SHIP.steps, {
+      checkpoints: [],
+      onCheckpoint: function(){},
+      onChunk: function(done){ readEl.textContent = 'fine-tuning first · step ' + done + '/' + SHIP.steps; },
+      onDone: function(losses, stepsMs){
+        var q = tr.quizAccuracy(demoQ(A.demoA16), demoA(A.demoA16));
+        var lib = tr.libraryScore(FACTS);
+        state.shipping = { params: tr.params, demos: A.demoA16, quiz: q.nOk, quizRows: q.rows,
+          library: lib.nOk, finalLoss: tr.lossFullAnswerSet(), seed: PIN.shipping };
+        state.ladder[16] = { nOk: q.nOk, n: 16 };
+        noteMs300(stepsMs);
+        cb();
+      }
+    });
+  }
+
+  function finish(res){
+    var probes = recallProbes(A.demoA16);
+    var rb = recallScore(BASE, probes);
+    var ra = recallScore(state.shipping.params, probes);
+    res.recallB = rb.ok; res.recallA = ra.ok;
+    state.dissect = { p: res.p, u: res.u, shaped: res.shaped, rowsByQ: res.rowsByQ,
+      recallB: rb.ok, recallA: ra.ok, recallRows: ra.rows };
+    resolveBet(bet, betWinner(res.u.ok));
+    renderChips(state.dissect, true);
+    renderRows(state.dissect);
+    renderNote();
+    readEl.textContent = '';
+    statusEl.textContent = 'done · un-practiced ' + res.u.ok + '/74';
+    liveMsg('dissect-live', 'Quiz finished: practiced ' + res.p.ok + ' of 16; un-practiced exact ' + res.u.ok
+      + ' of 74; answer-shaped ' + res.shaped + ' of 74; recall for eight quiet animals ' + rb.ok + ' of 8 before, ' + ra.ok + ' of 8 after.');
+    setBusy(false);
+  }
+
+  function runDissect(){
+    if(state.busy) return;
+    setBusy(true);
+    state.dissect = null;
+    rowsEl.innerHTML = ''; chipsEl.innerHTML = ''; noteEl.textContent = '';
+    statusEl.textContent = 'running…';
+    ensureShipping(function(){
+      liveMsg('dissect-live', 'Quizzing all 90 questions.');
+      var res = { p: { ok: 0, n: 0 }, u: { ok: 0, n: 0 }, shaped: 0, rowsByQ: {} };
+      var i = 0, perChunk = reduceMotion ? 18 : 4;
+      function tick(){
+        var end = Math.min(i + perChunk, FACTS.length);
+        for(; i < end; i++){
+          var f = FACTS[i];
+          var got = SFTE.greedyAnswer(state.shipping.params, f.question);
+          var ok = got === 'a: ' + f.answer_sentence;
+          res.rowsByQ[f.question] = { got: got, ok: ok };
+          if(practicedSet[f.question]){ res.p.n++; res.p.ok += ok ? 1 : 0; }
+          else { res.u.n++; res.u.ok += ok ? 1 : 0; if(got.indexOf('a:') === 0) res.shaped++; }
+        }
+        readEl.textContent = (kidMode() ? 'asking question ' : 'quizzing · ') + i + '/90';
+        renderChips(res, false);
+        renderRows(res);
+        if(i < FACTS.length) schedule(tick); else finish(res);
+      }
+      tick();
+    });
+  }
+
+  goBtn.addEventListener('click', runDissect);
+
+  window.__dissectRefresh = function(){
+    if(state.dissect){ renderChips(state.dissect, true); renderRows(state.dissect); }
+    renderNote();
+  };
+
+  /* synchronous bench */
+  window.__dissectBench = function(){
+    var params;
+    if(state.shipping){ params = state.shipping.params; }
+    else {
+      var tr = makeTrainer(A.demoA16, SHIP.lr, PIN.shipping, true);
+      tr.run(SHIP.steps);
+      params = tr.params;
+    }
+    var p = 0, u = 0, shaped = 0;
+    FACTS.forEach(function(f){
+      var got = SFTE.greedyAnswer(params, f.question);
+      var ok = got === 'a: ' + f.answer_sentence;
+      if(practicedSet[f.question]) p += ok ? 1 : 0;
+      else { u += ok ? 1 : 0; if(got.indexOf('a:') === 0) shaped++; }
+    });
+    var probes = recallProbes(A.demoA16);
+    return 'practiced=' + p + '/16 unpracticed=' + u + '/74 shaped=' + shaped + '/74 recall='
+      + recallScore(BASE, probes).ok + '/8->' + recallScore(params, probes).ok + '/8';
+  };
+})();
+
 /* ---------- init ---------- */
 drawTrainChart();
 })();
