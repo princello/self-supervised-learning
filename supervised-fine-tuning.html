@@ -2546,7 +2546,421 @@ onThemeChange(drawTrainChart);
   };
 })();
 
+/* ==================== panel 4a · MASK (loss masking A/B) ==================== */
+var dialsRefreshers = [];
+function pct1(x){ return (x * 100).toFixed(1); }
+(function(){
+  var goBtn = $('mask-go');
+  if(!goBtn) return;
+  var statusEl = $('mask-status'), readEl = $('mask-read'), chipsEl = $('mask-chips'), noteEl = $('mask-note');
+  regBtn(goBtn);
+
+  /* line-aligned ~180-char window; prefers the first window containing a q:/a:
+     line (derived from the arm's own sample — same recipe as the harness) */
+  function displayWindow(samples){
+    var lines = samples.join('\n').split('\n').filter(function(l){ return l.trim(); });
+    var start = 0;
+    for(var i = 0; i < lines.length; i++){
+      var t = lines[i].trim();
+      if(t.indexOf('q:') === 0 || t.indexOf('a:') === 0){ start = Math.max(0, i - 1); break; }
+    }
+    var out = [], len = 0;
+    for(var j = start; j < lines.length && len < 180; j++){ out.push(lines[j]); len += lines[j].length + 1; }
+    return out.join('\n').slice(0, 200);
+  }
+  function markedHTML(txt){
+    return txt.split('\n').map(function(ln){
+      var t = ln.trim();
+      if(t.indexOf('q:') === 0 || t.indexOf('a:') === 0) return '<span class="gen-part">' + esc(ln) + '</span>';
+      return esc(ln);
+    }).join('\n');
+  }
+  function revealLines(pre, html){
+    var lines = html.split('\n');
+    var i = 0, per = reduceMotion ? lines.length : 1;
+    function tick(){
+      i = Math.min(i + per, lines.length);
+      pre.innerHTML = lines.slice(0, i).join('\n');
+      if(i < lines.length) schedule(tick);
+    }
+    tick();
+  }
+
+  function renderChips(){
+    var f = state.mask;
+    if(!f){ chipsEl.innerHTML = ''; return; }
+    var kid = kidMode();
+    chipsEl.innerHTML =
+      '<span class="sc' + (f.trainM > f.trainU ? ' win' : '') + '">' + (kid ? 'answers-only quiz: ' : 'masked · train quiz: ') + '<b>' + f.trainM + '/16</b></span>'
+      + '<span class="sc' + (f.trainU > f.trainM ? ' win' : '') + '">' + (kid ? 'trace-everything quiz: ' : 'unmasked · train quiz: ') + '<b>' + f.trainU + '/16</b></span>'
+      + '<span class="sc">' + (kid ? 'quiz-lines in free doodles · answers-only: ' : 'q:/a: lines in free generation · masked: ') + '<b>' + pct1(f.bleedM) + '%</b></span>'
+      + '<span class="sc">' + (kid ? 'trace-everything: ' : 'unmasked: ') + '<b>' + pct1(f.bleedU) + '%</b></span>';
+  }
+  function renderNote(){
+    var f = state.mask;
+    if(!f){ noteEl.textContent = ''; return; }
+    var s, quizzes = f.bleedU > f.bleedM;
+    if(kidMode()){
+      s = 'The answers-only reader scored ' + f.trainM + ' of 16. The trace-everything reader scored ' + f.trainU + ' of 16 — half its practice went into copying questions instead of learning answers. '
+        + (quizzes
+          ? 'And it caught a funny habit: when it doodles freely, ' + pct1(f.bleedU) + '% of its lines are little q: and a: lines — it quizzes itself! The answers-only reader almost never does (' + pct1(f.bleedM) + '%).'
+          : 'Free-doodle quiz-lines this run: ' + pct1(f.bleedM) + '% vs ' + pct1(f.bleedU) + '%.');
+    } else {
+      s = 'Measured: masked ' + f.trainM + '/16, unmasked ' + f.trainU + '/16 at the same budget — with loss on every character, roughly half the gradient is spent predicting prompt text (answer-line loss ' + f.lossU.toFixed(4) + ' vs ' + f.lossM.toFixed(4) + ' = ' + (f.lossU / f.lossM).toFixed(1) + '×). '
+        + (quizzes
+          ? 'Second measured effect: in free generation the unmasked model emits q:/a: lines ' + pct1(f.bleedU) + '% of the time versus ' + pct1(f.bleedM) + '% masked — the unmasked one quizzes itself with its own training demos. '
+          : 'Format bleed this run: masked ' + pct1(f.bleedM) + '%, unmasked ' + pct1(f.bleedU) + '%. ')
+        + (lvl() >= 3 ? 'Honesty note: every quiz prompt on this page ends with the template newline (“q: …?⏎”) — probe WITHOUT it and this comparison reverses (the unmasked arm answers more), because masking leaves the ?→newline→a: transition untrained. The newline is part of the chat template, so the UI always supplies it. (lr ' + SHIP.lrMaskDemo + ', pinned seed ' + PIN.shipping + ' for both arms.)' : '');
+    }
+    noteEl.textContent = s;
+  }
+
+  function runMask(){
+    if(state.busy) return;
+    setBusy(true);
+    state.mask = null;
+    chipsEl.innerHTML = ''; noteEl.textContent = '';
+    $('mask-ba').hidden = true;
+    statusEl.textContent = 'running…';
+    liveMsg('mask-live', 'Two runs at the same budget: answer-only loss first, then loss on every character.');
+    var arms = {};
+    function runArm(maskPrompt, cb){
+      var tr = makeTrainer(A.demoA16, SHIP.lrMaskDemo, PIN.shipping, maskPrompt);
+      var armName = maskPrompt
+        ? (kidMode() ? 'reader 1 · answers only' : 'arm 1/2 · masked')
+        : (kidMode() ? 'reader 2 · everything' : 'arm 2/2 · unmasked');
+      animateRun(tr, SHIP.steps, {
+        checkpoints: [],
+        onCheckpoint: function(){},
+        onChunk: function(done, losses){
+          readEl.textContent = armName + ' · step ' + done + '/' + SHIP.steps + ' · loss ' + losses[losses.length - 1].toFixed(3);
+        },
+        onDone: function(losses, stepsMs){
+          noteMs300(stepsMs);
+          arms[maskPrompt ? 'masked' : 'unmasked'] = {
+            train: tr.quizAccuracy(demoQ(A.demoA16), demoA(A.demoA16)).nOk,
+            loss: tr.lossFullAnswerSet(),
+            bleed: scratchBleed(tr.params, PIN.shipping * 1000 + 555)
+          };
+          cb();
+        }
+      });
+    }
+    runArm(true, function(){ runArm(false, function(){
+      var m = arms.masked, u = arms.unmasked;
+      state.mask = {
+        trainM: m.train, trainU: u.train, lossM: m.loss, lossU: u.loss,
+        bleedM: m.bleed.frac, bleedU: u.bleed.frac,
+        winM: displayWindow(m.bleed.samples), winU: displayWindow(u.bleed.samples)
+      };
+      $('mask-ba').hidden = false;
+      revealLines($('mask-out-a'), markedHTML(state.mask.winM));
+      revealLines($('mask-out-b'), markedHTML(state.mask.winU));
+      renderChips(); renderNote();
+      readEl.textContent = '';
+      statusEl.textContent = 'done · ' + m.train + '/16 vs ' + u.train + '/16';
+      liveMsg('mask-live', 'Both arms finished. Masked: quiz ' + m.train + ' of 16, marker lines ' + pct1(m.bleed.frac)
+        + ' percent of free writing. Unmasked: quiz ' + u.train + ' of 16, marker lines ' + pct1(u.bleed.frac) + ' percent.');
+      setBusy(false);
+    }); });
+  }
+
+  goBtn.addEventListener('click', runMask);
+  dialsRefreshers.push(function(){ renderChips(); renderNote(); });
+
+  /* synchronous bench */
+  window.__maskBench = function(){
+    var res = {};
+    [true, false].forEach(function(mp){
+      var tr = makeTrainer(A.demoA16, SHIP.lrMaskDemo, PIN.shipping, mp);
+      tr.run(SHIP.steps);
+      res[mp ? 'm' : 'u'] = {
+        train: tr.quizAccuracy(demoQ(A.demoA16), demoA(A.demoA16)).nOk,
+        loss: tr.lossFullAnswerSet(),
+        bleed: scratchBleed(tr.params, PIN.shipping * 1000 + 555).frac
+      };
+    });
+    return 'masked=' + res.m.train + '/16 unmasked=' + res.u.train + '/16 bleedM=' + pct1(res.m.bleed)
+      + '% bleedU=' + pct1(res.u.bleed) + '% lossx=' + (res.u.loss / res.m.loss).toFixed(1);
+  };
+})();
+
+/* ==================== panel 4b · DAMAGE (the two dials) ==================== */
+(function(){
+  var goBtn = $('damage-go'), overBtn = $('over-go');
+  if(!goBtn) return;
+  var statusEl = $('damage-status'), readEl = $('damage-read'), overRead = $('over-read'), noteEl = $('damage-note');
+  var bet = wireBet($('damage-bet'));
+  regBtn(goBtn); regBtn(overBtn);
+  var lrBtns = $('damage-controls').querySelectorAll('button[data-lr]');
+  lrBtns.forEach(function(b){
+    regBtn(b);
+    b.addEventListener('click', function(){
+      if(state.busy) return;
+      state.damage.selLr = +b.dataset.lr;
+      lrBtns.forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    });
+  });
+
+  var DCW = 640, DCH = 220;
+  function drawDamageChart(){
+    var cv = $('damage-chart'); if(!cv) return;
+    var ctx = ctx2d(cv, DCW, DCH);
+    var bars = state.damage.bars;
+    var L = 46, R = 16, T = 22, B = 34;
+    var W = DCW - L - R, H = DCH - T - B;
+    var ink2 = cssVar('--ink2'), line = cssVar('--line'), accent = cssVar('--accent'), hl = cssVar('--hl');
+    ctx.font = '11px ui-monospace, Menlo, monospace';
+    ctx.strokeStyle = line; ctx.lineWidth = 1;
+    [0, 30, 60, 90].forEach(function(v){
+      var y = T + H - v / 90 * H;
+      ctx.beginPath(); ctx.moveTo(L, Math.round(y) + .5); ctx.lineTo(L + W, Math.round(y) + .5); ctx.stroke();
+      ctx.fillStyle = ink2; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText(String(v), L - 5, y);
+    });
+    ctx.fillStyle = ink2; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillText(kidMode() ? 'storybook facts still right, of 90' : 'library retained /90 at end of run', L + 4, T - 8);
+    if(!bars.length){
+      ctx.textAlign = 'center';
+      ctx.fillText(kidMode() ? 'run a rung and bars appear here' : 'no runs yet — pick a learning rate and press “Run it”', L + W / 2, T + H / 2);
+      return;
+    }
+    var slot = W / bars.length;
+    var bw = Math.min(64, slot * 0.55);
+    bars.forEach(function(b, i){
+      var x = L + slot * i + (slot - bw) / 2;
+      var h = Math.max(2, b.lib / 90 * H);
+      ctx.fillStyle = b.kind === 'over' ? hl : accent;
+      ctx.fillRect(x, T + H - h, bw, h);
+      ctx.fillStyle = ink2; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.fillText(b.label, x + bw / 2, T + H + 6);
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = cssVar('--ink');
+      ctx.fillText(b.lib + '/90', x + bw / 2, T + H - h - 4);
+    });
+  }
+  onThemeChange(drawDamageChart);
+
+  window.__renderOverBtn = function(){
+    var kid = kidMode();
+    if(state.ms300 === null){
+      overBtn.textContent = kid
+        ? 'The long haul: 10× more practice (run something above first, so I can time it)'
+        : 'The long haul: train 10× longer (run a rung first to calibrate the time estimate)';
+      overBtn.disabled = true;
+    } else {
+      var est = Math.max(2, Math.round((state.ms300 * 10 + 1500) / 1000));
+      overBtn.textContent = (kid ? 'The long haul: 10× more practice (~' : 'The long haul: train 10× longer (~') + est + ' s)';
+      overBtn.disabled = state.busy;
+    }
+  };
+
+  function lib05(){
+    var v = null;
+    state.damage.runs.forEach(function(r){ if(r.lr === SHIP.lrDamage) v = r.lib; });
+    return v;
+  }
+  function gentleBaseline(){
+    var r015 = null, r02 = null;
+    state.damage.runs.forEach(function(r){ if(r.lr === SHIP.lr) r015 = r.lib; if(r.lr === SHIP.lrMaskDemo) r02 = r.lib; });
+    if(r015 !== null) return { lib: r015, label: 'lr ' + SHIP.lr };
+    if(r02 !== null) return { lib: r02, label: 'lr ' + SHIP.lrMaskDemo };
+    if(state.shipping) return { lib: state.shipping.library, label: 'lr ' + SHIP.lr + ' (experiment 1)' };
+    if(state.over) return { lib: state.over.marks[0].lib, label: 'lr ' + SHIP.lrMaskDemo + ' at ×1' };
+    return null;
+  }
+  function stepsDamage(){
+    if(!state.over) return null;
+    var mk = state.over.marks;
+    return mk[0].lib - mk[mk.length - 1].lib;
+  }
+  function maybeResolveBet(){
+    if(bet.resolved) return;
+    var hard = lib05(), base = gentleBaseline();
+    var lrD = (hard !== null && base !== null) ? base.lib - hard : null;
+    var stD = stepsDamage();
+    if(lrD !== null && stD !== null){
+      resolveBet(bet, lrD > stD + 5 ? 'lr' : (stD > lrD + 5 ? 'steps' : (lrD >= stD ? 'lr' : 'steps')));
+    } else if(lrD !== null && lrD >= 20){
+      resolveBet(bet, 'lr');
+    } else if(stD !== null){
+      resolveBet(bet, stD > 20 ? 'steps' : 'lr');
+    }
+  }
+  function renderNote(){
+    var kid = kidMode();
+    var bits = [];
+    var byLr = {};
+    state.damage.runs.forEach(function(r){ byLr[r.lr] = r; });
+    var lrs = Object.keys(byLr).map(Number).sort(function(a, b){ return a - b; });
+    if(lrs.length){
+      if(kid){
+        bits.push(lrs.map(function(lr){
+          var r = byLr[lr];
+          return 'press ' + (lr === SHIP.lrDamage ? 'HARD' : lr === SHIP.lr ? 'gently' : 'normally') + ' (' + lr + '): '
+            + r.lib + ' of 90 storybook facts left' + (lr === SHIP.lrDamage ? ' — and it still aced its copybook, ' + r.train + ' of 16!' : '');
+        }).join(' · ') + '.');
+      } else {
+        bits.push('Measured rungs — ' + lrs.map(function(lr){
+          var r = byLr[lr];
+          return 'lr ' + lr + ': library ' + r.lib + '/90, copybook ' + r.train + '/16';
+        }).join(' · ') + '.');
+        if(byLr[SHIP.lrDamage]) bits.push('Note what lr ' + SHIP.lrDamage + ' does NOT break: the copybook score. The run looks successful; the library quietly burned.');
+      }
+    }
+    if(state.over){
+      var mk = state.over.marks;
+      var libs = mk.map(function(m){ return m.lib; });
+      var pars = mk.map(function(m){ return m.parrot; });
+      var flat = Math.abs(libs[libs.length - 1] - libs[0]) <= 5;
+      if(kid){
+        bits.push('And the long haul? Ten times the practice ' + (flat ? 'barely touched' : 'changed') + ' the storybook ('
+          + libs.join(' → ') + ' of 90). What DID grow: parrot answers — brand-new questions answered with word-for-word copybook lines: '
+          + pars.join(' → ') + ' of 74.');
+      } else {
+        bits.push('Long haul (lr ' + SHIP.lrMaskDemo + ', checks at ×1/×3/×10): library ' + libs.join(' → ') + '/90 — '
+          + (flat ? 'flat; the forgetting happened inside the first 300 steps, not in the next 2,700' : 'net change ' + (libs[0] - libs[libs.length - 1]))
+          + '. Parroting (fresh question → verbatim copybook line): ' + pars.join(' → ') + '/74, the one number that keeps climbing.');
+        var lastEx = mk[mk.length - 1].ex;
+        if(lastEx) bits.push('Example this run: “' + lastEx.q + '” → “' + lastEx.got + '”.');
+      }
+    }
+    if(bet.resolved){
+      var hard = lib05(), base = gentleBaseline(), stD = stepsDamage();
+      if(hard !== null && base !== null && stD !== null){
+        bits.push(kid
+          ? 'So: pressing harder cost ' + (base.lib - hard) + ' facts; practicing 10× longer cost ' + Math.max(0, stD) + '.'
+          : 'Verdict in measured numbers: pressure moved the library by ' + (base.lib - hard) + ' facts (vs ' + base.label + '); duration moved it by ' + stD + '.');
+      } else if(hard !== null && base !== null){
+        bits.push(kid
+          ? 'Pressing harder cost ' + (base.lib - hard) + ' storybook facts in ordinary-length practice. Press the long haul to test the time dial too.'
+          : 'lr evidence: ' + (base.lib - hard) + ' facts lost vs ' + base.label + ' at identical step count. For the duration half, run the long haul.');
+      } else if(stD !== null){
+        bits.push(kid
+          ? 'Ten times the practice cost ' + Math.max(0, stD) + ' facts — the time dial barely moves it. Try the hard press (0.05) for the other half.'
+          : 'Steps evidence: net ' + stD + ' facts across ×1→×10 — duration is not the damage dial. For the pressure half, run lr ' + SHIP.lrDamage + '.');
+      }
+    }
+    if(lvl() >= 3 && (lrs.length || state.over)) bits.push('(Pinned seeds: rungs ' + PIN.shipping + ', long haul ' + PIN.overtraining + '; 10-seed spreads in the repo lab.)');
+    noteEl.textContent = (bet.resolved ? betPrefix(bet) : '') + bits.join(' ');
+  }
+
+  function runDamage(){
+    if(state.busy) return;
+    setBusy(true);
+    var lr = state.damage.selLr;
+    statusEl.textContent = 'running…';
+    liveMsg('damage-live', 'One full fine-tune at learning rate ' + lr + '.');
+    var tr = makeTrainer(A.demoA16, lr, PIN.shipping, true);
+    animateRun(tr, SHIP.steps, {
+      checkpoints: [],
+      onCheckpoint: function(){},
+      onChunk: function(done, losses){
+        readEl.textContent = 'lr ' + lr + ' · step ' + done + '/' + SHIP.steps + ' · loss ' + losses[losses.length - 1].toFixed(3);
+      },
+      onDone: function(losses, stepsMs){
+        noteMs300(stepsMs);
+        var lib = tr.libraryScore(FACTS).nOk;
+        var train = tr.quizAccuracy(demoQ(A.demoA16), demoA(A.demoA16)).nOk;
+        state.damage.runs.push({ lr: lr, lib: lib, train: train });
+        state.damage.bars.push({ label: 'lr ' + lr, lib: lib, kind: 'lr' });
+        drawDamageChart();
+        readEl.textContent = 'lr ' + lr + ': library ' + lib + '/90 · copybook ' + train + '/16';
+        maybeResolveBet();
+        renderNote();
+        statusEl.textContent = 'done';
+        liveMsg('damage-live', 'Run finished at learning rate ' + lr + ': library ' + lib + ' of 90, copybook ' + train + ' of 16.');
+        setBusy(false);
+      }
+    });
+  }
+
+  function runOver(){
+    if(state.busy || state.ms300 === null) return;
+    setBusy(true);
+    statusEl.textContent = 'long haul…';
+    liveMsg('damage-live', 'The long haul: 3000 steps, with parroting and library checks at 1x, 3x and 10x.');
+    var demos = A.demoA16;
+    var parrotSet = {};
+    demos.forEach(function(d){ parrotSet['a: ' + d.a] = 1; });
+    var fresh = freshFacts(demos);
+    var tr = makeTrainer(demos, SHIP.lrMaskDemo, PIN.overtraining, true);
+    var MARKS = [300, 900, 3000];
+    var marks = [];
+    animateRun(tr, 3000, {
+      checkpoints: MARKS,
+      onCheckpoint: function(step){
+        var parrot = 0, ex = null;
+        for(var i = 0; i < fresh.length; i++){
+          var line = SFTE.greedyAnswer(tr.params, fresh[i].question);
+          if(classifyLine(line, fresh[i], parrotSet) === 'parrot'){ parrot++; if(!ex) ex = { q: fresh[i].question, got: line }; }
+        }
+        var lib = SFTE.libraryScore(tr.params, FACTS).nOk;
+        marks.push({ steps: step, mult: step / 300, parrot: parrot, lib: lib, ex: ex });
+        state.damage.bars.push({ label: '×' + (step / 300) + ' steps', lib: lib, kind: 'over' });
+        drawDamageChart();
+      },
+      onChunk: function(done){
+        var last = marks[marks.length - 1];
+        var next = null;
+        for(var i = 0; i < MARKS.length; i++){ if(MARKS[i] > done){ next = MARKS[i]; break; } }
+        overRead.textContent = 'step ' + done + '/3000'
+          + (last ? ' · ×' + last.mult + ': parrot ' + last.parrot + '/74, library ' + last.lib + '/90' : '')
+          + (next ? ' · next check ×' + (next / 300) : '');
+      },
+      onDone: function(){
+        state.over = { marks: marks };
+        maybeResolveBet();
+        overRead.textContent = marks.map(function(m){ return '×' + m.mult + ': parrot ' + m.parrot + '/74 · lib ' + m.lib + '/90'; }).join('   ');
+        renderNote();
+        statusEl.textContent = 'done';
+        liveMsg('damage-live', 'Long haul finished. Parroting ' + marks.map(function(m){ return m.parrot; }).join(', then ') + ' of 74; library '
+          + marks.map(function(m){ return m.lib; }).join(', then ') + ' of 90.');
+        setBusy(false);
+      }
+    });
+  }
+
+  goBtn.addEventListener('click', runDamage);
+  overBtn.addEventListener('click', runOver);
+  dialsRefreshers.push(function(){ drawDamageChart(); renderNote(); window.__renderOverBtn(); });
+
+  /* synchronous benches */
+  window.__damageBench = function(){
+    var out = [];
+    [SHIP.lr, SHIP.lrMaskDemo, SHIP.lrDamage].forEach(function(lr){
+      var tr = makeTrainer(A.demoA16, lr, PIN.shipping, true);
+      tr.run(SHIP.steps);
+      out.push('lr' + lr + '=' + tr.libraryScore(FACTS).nOk + '/90(train'
+        + tr.quizAccuracy(demoQ(A.demoA16), demoA(A.demoA16)).nOk + '/16)');
+    });
+    return out.join(' ');
+  };
+  window.__overBench = function(){
+    var demos = A.demoA16;
+    var parrotSet = {};
+    demos.forEach(function(d){ parrotSet['a: ' + d.a] = 1; });
+    var fresh = freshFacts(demos);
+    var tr = makeTrainer(demos, SHIP.lrMaskDemo, PIN.overtraining, true);
+    var done = 0, pars = [], libs = [];
+    [300, 900, 3000].forEach(function(mark){
+      tr.run(mark - done); done = mark;
+      var parrot = 0;
+      fresh.forEach(function(f){
+        if(classifyLine(SFTE.greedyAnswer(tr.params, f.question), f, parrotSet) === 'parrot') parrot++;
+      });
+      pars.push(parrot + '/74');
+      libs.push(SFTE.libraryScore(tr.params, FACTS).nOk);
+    });
+    return 'parrot=' + pars.join('->') + ' lib=' + libs.join('->');
+  };
+
+  drawDamageChart();
+  window.__renderOverBtn();
+})();
+
 /* ---------- init ---------- */
+window.__dialsRefresh = function(){ dialsRefreshers.forEach(function(f){ f(); }); };
 drawTrainChart();
 })();
 
