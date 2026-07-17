@@ -16,7 +16,7 @@
   --hl:#B8CCE4;
   --hl-ink:#27476B;
   --hatch:#98A0AF;
-  --pink:#D8437A;
+  --pink:#C93A6E;
   --panel-tint:#F1F3F7;
   --shadow:0 1px 2px rgba(20,22,29,.05),0 8px 28px rgba(20,22,29,.07);
 }
@@ -47,7 +47,7 @@
 :root[data-theme="light"]{
   --paper:#F7F8FA; --card:#FFFFFF; --ink:#14161D; --ink2:#4A5264; --line:#DFE3EA;
   --accent:#A25A12; --accent-soft:#F5E7D4; --on-accent:#FFFFFF;
-  --hl:#B8CCE4; --hl-ink:#27476B; --hatch:#98A0AF; --pink:#D8437A; --panel-tint:#F1F3F7;
+  --hl:#B8CCE4; --hl-ink:#27476B; --hatch:#98A0AF; --pink:#C93A6E; --panel-tint:#F1F3F7;
   --shadow:0 1px 2px rgba(20,22,29,.05),0 8px 28px rgba(20,22,29,.07);
 }
 
@@ -141,7 +141,7 @@ body{background:var(--paper);margin:0}
 }
 
 /* ---------- hero ---------- */
-#hero{padding:58px 0 12px}
+#hero{padding-top:58px;padding-bottom:12px}
 .rule-strip{display:flex;flex-direction:column;gap:7px;margin-bottom:26px;max-width:180px}
 .rule-strip i{display:block;height:0;border-bottom:1.5px solid var(--hl);position:relative}
 .rule-strip i::after{
@@ -276,6 +276,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
   background:var(--panel-tint);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 14px;
 }
 .bet .btn:hover{border-color:var(--accent)}
+.bet .btn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
 .bet .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .bet[hidden]{display:none}
 
@@ -330,8 +331,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 /* model output console: ruled copybook paper */
 .out{
   margin-top:16px;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;
-  background:
-    repeating-linear-gradient(var(--card) 0 27px, color-mix(in srgb,var(--hl) 55%, transparent) 27px 28px);
+  background:var(--card);
 }
 .out .who{
   font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
@@ -340,6 +340,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 .out pre{
   margin:0;padding:4px 12px 10px;font-family:ui-monospace,'SF Mono',Menlo,monospace;
   font-size:15px;line-height:28px;white-space:pre-wrap;word-break:break-word;color:var(--ink);min-height:56px;
+  background:repeating-linear-gradient(var(--card) 0 27px, color-mix(in srgb,var(--hl) 55%, transparent) 27px 28px) content-box;
 }
 .out pre .prompt-part{color:var(--ink2)}
 .out pre .gen-part{color:var(--accent);font-weight:700}
@@ -463,9 +464,9 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 
     <div class="bet" id="hero-bet">
       <span class="bet-q"><span class="lv L1">Before you press it — what do you think it will do with your question?</span><span class="lv L2 L3 L4">Commit to a guess first. This model finishes text; it has never seen a question answered. What happens?</span></span>
-      <button type="button" class="btn" data-bet="answer">It answers it</button>
-      <button type="button" class="btn" data-bet="more">It asks more questions</button>
-      <button type="button" class="btn" data-bet="repeat">It repeats itself</button>
+      <button type="button" class="btn" aria-pressed="false" data-bet="answer">It answers it</button>
+      <button type="button" class="btn" aria-pressed="false" data-bet="more">It asks more questions</button>
+      <button type="button" class="btn" aria-pressed="false" data-bet="repeat">It repeats itself</button>
     </div>
 
     <div class="out" aria-label="Model output">
@@ -506,7 +507,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 <main class="wrap">
 
 <section class="chap" id="why">
-  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Part 1 · Fluent, not helpful</p>
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> 1 · Fluent, not helpful</p>
   <h2 class="display">It read everything. It answers nothing.</h2>
   <div class="prose">
     <div class="lv L1">
@@ -530,7 +531,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 </section>
 
 <section class="chap" id="copybook">
-  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Part 2 · The copybook</p>
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> 2 · The copybook</p>
   <h2 class="display">Sixteen perfect answers.</h2>
   <div class="prose">
     <div class="lv L1">
@@ -556,9 +557,9 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <p class="cb-note lv L2 L3 L4">This is <em>everything</em> the fine-tune sees. Loss is computed on the answer lines only (the <code class="mono">a:</code> marker through the newline).</p>
       <div class="bet" id="train-bet">
         <span class="bet-q"><span class="lv L1">Sixteen examples doesn't sound like much. After practicing, how many of these sixteen questions will it get perfectly right?</span><span class="lv L2 L3 L4">300 steps, 16 examples, one tiny model. Your bet — how many of the 16 practiced questions does it answer exactly right afterwards?</span></span>
-        <button type="button" class="btn" data-bet="few">A few</button>
-        <button type="button" class="btn" data-bet="half">About half</button>
-        <button type="button" class="btn" data-bet="all">All 16</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="few">A few</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="half">About half</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="all">All 16</button>
       </div>
       <div class="demo-controls">
         <button type="button" class="btn" id="train-go">Fine-tune on the copybook</button>
@@ -566,7 +567,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
         <span class="readout" id="train-step"></span>
       </div>
       <canvas class="chart-cv" id="train-chart" width="640" height="240" style="margin-top:16px"
-        role="img" aria-label="Live training chart: loss on the copybook falls; quiz score rises"></canvas>
+        role="img" aria-label="Training chart: minibatch loss and quiz score over 300 steps — run the fine-tune to draw it"></canvas>
       <div class="scorechips" id="train-chips"></div>
       <div class="gauge" id="train-gauge">
         <span class="lv L1" style="font-size:13px">its old storybook memory:</span>
@@ -588,9 +589,9 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <span class="vh" id="train-live" aria-live="polite"></span>
       <div class="bet" id="ladder-bet" hidden>
         <span class="bet-q"><span class="lv L1">Now a harder question: with the SAME amount of practice time, would 64 examples work even better than 16?</span><span class="lv L2 L3 L4">Same compute budget, four times the data: 64 demonstrations, still 300×24 steps. Better or worse than 16?</span></span>
-        <button type="button" class="btn" data-bet="better">Better — more data always wins</button>
-        <button type="button" class="btn" data-bet="worse">Worse</button>
-        <button type="button" class="btn" data-bet="same">About the same</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="better">Better — more data always wins</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="worse">Worse</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="same">About the same</button>
       </div>
       <div class="demo-controls" id="ladder-controls" hidden>
         <span style="font-weight:700;font-size:13.5px">Copybook size:</span>
@@ -611,7 +612,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 </section>
 
 <section class="chap" id="dissect">
-  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Part 3 · The dissection</p>
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> 3 · The dissection</p>
   <h2 class="display">What did it actually learn?</h2>
   <div class="prose">
     <div class="lv L1">
@@ -631,9 +632,9 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
     <div class="panel-body">
       <div class="bet" id="dissect-bet">
         <span class="bet-q"><span class="lv L1">It got all 16 copybook questions right. Now we ask it 74 questions it never practiced — about animals it read about every day. How many will it get right?</span><span class="lv L2 L3 L4">16/16 on practiced pairs. On the 74 un-practiced (entity, relation) pairs — same animals, same question shapes — how many exact answers?</span></span>
-        <button type="button" class="btn" data-bet="most">Most of them</button>
-        <button type="button" class="btn" data-bet="half">About half</button>
-        <button type="button" class="btn" data-bet="none">Almost none</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="most">Most of them</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="half">About half</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="none">Almost none</button>
       </div>
       <div class="demo-controls">
         <button type="button" class="btn" id="dissect-go">Run the full quiz</button>
@@ -663,7 +664,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 </section>
 
 <section class="chap" id="liar">
-  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Part 4 · The born liar</p>
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> 4 · The born liar</p>
   <h2 class="display">It never learned to say "I don't know."</h2>
   <div class="prose">
     <div class="lv L1">
@@ -683,9 +684,9 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
     <div class="panel-body">
       <div class="bet" id="liar-bet">
         <span class="bet-q"><span class="lv L1">We ask the fine-tuned reader about a <strong>puma</strong> — a word it has never, ever seen. What will it do?</span><span class="lv L2 L3 L4">Post-SFT, we ask about entities that appear in no corpus it has ever touched. Your bet:</span></span>
-        <button type="button" class="btn" data-bet="idk">It says it doesn't know</button>
-        <button type="button" class="btn" data-bet="answer">It answers anyway</button>
-        <button type="button" class="btn" data-bet="break">It breaks into gibberish</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="idk">It says it doesn't know</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="answer">It answers anyway</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="break">It breaks into gibberish</button>
       </div>
       <div class="demo-controls">
         <button type="button" class="btn" id="liar-go">Fine-tune, then ask about the puma</button>
@@ -712,16 +713,16 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <p>It answers. It <em>always</em> answers. Sometimes the answer is scrambled, sometimes it's a perfectly confident sentence about the wrong animal — but it never once says "I've never heard of a puma." Saying "I don't know" is its own habit, and nobody put it in the copybook.</p>
     </div>
     <div class="lv L2">
-      <p>Notice the exact shape of the failure, because it's subtler than "it makes things up." Sometimes — about one fake probe in thirteen, across many runs — it reaches for a <em>similarly-spelled real animal</em> and hands you that animal’s true fact with full confidence (ask about the wisp, get the wasp’s real colour). And be fair to it: this isn't lying — the training signal never contained a difference between "answer you know" and "answer you don't." Fixing that — teaching honesty as a behavior — is feedback's job, not the copybook's: that story continues in <a href="https://claude.ai/code/artifact/62ebc2d2-cfd5-47b1-995c-e46edfae94c1">the RL companion page</a>.</p>
+      <p>Notice the exact shape of the failure, because it's subtler than "it makes things up." Sometimes — about one fake probe in thirteen, across many runs — it reaches for a <em>similarly-spelled real animal</em> and hands you that animal’s true fact with full confidence (in one of our measured runs, asking about the wisp returned the wasp’s real colour). And be fair to it: this isn't lying — the training signal never contained a difference between "answer you know" and "answer you don't." Fixing that — teaching honesty as a behavior — is feedback's job, not the copybook's: that story continues in <a href="https://claude.ai/code/artifact/62ebc2d2-cfd5-47b1-995c-e46edfae94c1">the RL companion page</a>.</p>
     </div>
     <div class="lv L3 L4">
-      <p>Measured (10 seeds): fake-entity questions drew an answer-shaped response 0% of the time before SFT and 67.5% after; a fully fluent made-up answer about a quarter of the time; a refusal or "unknown" response, 0% — structurally impossible, since no such string was ever demonstrated. A caution for anyone building the same demo: 7.5% of fake probes elicited a <em>true</em> fact about a similarly-spelled real animal (ask about the wisp, get the wasp's true colour) — nearest-neighbour retrieval, not invention; captions here are generated from the measured output, not from what the story would prefer. The real-scale echo is well documented: RLHF-era models over-answer because demonstrations and preference data under-represent abstention, and "hallucination as a training artifact" (Schulman's framing) remains an active repair area — via refusal demonstrations, honesty rewards, and calibration probes.</p>
+      <p>Measured (10 seeds): fake-entity questions drew an answer-shaped response 0% of the time before SFT and 67.5% after; a fully fluent made-up answer about a quarter of the time; a refusal or "unknown" response, 0% — structurally impossible, since no such string was ever demonstrated. A caution for anyone building the same demo: 7.5% of fake probes elicited a <em>true</em> fact about a similarly-spelled real animal (one measured run answered the wisp question with the wasp's true colour) — nearest-neighbour retrieval, not invention; captions here are generated from the measured output, not from what the story would prefer. The real-scale echo is well documented: RLHF-era models over-answer because demonstrations and preference data under-represent abstention, and "hallucination as a training artifact" (Schulman's framing) remains an active repair area — via refusal demonstrations, honesty rewards, and calibration probes.</p>
     </div>
   </div>
 </section>
 
 <section class="chap" id="dials">
-  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Part 5 · The two dials</p>
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> 5 · The two dials</p>
   <h2 class="display">The fine print of fine-tuning.</h2>
   <div class="prose">
     <div class="lv L1">
@@ -763,11 +764,11 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <p style="margin:0 0 6px;font-size:14.5px"><span class="lv L1">Practicing the copybook made the reader forget some of its storybook. What controls how much it forgets — practicing <em>longer</em>, or practicing <em>harder</em>?</span><span class="lv L2 L3 L4">The library dropped to about half during the standard run. Which dial governs the damage — steps, or learning rate? Run the rungs and watch the library gauge.</span></p>
       <div class="bet" id="damage-bet">
         <span class="bet-q"><span class="lv L1">Which do you think hurts the old memory more?</span><span class="lv L2 L3 L4">Your bet — the bigger threat to the library:</span></span>
-        <button type="button" class="btn" data-bet="steps">Much longer practice</button>
-        <button type="button" class="btn" data-bet="lr">A harder press (higher learning rate)</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="steps">Much longer practice</button>
+        <button type="button" class="btn" aria-pressed="false" data-bet="lr">A harder press<span class="lv L2 L3 L4"> (higher learning rate)</span></button>
       </div>
       <div class="demo-controls" id="damage-controls">
-        <span style="font-weight:700;font-size:13.5px">Learning rate:</span>
+        <span class="lv L1" style="font-weight:700;font-size:13.5px">How hard it presses:</span><span class="lv L2 L3 L4" style="font-weight:700;font-size:13.5px">Learning rate:</span>
         <button type="button" class="btn ghostb" data-lr="0.015" aria-pressed="true">gentle ·0.015</button>
         <button type="button" class="btn ghostb" data-lr="0.02">standard ·0.02</button>
         <button type="button" class="btn ghostb" data-lr="0.05">hard ·0.05</button>
@@ -799,7 +800,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 </section>
 
 <section class="chap" id="real">
-  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> Part 6 · The real thing</p>
+  <p class="eyebrow"><span class="pencilmark"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.6 4.4a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="var(--accent)"/></svg></span> 6 · The real thing</p>
   <h2 class="display">From copybook to ChatGPT.</h2>
   <div class="prose">
     <div class="lv L1">
@@ -1482,15 +1483,14 @@ function mulberry32(seed){
   }
 
   var heroSeed = 1;         /* advances every press: fresh sample each time, honestly */
-  var lastQ = null, lastGen = null, betChoice = null, betResolved = false;
+  var lastQ = null, lastGen = null, betChoice = null, betResolved = false, betWon = false, betToken = -1;
   var animToken = 0;
 
   betRow.querySelectorAll('button').forEach(function(b){
     b.addEventListener('click', function(){
       betChoice = b.dataset.bet;
-      betRow.querySelectorAll('button').forEach(function(x){ x.style.borderColor = ''; x.style.background = ''; });
-      b.style.borderColor = cssVar('--accent');
-      b.style.background = cssVar('--accent-soft');
+      betRow.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', 'false'); });
+      b.setAttribute('aria-pressed', 'true');
     });
   });
 
@@ -1525,12 +1525,14 @@ function mulberry32(seed){
     var v = VERDICT[cls];
     var txt = kidMode() ? v.kid : v.adult;
     if(betChoice && !betResolved){
-      var won = (betChoice === cls) || (betChoice === 'more' && cls === 'more') ;
-      var pre = won ? (kidMode() ? 'You called it. ' : 'Your bet was right. ')
-                    : (kidMode() ? 'Not what you guessed — even better. ' : 'Not your bet — which is the point. ');
-      txt = pre + txt;
+      betWon = (betChoice === cls);
       betResolved = true;
+      betToken = animToken;
       betRow.hidden = true;
+    }
+    if(betResolved && betChoice && betToken === animToken){
+      txt = (betWon ? (kidMode() ? 'You called it. ' : 'Your bet was right. ')
+                    : (kidMode() ? 'Not what you guessed — even better. ' : 'Not your bet — which is the point. ')) + txt;
     }
     noteEl.textContent = txt;
   }
@@ -1815,15 +1817,14 @@ function wireBet(el){
     b.addEventListener('click', function(){
       if(bet.resolved) return;
       bet.choice = b.dataset.bet;
-      btns.forEach(function(x){ x.style.borderColor = ''; x.style.background = ''; });
-      b.style.borderColor = cssVar('--accent');
-      b.style.background = cssVar('--accent-soft');
+      btns.forEach(function(x){ x.setAttribute('aria-pressed', 'false'); });
+      b.setAttribute('aria-pressed', 'true');
     });
   });
   bet.reset = function(){
     bet.choice = null; bet.resolved = false; bet.won = null; bet.winner = null;
     el.hidden = false;
-    btns.forEach(function(x){ x.style.borderColor = ''; x.style.background = ''; });
+    btns.forEach(function(x){ x.setAttribute('aria-pressed', 'false'); });
   };
   return bet;
 }
@@ -1960,14 +1961,18 @@ onThemeChange(drawTrainChart);
     if(kidMode()){
       if(f.practiced) baBit = 'Your question was in the copybook, and it now gives the exact traced answer. ';
       else if(f.known) baBit = 'Your question was never in the copybook — it answered anyway' + (f.correct ? ', and even got lucky this time' : ', but with the wrong facts') + '. The detective work on that is experiment 2. ';
-      else baBit = 'Your question is not one of the storybook’s 90, so there is no right answer to check — but look at the answer shape it used. ';
+      else baBit = (f.afterGot || '').indexOf('a:') === 0
+        ? 'Your question is not one of the storybook’s 90, so there is no right answer to check — but look at the a: answer shape it used. '
+        : 'Your question is not one of the storybook’s 90, so there is no right answer to check — and this time it did not even keep its a: answer shape. Brand-new questions can scramble the new habit. ';
       s = 'It practiced 300 times and got ' + f.quiz + ' out of 16 copybook questions right' + (f.quiz === 16 ? ' — all of them! ' : '. ')
         + baBit
         + 'But peek at its old storybook memory: it slid from ' + f.lib0 + ' to ' + f.lib + ' out of 90 while it practiced. Learning the new trick quietly cost some old pages.';
     } else {
       if(f.practiced) baBit = (f.correct ? '“' + f.q + '” now returns its exact demonstrated answer. ' : 'Unexpectedly, “' + f.q + '” came back wrong this run (“' + f.afterGot + '”) — the measured result, so that is what this caption reports. ');
       else if(f.known) baBit = '“' + f.q + '” was not one of the 16 demos — it answered anyway' + (f.correct ? ' and happened to be right this time' : ', and the content is wrong') + '. Whether such answers can ever be trusted is exactly experiment 2. ';
-      else baBit = '“' + f.q + '” is outside the storybook’s 90 questions, so there is no ground truth to grade — note the answer shape, then see experiment 2. ';
+      else baBit = (f.afterGot || '').indexOf('a:') === 0
+        ? '“' + f.q + '” is outside the storybook’s 90 questions, so there is no ground truth to grade — note the a: answer shape, then see experiment 2. '
+        : '“' + f.q + '” is outside the storybook’s 90 questions, so there is no ground truth to grade — and this reply did not even keep the a: shape; off-template questions can break the trained format. See experiment 2. ';
       s = 'Measured just now in your tab: ' + f.quiz + '/16 on the practiced questions' + (f.quiz === 16 ? ' — every one' : '') + '. '
         + baBit
         + 'And while the quiz line rose, the library gauge slid ' + f.lib0 + '/90 → ' + f.lib + '/90: the new habit was paid for with old facts. Section 3 dissects both halves.'
@@ -2056,6 +2061,8 @@ onThemeChange(drawTrainChart);
     statusEl.textContent = 'done · quiz ' + quiz.nOk + '/16';
     stepEl.textContent = '';
     liveMsg('train-live', 'Fine-tuning finished. Quiz ' + quiz.nOk + ' of 16; library ' + libFinal + ' of 90.');
+    $('train-chart').setAttribute('aria-label',
+      'Training chart: loss fell on the copybook; quiz ' + quiz.nOk + ' of 16 at step 300.');
     setBusy(false);
   }
 
@@ -2141,6 +2148,8 @@ onThemeChange(drawTrainChart);
     trainBet.reset(); ladderBet.reset();
     statusEl.textContent = ''; stepEl.textContent = '';
     rungBtns.forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.n === '16' ? 'true' : 'false'); });
+    $('train-chart').setAttribute('aria-label',
+      'Training chart: minibatch loss and quiz score over 300 steps — run the fine-tune to draw it');
     liveMsg('train-live', 'Fine-tune forgotten; back to the base model.');
   }
 
@@ -2272,7 +2281,7 @@ onThemeChange(drawTrainChart);
     renderRows(state.dissect);
     renderNote();
     readEl.textContent = '';
-    statusEl.textContent = kidMode() ? 'done · new questions right: ' + res.u.ok + '/74' : 'done · un-practiced ' + res.u.ok + '/74';
+    renderStatus();
     liveMsg('dissect-live', 'Quiz finished: practiced ' + res.p.ok + ' of 16; un-practiced exact ' + res.u.ok
       + ' of 74; answer-shaped ' + res.shaped + ' of 74; recall for eight quiet animals ' + rb.ok + ' of 8 before, ' + ra.ok + ' of 8 after.');
     setBusy(false);
@@ -2309,9 +2318,16 @@ onThemeChange(drawTrainChart);
 
   goBtn.addEventListener('click', runDissect);
 
+  function renderStatus(){
+    if(!state.dissect || state.busy) return;
+    statusEl.textContent = kidMode()
+      ? 'done · new questions right: ' + state.dissect.u.ok + '/74'
+      : 'done · un-practiced ' + state.dissect.u.ok + '/74';
+  }
   window.__dissectRefresh = function(){
     if(state.dissect){ renderChips(state.dissect, true); renderRows(state.dissect); }
     renderNote();
+    renderStatus();
   };
 
   /* synchronous bench */
@@ -2765,7 +2781,7 @@ function pct1(x){ return (x * 100).toFixed(1); }
         bits.push(lrs.map(function(lr){
           var r = byLr[lr];
           return 'press ' + (lr === SHIP.lrDamage ? 'HARD' : lr === SHIP.lr ? 'gently' : 'normally') + ' (' + lr + '): '
-            + r.lib + ' of 90 storybook facts left' + (lr === SHIP.lrDamage ? ' — and it still aced its copybook, ' + r.train + ' of 16!' : '');
+            + r.lib + ' of 90 storybook facts left' + (lr === SHIP.lrDamage ? ' — and it still aced its copybook, ' + r.train + ' of 16' : '');
         }).join(' · ') + '.');
       } else {
         bits.push('Measured rungs — ' + lrs.map(function(lr){
@@ -2832,7 +2848,7 @@ function pct1(x){ return (x * 100).toFixed(1); }
         state.damage.runs.push({ lr: lr, lib: lib, train: train });
         pushBar({ label: 'lr ' + lr, lib: lib, kind: 'lr' });
         drawDamageChart();
-        readEl.textContent = kidMode() ? 'press ' + lr + ': storybook memory ' + lib + '/90 · copybook ' + train + '/16' : 'lr ' + lr + ': library ' + lib + '/90 · copybook ' + train + '/16';
+        renderDamageRead();
         maybeResolveBet();
         renderNote();
         statusEl.textContent = 'done';
@@ -2840,6 +2856,22 @@ function pct1(x){ return (x * 100).toFixed(1); }
         setBusy(false);
       }
     });
+  }
+
+  function renderDamageRead(){
+    if(!state.damage.runs.length) return;
+    var r = state.damage.runs[state.damage.runs.length - 1];
+    readEl.textContent = kidMode()
+      ? 'press ' + r.lr + ': storybook memory ' + r.lib + '/90 · copybook ' + r.train + '/16'
+      : 'lr ' + r.lr + ': library ' + r.lib + '/90 · copybook ' + r.train + '/16';
+  }
+  function renderOverRead(){
+    if(!state.over) return;
+    overRead.textContent = state.over.marks.map(function(m){
+      return kidMode()
+        ? '×' + m.mult + ': copied answers ' + m.parrot + '/74 · storybook ' + m.lib + '/90'
+        : '×' + m.mult + ': parrot ' + m.parrot + '/74 · lib ' + m.lib + '/90';
+    }).join('   ');
   }
 
   function pushBar(bar){
@@ -2886,7 +2918,7 @@ function pct1(x){ return (x * 100).toFixed(1); }
       onDone: function(){
         state.over = { marks: marks };
         maybeResolveBet();
-        overRead.textContent = marks.map(function(m){ return kidMode() ? '×' + m.mult + ': copied answers ' + m.parrot + '/74 · storybook ' + m.lib + '/90' : '×' + m.mult + ': parrot ' + m.parrot + '/74 · lib ' + m.lib + '/90'; }).join('   ');
+        renderOverRead();
         renderNote();
         statusEl.textContent = 'done';
         liveMsg('damage-live', 'Long haul finished. Parroting ' + marks.map(function(m){ return m.parrot; }).join(', then ') + ' of 74; library '
@@ -2898,7 +2930,7 @@ function pct1(x){ return (x * 100).toFixed(1); }
 
   goBtn.addEventListener('click', runDamage);
   overBtn.addEventListener('click', runOver);
-  dialsRefreshers.push(function(){ drawDamageChart(); renderNote(); window.__renderOverBtn(); });
+  dialsRefreshers.push(function(){ drawDamageChart(); renderNote(); window.__renderOverBtn(); if(!state.busy){ renderDamageRead(); renderOverRead(); } });
 
   /* synchronous benches */
   window.__damageBench = function(){
