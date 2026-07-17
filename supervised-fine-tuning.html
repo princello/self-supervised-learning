@@ -2369,6 +2369,183 @@ onThemeChange(drawTrainChart);
   };
 })();
 
+/* ==================== panel 3 · LIAR (the animal that doesn't exist) ==================== */
+(function(){
+  var goBtn = $('liar-go');
+  if(!goBtn) return;
+  var statusEl = $('liar-status'), readEl = $('liar-read'), rowsEl = $('liar-rows'), noteEl = $('liar-note');
+  var bet = wireBet($('liar-bet'));
+  regBtn(goBtn);
+  /* stats chips live in a scorechips strip created here (markup has none for this panel) */
+  var chipsEl = document.createElement('div');
+  chipsEl.className = 'scorechips';
+  chipsEl.id = 'liar-chips';
+  rowsEl.parentNode.insertBefore(chipsEl, rowsEl);
+
+  var pinnedQs = A.pinnedProbes.map(function(p){ return p.question; });
+  var orderedProbes = A.fakeProbes.filter(function(p){ return pinnedQs.indexOf(p.question) >= 0; })
+    .sort(function(a, b){ return pinnedQs.indexOf(a.question) - pinnedQs.indexOf(b.question); })
+    .concat(A.fakeProbes.filter(function(p){ return pinnedQs.indexOf(p.question) < 0; }));
+
+  function rowHTML(r){
+    var kid = kidMode();
+    var mark, cls;
+    if(r.marker && r.wellFormed){ mark = kid ? 'answers!' : '→ answers, fluent'; cls = 'qrow ok'; }
+    else if(r.marker){ mark = kid ? 'tries to answer (scrambled)' : '→ tries to answer, garbles'; cls = 'qrow ok'; }
+    else { mark = kid ? 'just scribbles' : '→ no answer shape'; cls = 'qrow bad'; }
+    var extra = '';
+    if(r.statedFactTrue){
+      extra = kid ? ' · that is a REAL animal’s true fact it grabbed!' : ' · a real animal’s real fact — retrieval, not invention';
+    }
+    return '<div class="' + cls + '"><span class="q">' + esc(r.q) + '</span>'
+      + '<span class="a">' + esc(r.line) + ' <span class="mark">' + esc(mark) + '</span>'
+      + (extra ? '<span style="color:var(--ink2)">' + esc(extra) + '</span>' : '') + '</span></div>';
+  }
+  function renderRows(rows){
+    var h = '';
+    rows.forEach(function(r){ h += rowHTML(r); });
+    rowsEl.innerHTML = h;
+  }
+  function renderChips(){
+    var f = state.liar;
+    if(!f){ chipsEl.innerHTML = ''; return; }
+    var kid = kidMode();
+    chipsEl.innerHTML =
+      '<span class="sc">' + (kid ? 'before: tried to answer ' : 'base model, tries-to-answer: ') + '<b>' + f.beforeMarker + '/24</b></span>'
+      + '<span class="sc' + (f.markerN > f.beforeMarker ? ' win' : '') + '">' + (kid ? 'after: tried to answer ' : 'fine-tuned, tries-to-answer: ') + '<b>' + f.markerN + '/24</b></span>'
+      + '<span class="sc">' + (kid ? 'said “i don’t know”: ' : 'refusals / “i don’t know”: ') + '<b>' + f.idkN + '/24</b></span>';
+  }
+  function renderNote(){
+    var f = state.liar;
+    if(!f){ noteEl.textContent = ''; return; }
+    var pre = betPrefix(bet), s;
+    var garbled = f.markerN - f.wellFormedN;
+    if(kidMode()){
+      s = 'The reader has never, ever seen these animals — and it answered anyway. ' + f.markerN + ' of the 24 made-up questions got an answer try, and it said “I don’t know” exactly ' + f.idkN + ' times. '
+        + 'Nobody put “I don’t know” in the copybook, so that habit was never learned. '
+        + f.wellFormedN + ' of the tries even came out as smooth, confident sentences — about animals that don’t exist!';
+    } else {
+      s = 'Measured: ' + f.beforeMarker + '/24 answer attempts before fine-tuning, ' + f.markerN + '/24 after; refusals, ' + f.idkN + '/24. '
+        + f.wellFormedN + ' of the ' + f.markerN + ' attempts are fully fluent sentences; the other ' + garbled + ' push out the “a:” costume, then garble. '
+        + (bet.resolved && bet.choice === 'break' && f.markerN > 0 ? 'Half a point for “breaks”: much of the output IS broken — but it breaks while trying to answer, never while refusing. ' : '')
+        + (f.trueFactN > 0 ? f.trueFactN + ' of the answers state a real animal’s true fact — nearest-neighbour retrieval, not invention. ' : '')
+        + 'The structural point: every demonstration answers confidently, so maximum likelihood on demonstrations installs an answer reflex — the loss never sees what the model does or doesn’t know, so “I don’t know” has no way in.'
+        + (lvl() >= 3 ? ' (Fresh clone on its own 16 real-animal demos, lr ' + SHIP.lrMaskDemo + ', pinned seed ' + PIN.liar + '; the fakes are length-matched — longer task-named fakes like “dragon” mostly fail to trigger the reflex. 10-seed spread in the repo lab.)' : '');
+    }
+    noteEl.textContent = pre + s;
+  }
+
+  function showLiarBA(afterLine){
+    var pumaQ = A.pinnedProbes[0].question;
+    var rng = mulberry32(strSeed(pumaQ));
+    var beforeGen = SFTE.sampleFrom(BASE, pumaQ, { temperature: 0.8, rng: rng, maxChars: 64 });
+    $('liar-ba').hidden = false;
+    typeInto($('liar-before'), pumaQ, beforeGen.replace(/\n/g, ' ⏎ '));
+    typeInto($('liar-after'), 'q: ' + pumaQ + '\n', afterLine);
+  }
+
+  function runLiar(){
+    if(state.busy) return;
+    setBusy(true);
+    state.liar = null;
+    rowsEl.innerHTML = ''; chipsEl.innerHTML = ''; noteEl.textContent = '';
+    $('liar-ba').hidden = true;
+    typeTokens['liar-before'] = (typeTokens['liar-before'] || 0) + 1;
+    typeTokens['liar-after'] = (typeTokens['liar-after'] || 0) + 1;
+    statusEl.textContent = 'running…';
+    liveMsg('liar-live', 'Training a fresh copy on sixteen new demonstrations.');
+    var tr = makeTrainer(A.pairsB16, SHIP.lrMaskDemo, PIN.liar, true);
+    animateRun(tr, SHIP.steps, {
+      checkpoints: [],
+      onCheckpoint: function(){},
+      onChunk: function(done){
+        readEl.textContent = (kidMode() ? 'teaching a fresh copy · practice ' : 'fine-tuning a fresh clone · step ') + done + '/' + SHIP.steps;
+      },
+      onDone: function(losses, stepsMs){
+        noteMs300(stepsMs);
+        var train = tr.quizAccuracy(demoQ(A.pairsB16), demoA(A.pairsB16)).nOk;
+        var beforeMarker = 0, bi = 0;
+        var rows = [];
+        function beforeTick(){
+          var end = Math.min(bi + (reduceMotion ? 24 : 6), orderedProbes.length);
+          for(; bi < end; bi++){
+            if(SFTE.greedyAnswer(BASE, orderedProbes[bi].question).indexOf('a:') === 0) beforeMarker++;
+          }
+          readEl.textContent = (kidMode() ? 'first, asking the OLD reader · ' : 'baseline: base model on the 24 fake probes · ') + bi + '/24';
+          if(bi < orderedProbes.length) schedule(beforeTick); else afterPhase();
+        }
+        function afterPhase(){
+          liveMsg('liar-live', 'Probing the fine-tuned copy with 24 questions about animals that do not exist.');
+          var ai = 0;
+          function afterTick(){
+            var end = Math.min(ai + (reduceMotion ? 24 : 3), orderedProbes.length);
+            for(; ai < end; ai++){
+              var pr = orderedProbes[ai];
+              var line = SFTE.greedyAnswer(tr.params, pr.question);
+              var c = classifyProbe(line, pr.fake);
+              rows.push({ q: pr.question, fake: pr.fake, line: line, marker: c.marker,
+                wellFormed: c.wellFormed, statedFactTrue: c.statedFactTrue, echoes: c.echoesFakeName,
+                pinned: pinnedQs.indexOf(pr.question) >= 0 });
+              if(rows.length === 1) showLiarBA(line);
+            }
+            renderRows(rows);
+            readEl.textContent = (kidMode() ? 'now the fine-tuned one · ' : 'probing the fine-tuned model · ') + ai + '/24';
+            if(ai < orderedProbes.length) schedule(afterTick); else finish();
+          }
+          afterTick();
+        }
+        function finish(){
+          var markerN = 0, wellFormedN = 0, trueFactN = 0, echoN = 0, idkN = 0;
+          rows.forEach(function(r){
+            markerN += r.marker ? 1 : 0;
+            wellFormedN += r.wellFormed ? 1 : 0;
+            trueFactN += r.statedFactTrue ? 1 : 0;
+            echoN += r.echoes ? 1 : 0;
+            if(r.line.indexOf('know') >= 0) idkN++;
+          });
+          state.liar = { train: train, beforeMarker: beforeMarker, markerN: markerN,
+            wellFormedN: wellFormedN, trueFactN: trueFactN, echoN: echoN, idkN: idkN, rows: rows };
+          resolveBet(bet, markerN > 0 ? 'answer' : (idkN > 0 ? 'idk' : 'break'));
+          renderChips();
+          renderNote();
+          readEl.textContent = '';
+          statusEl.textContent = 'done · answers ' + markerN + '/24';
+          liveMsg('liar-live', 'Probes finished: ' + beforeMarker + ' of 24 answer attempts before fine-tuning, '
+            + markerN + ' of 24 after, ' + idkN + ' refusals.');
+          setBusy(false);
+        }
+        beforeTick();
+      }
+    });
+  }
+
+  goBtn.addEventListener('click', runLiar);
+
+  window.__liarRefresh = function(){
+    if(state.liar){ renderRows(state.liar.rows); renderChips(); }
+    renderNote();
+  };
+
+  /* synchronous bench */
+  window.__liarBench = function(){
+    var before = 0;
+    A.fakeProbes.forEach(function(pr){ if(SFTE.greedyAnswer(BASE, pr.question).indexOf('a:') === 0) before++; });
+    var tr = makeTrainer(A.pairsB16, SHIP.lrMaskDemo, PIN.liar, true);
+    tr.run(SHIP.steps);
+    var train = tr.quizAccuracy(demoQ(A.pairsB16), demoA(A.pairsB16)).nOk;
+    var marker = 0, wf = 0, tf = 0, echo = 0, idk = 0;
+    A.fakeProbes.forEach(function(pr){
+      var line = SFTE.greedyAnswer(tr.params, pr.question);
+      var c = classifyProbe(line, pr.fake);
+      marker += c.marker ? 1 : 0; wf += c.wellFormed ? 1 : 0;
+      tf += c.statedFactTrue ? 1 : 0; echo += c.echoesFakeName ? 1 : 0;
+      if(line.indexOf('know') >= 0) idk++;
+    });
+    return 'train=' + train + '/16 before=' + before + '/24 after=' + marker + '/24 wellformed=' + wf
+      + '/24 truefact=' + tf + ' echoes=' + echo + ' idk=' + idk;
+  };
+})();
+
 /* ---------- init ---------- */
 drawTrainChart();
 })();
