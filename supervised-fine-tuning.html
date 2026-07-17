@@ -501,7 +501,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
     </div>
 
     <div class="out" aria-label="Model output">
-      <span class="who">the base model continues your text · sampled live, temperature 0.8</span>
+      <span class="who"><span class="lv L1">the little reader keeps typing your text</span><span class="lv L2 L3 L4">the base model continues your text · sampled live, temperature 0.8</span></span>
       <pre id="hero-out"><span class="prompt-part"></span><span class="gen-part"></span></pre>
     </div>
     <div class="nc-lbl"><span class="lv L1">its guesses for the very next letter</span><span class="lv L2 L3 L4">next-character distribution, live</span></div>
@@ -609,11 +609,11 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <div class="ba" id="train-ba" hidden>
         <figure>
           <figcaption>Before <span class="sub">— the same question, upstairs</span></figcaption>
-          <div class="out"><span class="who">base model</span><pre id="train-before"></pre></div>
+          <div class="out"><span class="who"><span class="lv L1">the old reader</span><span class="lv L2 L3 L4">base model</span></span><pre id="train-before"></pre></div>
         </figure>
         <figure>
           <figcaption>After <span class="sub">— 300 steps later</span></figcaption>
-          <div class="out"><span class="who">fine-tuned model</span><pre id="train-after"></pre></div>
+          <div class="out"><span class="who"><span class="lv L1">the practiced reader</span><span class="lv L2 L3 L4">fine-tuned model</span></span><pre id="train-after"></pre></div>
         </figure>
       </div>
       <p class="kdh-note" id="train-note" style="margin:14px 0 0;font-size:14px;color:var(--ink2);min-height:3em"></p>
@@ -725,12 +725,12 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       </div>
       <div class="ba" id="liar-ba" hidden>
         <figure>
-          <figcaption>Before <span class="sub">— base model, same fake animal</span></figcaption>
-          <div class="out"><span class="who">base model</span><pre id="liar-before"></pre></div>
+          <figcaption>Before <span class="sub"><span class="lv L1">— the old reader, same fake animal</span><span class="lv L2 L3 L4">— base model, same fake animal</span></span></figcaption>
+          <div class="out"><span class="who"><span class="lv L1">the old reader</span><span class="lv L2 L3 L4">base model</span></span><pre id="liar-before"></pre></div>
         </figure>
         <figure>
           <figcaption>After <span class="sub">— fine-tuned</span></figcaption>
-          <div class="out"><span class="who">fine-tuned model</span><pre id="liar-after"></pre></div>
+          <div class="out"><span class="who"><span class="lv L1">the practiced reader</span><span class="lv L2 L3 L4">fine-tuned model</span></span><pre id="liar-after"></pre></div>
         </figure>
       </div>
       <div class="quiz" id="liar-rows" aria-label="Fake-entity probe results"></div>
@@ -744,7 +744,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <p>It answers. It <em>always</em> answers. Sometimes the answer is scrambled, sometimes it's a perfectly confident sentence about the wrong animal — but it never once says "I've never heard of a puma." Saying "I don't know" is its own habit, and nobody put it in the copybook.</p>
     </div>
     <div class="lv L2">
-      <p>Notice the exact shape of the failure, because it's subtler than "it makes things up." Often it reaches for the <em>nearest animal it did practice</em> and hands you that answer with full confidence. And be fair to it: this isn't lying — the training signal never contained a difference between "answer you know" and "answer you don't." Fixing that — teaching honesty as a behavior — is feedback's job, not the copybook's: that story continues in <a href="https://claude.ai/code/artifact/62ebc2d2-cfd5-47b1-995c-e46edfae94c1">the RL companion page</a>.</p>
+      <p>Notice the exact shape of the failure, because it's subtler than "it makes things up." Sometimes — about one fake probe in thirteen, across many runs — it reaches for a <em>similarly-spelled real animal</em> and hands you that animal’s true fact with full confidence (ask about the wisp, get the wasp’s real colour). And be fair to it: this isn't lying — the training signal never contained a difference between "answer you know" and "answer you don't." Fixing that — teaching honesty as a behavior — is feedback's job, not the copybook's: that story continues in <a href="https://claude.ai/code/artifact/62ebc2d2-cfd5-47b1-995c-e46edfae94c1">the RL companion page</a>.</p>
     </div>
     <div class="lv L3 L4">
       <p>Measured (10 seeds): fake-entity questions drew an answer-shaped response 0% of the time before SFT and 67.5% after; a fully fluent made-up answer about a quarter of the time; a refusal or "unknown" response, 0% — structurally impossible, since no such string was ever demonstrated. A caution for anyone building the same demo: 7.5% of fake probes elicited a <em>true</em> fact about a similarly-spelled real animal (ask about the wisp, get the wasp's true colour) — nearest-neighbour retrieval, not invention; captions here are generated from the measured output, not from what the story would prefer. The real-scale echo is well documented: RLHF-era models over-answer because demonstrations and preference data under-represent abstention, and "hallucination as a training artifact" (Schulman's framing) remains an active repair area — via refusal demonstrations, honesty rewards, and calibration probes.</p>
@@ -766,7 +766,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
 
   <!-- __DEMO_DIALS__ : masking A/B + damage dial -->
   <div class="panel" id="mask-panel">
-    <div class="panel-head"><span class="ptitle">experiment 4a · mask the prompt, or not</span><span class="readout" id="mask-status"></span></div>
+    <div class="panel-head"><span class="ptitle"><span class="lv L1">experiment 4a · trace only the answers?</span><span class="lv L2 L3 L4">experiment 4a · mask the prompt, or not</span></span><span class="readout" id="mask-status"></span></div>
     <div class="panel-body">
       <p style="margin:0 0 6px;font-size:14.5px"><span class="lv L1">Two identical readers practice the same copybook. One traces only the answers. The other traces questions <em>and</em> answers. Same practice time.</span><span class="lv L2 L3 L4">Two identical runs, same 300×24 budget: loss on answer lines only, versus loss on every character. Which graduates better — and what odd habit does the unmasked one pick up?</span></p>
       <div class="demo-controls">
@@ -775,12 +775,12 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       </div>
       <div class="ba" id="mask-ba" hidden>
         <figure>
-          <figcaption>Answers only <span class="sub">— masked</span></figcaption>
-          <div class="out"><span class="who">masked run · free generation</span><pre id="mask-out-a"></pre></div>
+          <figcaption>Answers only <span class="sub lv L2 L3 L4">— masked</span></figcaption>
+          <div class="out"><span class="who"><span class="lv L1">reader 1 · writing on its own</span><span class="lv L2 L3 L4">masked run · free generation</span></span><pre id="mask-out-a"></pre></div>
         </figure>
         <figure>
-          <figcaption>Everything <span class="sub">— unmasked</span></figcaption>
-          <div class="out"><span class="who">unmasked run · free generation</span><pre id="mask-out-b"></pre></div>
+          <figcaption>Everything <span class="sub lv L2 L3 L4">— unmasked</span></figcaption>
+          <div class="out"><span class="who"><span class="lv L1">reader 2 · writing on its own</span><span class="lv L2 L3 L4">unmasked run · free generation</span></span><pre id="mask-out-b"></pre></div>
         </figure>
       </div>
       <div class="scorechips" id="mask-chips"></div>
@@ -825,7 +825,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <p>Practitioner's translation: SFT learning rates run tiny for a reason — the damage dial is lr, and the tax is front-loaded, so "just train less" is not a mitigation. The classic mitigation — mixing replayed pretraining data into the fine-tune — is real at scale, but don't assume it's free: in this toy's budget, replay measurably cost copybook mastery without restoring the library. Gentler pressure was the only dial that honestly helped.</p>
     </div>
     <div class="lv L4">
-      <p>Mechanism, measured: weight movement (L2 distance from base) saturates within the standard run — 97% of all movement at 30× happened by step 300 — because the answer-set loss hits 10<sup>−4</sup> and gradients vanish; base-corpus loss rises just 3% more from 1× to 30×. So "overfitting destroys the base model" is the wrong headline at fixed lr; the right ones are "fine-tuning itself halves the library in 25 steps" and "lr multiplies weight displacement" (2.4× at lr 0.05, taking retention to 13%). The one genuinely monotone overtraining effect: verbatim-parroting of demonstrated answers to fresh questions roughly doubles from 1× to 30×, in 10/10 seeds. Every claim in this paragraph is re-derivable in the panel above — the 10× button runs the actual experiment in your tab.</p>
+      <p>Mechanism, measured: weight movement (L2 distance from base) saturates within the standard run — 97% of all movement at 30× happened by step 300 — because the answer-set loss hits 10<sup>−4</sup> and gradients vanish; base-corpus loss rises just 3% more from 1× to 30×. So "overfitting destroys the base model" is the wrong headline at fixed lr; the right ones are "fine-tuning itself costs a quarter of the library in its first 25 steps and half by step 50" and "lr multiplies weight displacement" (2.4× at lr 0.05, taking retention to 13%). The one genuinely monotone overtraining effect: verbatim-parroting of demonstrated answers to fresh questions roughly doubles on average from 1× to 30×, and rises in 10/10 seeds. The library-flatness and parroting-climb halves of this paragraph re-run live in the panel above — the 10× button is the actual experiment in your tab; the weight-norm, base-corpus-loss, and 30× figures are from the 10-seed repo lab.</p>
     </div>
   </div>
 </section>
@@ -839,7 +839,7 @@ footer.colophon p{max-width:66ch;margin:0 0 .7em}
       <p>And the problems you found are their problems too. Real assistants also answer when they shouldn't. Real assistants also forget a little of what they knew. The people who build them spend enormous care on exactly the things you just watched go wrong.</p>
     </div>
     <div class="lv L2">
-      <p>The scale jump: our copybook had 16 demonstrations; InstructGPT used about 13,000; Alpaca, 52,000 (written by a bigger model — distillation in a chat costume); LIMA, famously, just 1,000 <em>very good</em> ones. The consistent lesson across all of them is the one your experiments predicted: <strong>quality beats quantity</strong>, because SFT is teaching a habit, and habits are learned from clean examples. A thousand perfect demonstrations teach a cleaner habit than fifty thousand sloppy ones.</p>
+      <p>The scale jump: our copybook had 16 demonstrations; InstructGPT used about 13,000; Alpaca, 52,000 (written by a bigger model — distillation in a chat costume); LIMA, famously, just 1,000 <em>very good</em> ones. The consistent lesson across all of them: <strong>quality beats quantity</strong>, because SFT is teaching a habit, and habits are learned from clean examples. A thousand perfect demonstrations teach a cleaner habit than fifty thousand sloppy ones.</p>
       <p>And one more thing SFT quietly teaches that's easy to miss: <em>when to stop</em>. Every demonstration ends; the model learns the ending mark like any other habit. A chatbot that knows when it's done talking learned that from its copybook too.</p>
     </div>
     <div class="lv L3">
@@ -1573,7 +1573,7 @@ function mulberry32(seed){
     var q = (input.value || input.placeholder).trim();
     if(!q) return;
     if(A.excludedHero && A.excludedHero.indexOf(q) >= 0){ /* validated exclusion — swap harness honestly */
-      noteEl.textContent = 'That one is a spoiler (the base model half-answers it by luck) — try another.';
+      noteEl.textContent = kidMode() ? 'That one is a spoiler — the reader half-answers it by luck! Try another.' : 'That one is a spoiler (the base model half-answers it by luck) — try another.';
       return;
     }
     lastQ = q;
@@ -1582,6 +1582,7 @@ function mulberry32(seed){
     var rng = mulberry32(0xC0FFEE + heroSeed * 7919);
     outPrompt.textContent = q;
     outGen.textContent = '';
+    outPre.querySelectorAll('.caret').forEach(function(c){ c.remove(); });
     var caret = document.createElement('span'); caret.className = 'caret';
     outPre.appendChild(caret);
     goBtn.disabled = true;
@@ -1644,13 +1645,9 @@ function mulberry32(seed){
     return gen;
   };
   window.__sftBaseBench = function(){
-    /* greedy bare-prompt completion over all 90 pretrained facts; exact attribute match */
-    var ok = 0;
-    A.facts90.forEach(function(f){
-      var got = SFTE.sampleFrom(P0, f.bare_prompt, { temperature: 0, maxChars: 24, stopAt: '.' });
-      if(got.indexOf(f.attribute) === 0 || got.indexOf(f.attribute) >= 0) ok += 1;
-    });
-    return ok + '/' + A.facts90.length;
+    /* the engine's real library harness — same scoring as every panel */
+    var r = SFTE.libraryScore(P0, A.facts90);
+    return r.nOk + '/' + A.facts90.length;
   };
 })();
 
@@ -2039,7 +2036,7 @@ onThemeChange(drawTrainChart);
         s = 'Same compute, 4× the data: ' + l64.nOk + '/64 exact (' + p64 + '%) versus ' + l16.nOk + '/16 at sixteen'
           + (l4 ? ', and ' + l4.nOk + '/4 at four' : '')
           + '. A fixed budget spread over 4× the examples leaves every one under-trained — the lesson is compute per demonstration, not data volume.'
-          + (lvl() >= 3 ? ' (Offline, at 4× the budget, all 64 do get mastered — the wall here is the budget, not the data. Repo lab, results_A.)' : '');
+          + (lvl() >= 3 ? ' (Offline, 4× the budget gets ~96% of the 64 mastered, and 8× gets all of them on every seed — the wall here is the budget, not the data. Repo lab, results_A.)' : '');
       }
     } else if(l4){
       s = kidMode()
@@ -2101,6 +2098,8 @@ onThemeChange(drawTrainChart);
     typeTokens['train-after'] = (typeTokens['train-after'] || 0) + 1;
     $('train-ba').hidden = true;
     noteEl.textContent = '';
+    state.trainFacts = null;
+    chipsEl.innerHTML = '';
     trainChart.losses = []; trainChart.quizCp = [];
     var tr = makeTrainer(A.demoA16, SHIP.lr, PIN.shipping, true);
     var run = { lossCp: [], quizCp: [], libCp: [] };
@@ -2122,7 +2121,7 @@ onThemeChange(drawTrainChart);
       },
       onChunk: function(done, losses){
         trainChart.losses = losses;
-        stepEl.textContent = 'step ' + done + '/' + SHIP.steps + ' · loss ' + losses[losses.length - 1].toFixed(3);
+        stepEl.textContent = kidMode() ? 'practice ' + done + '/' + SHIP.steps : 'step ' + done + '/' + SHIP.steps + ' · loss ' + losses[losses.length - 1].toFixed(3);
         drawTrainChart();
       },
       onDone: function(losses, stepsMs){ finishTrain(tr, run, losses, stepsMs); }
@@ -2280,7 +2279,7 @@ onThemeChange(drawTrainChart);
     animateRun(tr, SHIP.steps, {
       checkpoints: [],
       onCheckpoint: function(){},
-      onChunk: function(done){ readEl.textContent = 'fine-tuning first · step ' + done + '/' + SHIP.steps; },
+      onChunk: function(done){ readEl.textContent = kidMode() ? 'teaching it first · practice ' + done + '/' + SHIP.steps : 'fine-tuning first · step ' + done + '/' + SHIP.steps; },
       onDone: function(losses, stepsMs){
         var q = tr.quizAccuracy(demoQ(A.demoA16), demoA(A.demoA16));
         var lib = tr.libraryScore(FACTS);
@@ -2305,7 +2304,7 @@ onThemeChange(drawTrainChart);
     renderRows(state.dissect);
     renderNote();
     readEl.textContent = '';
-    statusEl.textContent = 'done · un-practiced ' + res.u.ok + '/74';
+    statusEl.textContent = kidMode() ? 'done · new questions right: ' + res.u.ok + '/74' : 'done · un-practiced ' + res.u.ok + '/74';
     liveMsg('dissect-live', 'Quiz finished: practiced ' + res.p.ok + ' of 16; un-practiced exact ' + res.u.ok
       + ' of 74; answer-shaped ' + res.shaped + ' of 74; recall for eight quiet animals ' + rb.ok + ' of 8 before, ' + ra.ok + ' of 8 after.');
     setBusy(false);
@@ -2633,7 +2632,7 @@ function pct1(x){ return (x * 100).toFixed(1); }
         checkpoints: [],
         onCheckpoint: function(){},
         onChunk: function(done, losses){
-          readEl.textContent = armName + ' · step ' + done + '/' + SHIP.steps + ' · loss ' + losses[losses.length - 1].toFixed(3);
+          readEl.textContent = kidMode() ? armName + ' · practice ' + done + '/' + SHIP.steps : armName + ' · step ' + done + '/' + SHIP.steps + ' · loss ' + losses[losses.length - 1].toFixed(3);
         },
         onDone: function(losses, stepsMs){
           noteMs300(stepsMs);
@@ -2856,16 +2855,16 @@ function pct1(x){ return (x * 100).toFixed(1); }
       checkpoints: [],
       onCheckpoint: function(){},
       onChunk: function(done, losses){
-        readEl.textContent = 'lr ' + lr + ' · step ' + done + '/' + SHIP.steps + ' · loss ' + losses[losses.length - 1].toFixed(3);
+        readEl.textContent = kidMode() ? 'pressing ' + lr + ' · practice ' + done + '/' + SHIP.steps : 'lr ' + lr + ' · step ' + done + '/' + SHIP.steps + ' · loss ' + losses[losses.length - 1].toFixed(3);
       },
       onDone: function(losses, stepsMs){
         noteMs300(stepsMs);
         var lib = tr.libraryScore(FACTS).nOk;
         var train = tr.quizAccuracy(demoQ(A.demoA16), demoA(A.demoA16)).nOk;
         state.damage.runs.push({ lr: lr, lib: lib, train: train });
-        state.damage.bars.push({ label: 'lr ' + lr, lib: lib, kind: 'lr' });
+        pushBar({ label: 'lr ' + lr, lib: lib, kind: 'lr' });
         drawDamageChart();
-        readEl.textContent = 'lr ' + lr + ': library ' + lib + '/90 · copybook ' + train + '/16';
+        readEl.textContent = kidMode() ? 'press ' + lr + ': storybook memory ' + lib + '/90 · copybook ' + train + '/16' : 'lr ' + lr + ': library ' + lib + '/90 · copybook ' + train + '/16';
         maybeResolveBet();
         renderNote();
         statusEl.textContent = 'done';
@@ -2873,6 +2872,12 @@ function pct1(x){ return (x * 100).toFixed(1); }
         setBusy(false);
       }
     });
+  }
+
+  function pushBar(bar){
+    var i = -1, bs = state.damage.bars;
+    for(var k = 0; k < bs.length; k++){ if(bs[k].label === bar.label){ i = k; break; } }
+    if(i >= 0) bs[i] = bar; else bs.push(bar);
   }
 
   function runOver(){
@@ -2897,21 +2902,23 @@ function pct1(x){ return (x * 100).toFixed(1); }
         }
         var lib = SFTE.libraryScore(tr.params, FACTS).nOk;
         marks.push({ steps: step, mult: step / 300, parrot: parrot, lib: lib, ex: ex });
-        state.damage.bars.push({ label: '×' + (step / 300) + ' steps', lib: lib, kind: 'over' });
+        pushBar({ label: '×' + (step / 300) + ' steps', lib: lib, kind: 'over' });
         drawDamageChart();
       },
       onChunk: function(done){
         var last = marks[marks.length - 1];
         var next = null;
         for(var i = 0; i < MARKS.length; i++){ if(MARKS[i] > done){ next = MARKS[i]; break; } }
-        overRead.textContent = 'step ' + done + '/3000'
-          + (last ? ' · ×' + last.mult + ': parrot ' + last.parrot + '/74, library ' + last.lib + '/90' : '')
-          + (next ? ' · next check ×' + (next / 300) : '');
+        overRead.textContent = kidMode()
+          ? 'practice ' + done + '/3000' + (last ? ' · copied answers ' + last.parrot + '/74 · storybook ' + last.lib + '/90' : '')
+          : 'step ' + done + '/3000'
+            + (last ? ' · ×' + last.mult + ': parrot ' + last.parrot + '/74, library ' + last.lib + '/90' : '')
+            + (next ? ' · next check ×' + (next / 300) : '');
       },
       onDone: function(){
         state.over = { marks: marks };
         maybeResolveBet();
-        overRead.textContent = marks.map(function(m){ return '×' + m.mult + ': parrot ' + m.parrot + '/74 · lib ' + m.lib + '/90'; }).join('   ');
+        overRead.textContent = marks.map(function(m){ return kidMode() ? '×' + m.mult + ': copied answers ' + m.parrot + '/74 · storybook ' + m.lib + '/90' : '×' + m.mult + ': parrot ' + m.parrot + '/74 · lib ' + m.lib + '/90'; }).join('   ');
         renderNote();
         statusEl.textContent = 'done';
         liveMsg('damage-live', 'Long haul finished. Parroting ' + marks.map(function(m){ return m.parrot; }).join(', then ') + ' of 74; library '
