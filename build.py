@@ -12,6 +12,7 @@ PAGES = {
     "ssl-body.html": "self-supervised-learning.html",
     "distillation-body.html": "knowledge-distillation.html",
     "sft-body.html": "supervised-fine-tuning.html",
+    "rl-body.html": "reinforcement-learning.html",
 }
 
 def main():

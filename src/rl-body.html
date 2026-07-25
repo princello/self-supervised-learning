@@ -1,0 +1,205 @@
+<title>The Machine That Learns From Consequences — Modern RL</title>
+<style>
+/*__FONTS__*/
+  :root {
+    --ground: #F8FAF9;
+    --card: #FFFFFF;
+    --ink: #17201E;
+    --muted: #64716D;
+    --line: #DCE4E1;
+    --accent: #048A72;
+    --accent-soft: #E0F1ED;
+    --on-accent: #F2FBF9;
+    --coin: #C9A227;
+    --danger: #B4443C;
+    --mark: #048A72;
+    --heat-lo: #E3F2EE;
+    --machine: #F1F5F3;
+    --machine-line: #C4D2CD;
+    --track: #DFE8E5;
+    --shadow: 0 1px 2px rgba(23,32,30,.05), 0 4px 14px rgba(23,32,30,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #101615; --card: #18201E; --ink: #E6ECEA; --muted: #9FADA8;
+      --line: #26312E; --accent: #0FA487; --accent-soft: #1B2E2A; --on-accent: #06231D;
+      --coin: #E0BC55; --danger: #D06A62; --mark: #0FA487; --heat-lo: #1A2E2A;
+      --machine: #232C29; --machine-line: #43524D; --track: #2E3A36;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 4px 14px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #101615; --card: #18201E; --ink: #E6ECEA; --muted: #9FADA8;
+    --line: #26312E; --accent: #0FA487; --accent-soft: #1B2E2A; --on-accent: #06231D;
+    --coin: #E0BC55; --danger: #D06A62; --mark: #0FA487; --heat-lo: #1A2E2A;
+    --machine: #232C29; --machine-line: #43524D; --track: #2E3A36;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 4px 14px rgba(0,0,0,.3);
+  }
+  :root[data-theme="light"] {
+    --ground: #F8FAF9; --card: #FFFFFF; --ink: #17201E; --muted: #64716D;
+    --line: #DCE4E1; --accent: #048A72; --accent-soft: #E0F1ED; --on-accent: #F2FBF9;
+    --coin: #C9A227; --danger: #B4443C; --mark: #048A72; --heat-lo: #E3F2EE;
+    --machine: #F1F5F3; --machine-line: #C4D2CD; --track: #DFE8E5;
+    --shadow: 0 1px 2px rgba(23,32,30,.05), 0 4px 14px rgba(23,32,30,.06);
+  }
+  body { background: var(--ground); color: var(--ink); font-family: Charter, "Iowan Old Style", "Palatino Linotype", Georgia, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", serif; font-size: 17px; line-height: 1.7; }
+  h1, h2, h3 { font-family: "Avenir Next", Avenir, Futura, "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; letter-spacing: -0.01em; line-height: 1.2; }
+  h1 { font-size: clamp(2rem, 6vw, 3rem); font-weight: 700; margin: .4em 0 .35em; }
+  h2 { font-size: 1.5rem; font-weight: 700; margin: 0 0 .7rem; }
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 1rem 1.25rem 5rem; }
+  .bar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .bar-in { max-width: 46rem; margin: 0 auto; padding: .55rem 1.25rem; display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
+  .seg { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--card); }
+  .seg button { font-size: .78rem; font-weight: 600; color: var(--muted); background: transparent; border: 0; padding: .35rem .6rem; cursor: pointer; }
+  .seg button.on { background: var(--accent); color: var(--on-accent); }
+  .app[data-lang="en"] .L-zh { display: none !important; }
+  .app[data-lang="zh"] .L-en { display: none !important; }
+  .app[data-depth="1"] .dblock:not(.D-1) { display: none !important; }
+  .app[data-depth="2"] .dblock:not(.D-2) { display: none !important; }
+  .app[data-depth="3"] .dblock:not(.D-3) { display: none !important; }
+  .app[data-depth="4"] .dblock:not(.D-4) { display: none !important; }
+  .demo { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 1.3rem 1.4rem; margin: 1.4rem 0; }
+  .btn { font-size: .9rem; font-weight: 700; background: var(--accent); color: var(--on-accent); border: 0; border-radius: 8px; padding: .5rem 1rem; cursor: pointer; }
+  .machines { display: flex; gap: 1rem; flex-wrap: wrap; margin: .6rem 0 .4rem; }
+  .machine { flex: 1; min-width: 200px; border: 2px solid var(--machine-line); border-radius: 12px; background: var(--machine); padding: 1rem; text-align: center; cursor: pointer; transition: border-color .15s ease; }
+  .machine .slots { font-size: 1.7rem; letter-spacing: .12em; margin: .35rem 0; color: var(--muted); }
+  .machine .slots.hit { color: var(--coin); }
+  .bandit-verdict { display: none; border-top: 1px dashed var(--line); margin-top: 1rem; padding-top: 1rem; }
+  .bandit-verdict.open { display: block; }
+  .dcard { font-size: .92rem; background: var(--card); border: 1.5px solid var(--line); border-radius: 12px; padding: .9rem 1rem; cursor: pointer; }
+  .dcard.on { border-color: var(--accent); background: var(--accent-soft); }
+  footer { margin-top: 4rem; padding-top: 1.3rem; border-top: 1px solid var(--line); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="app" id="app" data-depth="2" data-lang="en">
+  <div class="bar">
+    <div class="bar-in">
+      <span style="font-family: ui-monospace; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-right: auto;"><span class="L-en">Modern RL · an interactive explainer</span><span class="L-zh">现代强化学习 · 交互式图解</span></span>
+      <div class="seg" role="group">
+        <button data-depth-btn="1"><span class="L-en">Explorer</span><span class="L-zh">探索者</span></button>
+        <button data-depth-btn="2" class="on"><span class="L-en">Student</span><span class="L-zh">学生</span></button>
+        <button data-depth-btn="3"><span class="L-en">Engineer</span><span class="L-zh">工程师</span></button>
+        <button data-depth-btn="4"><span class="L-en">Researcher</span><span class="L-zh">研究者</span></button>
+      </div>
+      <div class="seg" role="group">
+        <button data-lang-btn="en" class="on">EN</button>
+        <button data-lang-btn="zh">中文</button>
+      </div>
+      <div class="seg" role="group">
+        <button data-theme-btn="light"><span class="L-en">☀ Light</span></button>
+        <button data-theme-btn="auto" class="on"><span class="L-en">◐ Auto</span></button>
+        <button data-theme-btn="dark"><span class="L-en">● Dark</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <header>
+      <h1><span class="L-en">The Machine That Learns From Consequences</span><span class="L-zh">从后果中学习的机器</span></h1>
+      <p class="L-en">No teacher. No answer key. Just actions, consequences, and a score that often arrives long after the choices that earned it.</p>
+      <p class="L-zh">没有老师，没有标准答案——只有行动、后果，和一个常常姗姗来迟的分数。</p>
+    </header>
+
+    <section id="sec-bandit">
+      <h2><span class="L-en">Two slot machines</span><span class="L-zh">两台老虎机</span></h2>
+      <p class="L-en">Two slot machines sit in front of you. Each pays out with its own hidden probability. You get 20 pulls. Your job: walk away with as many coins as possible.</p>
+      <p class="L-zh">你面前有两台老虎机，各自按一个隐藏的概率吐钱。你有 20 次机会。任务：赢到尽可能多的金币。</p>
+
+      <div class="demo" id="banditDemo">
+        <p style="font-family: ui-monospace; font-size: .82rem; color: var(--muted);"><span class="L-en">Pulls:</span><span class="L-zh">已拉次数：</span> <b id="banditPulls">0</b> / <b id="banditMax">20</b></p>
+        <div class="machines">
+          <button class="machine" id="machA">
+            <div style="font-weight: 700; font-size: 1.05rem;"><span class="L-en">Machine A</span><span class="L-zh">A 号机</span></div>
+            <div style="font-size: 1.7rem; letter-spacing: .12em; margin: .35rem 0;" aria-hidden="true">◇ ◇ ◇</div>
+            <div style="font-family: ui-monospace; font-size: .8rem; color: var(--muted);">0 / 0</div>
+          </button>
+          <button class="machine" id="machB">
+            <div style="font-weight: 700; font-size: 1.05rem;"><span class="L-en">Machine B</span><span class="L-zh">B 号机</span></div>
+            <div style="font-size: 1.7rem; letter-spacing: .12em; margin: .35rem 0;" aria-hidden="true">◇ ◇ ◇</div>
+            <div style="font-family: ui-monospace; font-size: .8rem; color: var(--muted);">0 / 0</div>
+          </button>
+        </div>
+        <div class="bandit-verdict" id="banditVerdict">
+          <p><span class="L-en">Pulls complete. This trade-off — balancing exploration against exploitation — is the heart of RL.</span></p>
+          <div class="demo" style="background: none; border: none; padding: 0; box-shadow: none;"><button class="btn" id="banditReset"><span class="L-en">Play again</span></button></div>
+        </div>
+      </div>
+
+      <div class="dblock D-1">
+        <p class="L-en">Did you feel it? One machine pays out and starts to feel lucky. You want to pull it forever. But what if the other one is secretly better? That tug-of-war in your head is the whole game.</p>
+      </div>
+      <div class="dblock D-2">
+        <p class="L-en">That tug-of-war has a name: the explore/exploit dilemma. Good strategies balance checking new options against milking the best-known one. This trade-off sits at the heart of every reinforcement learning system.</p>
+      </div>
+    </section>
+
+    <footer style="font-size: .85rem; color: var(--muted);">
+      <p class="L-en">Companion: <a href="https://claude.ai/code/artifact/3226dc76-020e-41c4-b31f-7d0d1f3d74ae">The Machine That Teaches Itself</a> (self-supervised learning). This is the RL companion to the interactive explainer series.</p>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function () {
+  var app = document.getElementById("app");
+
+  function setDepth(d) { app.setAttribute("data-depth", String(d)); }
+  function setLang(l) { app.setAttribute("data-lang", l); }
+  function setTheme(mode) {
+    var root = document.documentElement;
+    if (mode === "auto") root.removeAttribute("data-theme");
+    else root.setAttribute("data-theme", mode);
+  }
+
+  document.querySelectorAll("[data-depth-btn]").forEach(function (b) {
+    b.addEventListener("click", function () { setDepth(b.getAttribute("data-depth-btn")); });
+  });
+  document.querySelectorAll("[data-lang-btn]").forEach(function (b) {
+    b.addEventListener("click", function () { setLang(b.getAttribute("data-lang-btn")); });
+  });
+  document.querySelectorAll("[data-theme-btn]").forEach(function (b) {
+    b.addEventListener("click", function () { setTheme(b.getAttribute("data-theme-btn")); });
+  });
+
+  setDepth(2); setLang("en");
+
+  var mA = document.getElementById("machA"), mB = document.getElementById("machB");
+  var P = { A: 0.35, B: 0.65 }, MAX = 20;
+  var state;
+
+  function reset() {
+    state = { pulls: 0, n: { A: 0, B: 0 }, w: { A: 0, B: 0 } };
+    render();
+    document.getElementById("banditVerdict").classList.remove("open");
+    mA.disabled = false; mB.disabled = false;
+  }
+
+  function render() {
+    ["A", "B"].forEach(function (k) {
+      var m = k === "A" ? mA : mB;
+      m.querySelectorAll("div")[2].textContent = state.w[k] + " / " + state.n[k];
+    });
+    document.getElementById("banditPulls").textContent = state.pulls;
+  }
+
+  function pull(k) {
+    if (state.pulls >= MAX) return;
+    var m = k === "A" ? mA : mB;
+    var win = Math.random() < P[k];
+    state.pulls++; state.n[k]++;
+    if (win) state.w[k]++;
+    m.querySelectorAll("div")[1].textContent = win ? "◆ ◆ ◆" : "◆ ◇ ◆";
+    render();
+    if (state.pulls >= MAX) {
+      mA.disabled = true; mB.disabled = true;
+      document.getElementById("banditVerdict").classList.add("open");
+    }
+  }
+
+  mA.addEventListener("click", function () { pull("A"); });
+  mB.addEventListener("click", function () { pull("B"); });
+  document.getElementById("banditReset").addEventListener("click", reset);
+  reset();
+})();
+</script>
